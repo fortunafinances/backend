@@ -5,13 +5,11 @@ query = QueryType()
 mutation = MutationType()
 
 
-
 @mutation.field("orderCoffee")
 def resolve_order_coffee(_, info, size, name, type):
     newOrder = Coffee(size, name, type)
     orders.append(newOrder)
 
-    
     # message to database
     return newOrder
 
