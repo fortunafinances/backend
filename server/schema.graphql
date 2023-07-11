@@ -47,9 +47,18 @@ type Order {
     quantity: Int!
 }
 
+type Holding {
+    account_id: String!
+    ticker: String!
+    name: String!
+    quantity: Int!
+    price: Int!
+}
+
 type Query {
     coffeeOrders: [Coffee]!
     orders: [Order]!
+    holdings: [Holding]!
 }
 
 type Mutation {

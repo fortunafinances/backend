@@ -1,6 +1,10 @@
 from ariadne import QueryType, MutationType
 from uuid import uuid4   
 
+import sys
+sys.path.insert(1, '../dummy_data') 
+import fake_holdings
+
 query = QueryType()
 mutation = MutationType()
 
@@ -72,3 +76,8 @@ orders = []
 @query.field("orders")
 def resolve_orders(_, info):
     return orders
+
+
+@query.field("holdings")
+def resolve_holdings(_, info):
+    return fake_holdings.holding_list
