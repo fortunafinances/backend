@@ -5,21 +5,19 @@ enum Size {
 }
 
 enum CoffeeType {
-  CAPPUCCINO
-  FLAT_WHITE
-  ESPRESSO
+    CAPPUCCINO
+    FLAT_WHITE
+    ESPRESSO
 }
 
 type Coffee {
-  id: String!
-  size: Size!
-  name: String!
-  type: CoffeeType!
+    id: String!
+    size: Size!
+    name: String!
+    type: CoffeeType!
 }
 
 
-
-########################################################################
 enum OrderSide {
     Buy
     Sell
@@ -49,11 +47,6 @@ type Order {
     quantity: Int!
 }
 
-
-########################################################################
-
-
-
 type Query {
     coffeeOrders: [Coffee]!
     orders: [Order]!
@@ -61,5 +54,16 @@ type Query {
 
 type Mutation {
     orderCoffee(size: Size!, name: String!, type: CoffeeType!): Coffee
-}
 
+    mutateOrder(
+        order_id: String!,
+        user_id: String!,
+        type: OrderType!,
+        side: OrderSide!,
+        purchaseDate: String!,
+        stock_id: String!,
+        status: OrderStatus,
+        purchasePrice: Int!,
+        quantity: Int!
+    ): Order
+}
