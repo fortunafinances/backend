@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
-import requests
-
 from model import query, mutation
 from model2 import query as query2, mutation as mutation2
-from server.stockRequests import handle_quote_data
+from apiRequests import get_stock_quote
 
 
 """
@@ -72,18 +70,9 @@ def newfunc_server():
     return jsonify(result), status_code
 
 # defining GET request for a quote
-@app.route('/get_quote')
-def get_quote(symbol, token):
-    api_url = 'https://finnhub.io/api/v1/quote?symbol={symbol}&token={API_token}'
-    response = requests.get(api_url)
-    if response.status_code == 200:
-        # Request was successful
-        data = response.json()  # Get the response data in JSON format
-        price = handle_quote_data(data)
-        return price
-    else:
-        # Request failed
-        print("Error:", response.status_code)
+@app.route('/get_quote/<symbol>', methods=["GET"])
+def get_quote(symbol):
+    return get_stock_quote(symbol)
 
 if __name__ == '__main__':
     app.run(debug=True)
