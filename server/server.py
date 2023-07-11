@@ -3,7 +3,7 @@ from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_
 from ariadne.explorer import ExplorerGraphiQL
 
 from model import query, mutation
-from model2 import query as query2, mutation as mutation2
+#from model2 import query as query2, mutation as mutation2
 
 
 """
@@ -19,11 +19,11 @@ from model2 import query as query2, mutation as mutation2
 
 EXPLORER_HTML = ExplorerGraphiQL().html(None)
 
-type_defs = gql(load_schema_from_path("schema.graphql"))
+type_defs = gql(load_schema_from_path("schema2.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 
-type_defs2 = gql(load_schema_from_path("schema2.graphql"))
-schema2 = make_executable_schema(type_defs2, query2, mutation2)
+#type_defs2 = gql(load_schema_from_path("schema2.graphql"))
+#schema2 = make_executable_schema(type_defs2, query2, mutation2)
 
 app = Flask(__name__)
 
@@ -55,6 +55,7 @@ def graphql_server():
 def newfunc():
     return EXPLORER_HTML, 200
 
+"""
 @app.route("/placeOrder", methods=["POST"])
 def newfunc_server():
     data = request.get_json()
@@ -69,7 +70,7 @@ def newfunc_server():
     status_code = 200 if success else 400
     return jsonify(result), status_code
 
-
+"""
 
 if __name__ == '__main__':
     app.run(debug=True)

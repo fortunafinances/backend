@@ -7,20 +7,16 @@ mutation = MutationType()
 
 @mutation.field("mutateOrder")
 def resolve_order_coffee(_, info,
-        order_id, user_id, type, side, description,
-        # purchaseDate: date
+        order_id, user_id, type, side,
+        purchaseDate,
         stock_id,
         status,
         purchasePrice,
         quantity):
-    newOrder = Order(order_id)
+    newOrder = Order(order_id, user_id, type, side,
+                     purchaseDate, stock_id, status,
+                     purchasePrice, quantity)
     orders.append(newOrder)
-
-
-
-
-
-
     return newOrder
 
 # Possible Buzz class
@@ -29,16 +25,21 @@ def resolve_order_coffee(_, info,
 
 
 class Order:
-   def __init__(self, order_id,
-        user_id, type, side, description,
-        # purchaseDate: date
+    def __init__(self, order_id,
+        user_id, type, side,
+        purchaseDate,
         stock_id, status, purchasePrice,
         quantity):
-       self.order_id = order_id
-       self.user_id = user_id
-       self.type = type
-       self.side = side, side, description,
-        # purchaseDate: date
+        self.order_id = order_id
+        self.user_id = user_id
+        self.type = type
+        self.side = side
+        self.purchaseDate = purchaseDate
+        self.stock_id = stock_id
+        self.status = status
+        self.purchasePrice = purchasePrice
+        self.quantity = quantity
+
 
 
 orders = []
