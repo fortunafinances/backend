@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
+from flask_cors import CORS
 
 from model import query, mutation
+
+
 
 """
     This is the server file which handles the GraphQL route. The route we
@@ -18,6 +21,7 @@ type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 
 app = Flask(__name__)
+cors = CORS(app, origins=["http://localhost:5000"])
 
 
 @app.route('/')
@@ -41,8 +45,11 @@ def graphql_server():
         debug=app.debug
     )
 
+    response =  jsonify(result)
+    response.headers.add('Access-Control-Allow-Origin', '*')
+
     status_code = 200 if success else 400
-    return jsonify(result), status_code
+    return response, status_code
 
 
 if __name__ == '__main__':
