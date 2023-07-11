@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 from flask_cors import CORS, cross_origin
@@ -19,39 +19,53 @@ type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5000"])
+#CORS(app, origins=["http://localhost:5000"])
 
-app.config['CORS_HEADERS'] = 'Content-Type'
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route('/')
+@cross_origin()
 def hello_world():
     return 'Hello, World!'
 
 
 @app.route("/graphql", methods=["GET"])
+@cross_origin()
 def graphql_playground():
     return EXPLORER_HTML, 200
 
 
-@app.route("/graphql", methods=["POST"])
+@app.route("/graphql", methods=["POST", "OPTIONS"])
 @cross_origin()
 def graphql_server():
-    data = request.get_json()
+    if request.method == "OPTIONS":
+        return _build_cors_preflight_response()
+    elif request.method == "POST":
+        data = request.get_json()
 
-    success, result = graphql_sync(
-        schema,
-        data,
-        context_value=request,
-        debug=app.debug
-    )
+        success, result = graphql_sync(
+            schema,
+            data,
+            context_value=request,
+            debug=app.debug
+        )
 
-    response = jsonify(result)
+        response = jsonify(result)
+        #response.headers.add("Access-Control-Allow-Origin", "*")
+        status_code = 200 if success else 400
+        return response
+    else:
+        raise RuntimeError("Can not handle method {}".format(request.method))
+
+#"""
+def _build_cors_preflight_response():
+    response = make_response()
     response.headers.add("Access-Control-Allow-Origin", "*")
-
-    status_code = 200 if success else 400
-    return response, status_code
-
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+#"""
 
 if __name__ == '__main__':
     app.run(debug=True)  # debug=True allows the server to restart itself
