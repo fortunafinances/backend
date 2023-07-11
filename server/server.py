@@ -1,10 +1,8 @@
 from flask import Flask, request, jsonify
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
-from flask_cors import CORS
-
+from flask_cors import CORS, cross_origin
 from model import query, mutation
-
 
 
 """
@@ -21,7 +19,9 @@ type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 
 app = Flask(__name__)
-cors = CORS(app, origins=["http://localhost:5000"])
+CORS(app, origins=["http://localhost:5000"])
+
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route('/')
@@ -35,6 +35,7 @@ def graphql_playground():
 
 
 @app.route("/graphql", methods=["POST"])
+@cross_origin()
 def graphql_server():
     data = request.get_json()
 
@@ -45,8 +46,8 @@ def graphql_server():
         debug=app.debug
     )
 
-    response =  jsonify(result)
-    response.headers.add('Access-Control-Allow-Origin', '*')
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
 
     status_code = 200 if success else 400
     return response, status_code
