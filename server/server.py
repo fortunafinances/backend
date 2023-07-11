@@ -6,6 +6,7 @@ from model2 import query as query2, mutation as mutation2
 from apiRequests import get_stock_quote
 
 
+
 """
     This is the server file which handles the GraphQL routes such as 
     /graphql or /newOrder
