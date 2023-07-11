@@ -1,8 +1,16 @@
 from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 
 from model import query, mutation
+import sys
+sys.path.insert(0, '../database')
+
+import stock
+
+
+
 
 """
     This is the server file which handles the GraphQL route. The route we
@@ -18,7 +26,11 @@ type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
+db = SQLAlchemy(app)
 
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def hello_world():
