@@ -11,13 +11,18 @@ def get_stock_quote(symbol):
     
     if response.status_code == 200:
         data = response.json()
-        price = handle_quote_data(data)
+        price = handle_quote_data(data, symbol)
         return jsonify(price.to_dict())
     else:
         return f"Error:{response.status_code}"
+    
+def get_stock_list(exchange):
+    url = "https://finnhub.io/api/v1/stock/symbol"
+    token = "cimn4r1r01qhp3kcngjgcimn4r1r01qhp3kcngk0"
 
 class Price:
-    def __init__(self, curr_price, high_price, low_price, opening_price, previous_closing_price, price_change):
+    def __init__(self, ticker, curr_price, high_price, low_price, opening_price, previous_closing_price, price_change):
+        self.ticker = ticker
         self.curr_price = curr_price
         self.high_price = high_price
         self.low_price = low_price
@@ -27,6 +32,7 @@ class Price:
 
     def to_dict(self):
         return {
+            'ticker': self.ticker,
             'curr_price': self.curr_price,
             'high_price': self.high_price,
             'low_price': self.low_price,
@@ -36,7 +42,8 @@ class Price:
         }
 
 
-def handle_quote_data(data):
+def handle_quote_data(data, symbol):
+    ticker = symbol
     curr_price = round(data["c"] * 100)
     high_price = round(data["h"] * 100)
     low_price = round(data["l"] * 100)
@@ -44,7 +51,7 @@ def handle_quote_data(data):
     previous_close_price = round(data["pc"] * 100)
     price_change = round(data["d"] * 100)
 
-    price = Price(curr_price, high_price, low_price, opening_price, previous_close_price, price_change)
+    price = Price(ticker, curr_price, high_price, low_price, opening_price, previous_close_price, price_change)
 
     return price
 
