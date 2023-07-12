@@ -31,6 +31,16 @@ coffeeOrders = []
 def resolve_orders(_, info):
     return orders
 
+
+
+class Stock:
+    def __init__(self, size, name, coffee_type):
+       self.size = size
+       self.name = name
+       self.type = coffee_type
+       self.id = uuid4()    # universally unique identifier
+
+
 #############################################################
 
 @mutation.field("mutateOrder")
@@ -48,9 +58,9 @@ def resolve_order_coffee(_, info,
     return newOrder
 
 
-#############################################################
-#                   QUERIES                                 #
-#############################################################
+########################################################
+#                   QUERIES                            #
+########################################################
 
 @query.field("orders")
 def resolve_orders(_, info):
