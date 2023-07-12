@@ -6,9 +6,9 @@ from flask_cors import CORS, cross_origin
 from model import query, mutation
 import sys
 sys.path.insert(0, '../database')
+from inserters import *
 
-from stock import Stock
-
+from apiRequests import get_stock_quote
 
 
 
@@ -26,27 +26,25 @@ type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
-db = SQLAlchemy(app)
-
-with app.app_context():
-    db.create_all()
+db.init_app(app)
 
 @app.route('/')
 @cross_origin()
 def hello_world():
-    # test insertion, works in here, no clue about elsewhere
-    stock1 = Stock(
-        ticker = "TSLA", 
-        currPrice = 20523, 
-        highPrice = 24543, 
-        lowPrice = 19234, 
-        openPrice = 20326, 
-        prevClosePrice = 21032
-        )
-    db.session.add(stock1)
-    db.session.commit()
+    
     return 'Hello, World!'
 
+@app.route("/test")
+def test():
+    #testAcc()
+    #testAccStock()
+    #testStock()
+    #testTrade()
+    #testTransfer()
+    testRelations()
+
+    return "success"
+    
 
 @app.route("/graphql", methods=["GET"])
 @cross_origin()
@@ -86,7 +84,14 @@ def _build_cors_preflight_response():
     response.headers.add('Access-Control-Allow-Methods', "*")
     return response
 
+# defining GET request for a quote
+@app.route('/get_quote/<symbol>', methods=["GET"])
+def get_quote(symbol):
+    return get_stock_quote(symbol)
+
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
     
