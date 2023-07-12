@@ -7,7 +7,7 @@ from model import query, mutation
 import sys
 sys.path.insert(0, '../database')
 
-import stock
+from stock import Stock
 
 
 
@@ -34,6 +34,17 @@ with app.app_context():
 
 @app.route('/')
 def hello_world():
+    # test insertion, works in here, no clue about elsewhere
+    stock1 = Stock(
+        ticker = "TSLA", 
+        currPrice = 20523, 
+        highPrice = 24543, 
+        lowPrice = 19234, 
+        openPrice = 20326, 
+        prevClosePrice = 21032
+        )
+    db.session.add(stock1)
+    db.session.commit()
     return 'Hello, World!'
 
 
@@ -60,3 +71,4 @@ def graphql_server():
 if __name__ == '__main__':
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
+    
