@@ -66,15 +66,15 @@ def _build_cors_preflight_response():
     response.headers.add('Access-Control-Allow-Methods', "*")
     return response
 
-if __name__ == '__main__':
-    app.run(debug=True)  # debug=True allows the server to restart itself
-                         # to provide constant updates to the developer
 # defining GET request for a quote
 @app.route('/get_quote/<symbol>', methods=["GET"])
 def get_quote(symbol):
     return get_stock_quote(symbol)
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True)  # debug=True allows the server to restart itself
+                         # to provide constant updates to the developer
+
 
     
