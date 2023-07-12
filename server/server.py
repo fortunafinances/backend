@@ -8,6 +8,12 @@ import sys
 sys.path.insert(0, '../database')
 
 from inserters import *
+from stock import Stock
+
+
+from apiRequests import get_stock_quote
+
+
 
 """
     This is the server file which handles the GraphQL route. The route we
@@ -80,6 +86,11 @@ def _build_cors_preflight_response():
     response.headers.add('Access-Control-Allow-Headers', "*")
     response.headers.add('Access-Control-Allow-Methods', "*")
     return response
+
+# defining GET request for a quote
+@app.route('/get_quote/<symbol>', methods=["GET"])
+def get_quote(symbol):
+    return get_stock_quote(symbol)
 
 if __name__ == '__main__':
     with app.app_context():
