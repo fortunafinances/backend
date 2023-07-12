@@ -6,10 +6,7 @@ from flask_cors import CORS, cross_origin
 from model import query, mutation
 import sys
 sys.path.insert(0, '../database')
-
 from inserters import *
-from stock import Stock
-
 
 from apiRequests import get_stock_quote
 
