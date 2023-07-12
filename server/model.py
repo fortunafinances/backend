@@ -49,9 +49,6 @@ def resolve_order_coffee(_, info,
     orders.append(newOrder)
     return newOrder
 
-# Possible Buzz class
-# class Orderr(db.Model):
-#    order_id = db.Column(db.String, nullable = False)
 
 @query.field("orders")
 def resolve_orders(_, info):
@@ -61,3 +58,4 @@ def resolve_orders(_, info):
 @query.field("holdings")
 def resolve_holdings(_, info):
     return fake_holdings.holding_list
+

@@ -35,6 +35,13 @@ with app.app_context():
 @app.route('/')
 @cross_origin()
 def hello_world():
+    return 'Hello, World!'
+
+# accessing this link will produce an error because it is trying to add a new stock
+# and not updating a row. Therefore, we get a Unique constraint failed error
+@app.route('/dbStock')
+@cross_origin()
+def add_stock_to_db():
     # test insertion, works in here, no clue about elsewhere
     stock1 = Stock(
         ticker = "TSLA", 
@@ -96,3 +103,4 @@ def get_quote(symbol):
 if __name__ == '__main__':
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
+
