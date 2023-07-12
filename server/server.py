@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify, make_response
+from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 from flask_cors import CORS, cross_origin
 from model import query, mutation
 from apiRequests import get_stock_quote
+import sys
+sys.path.insert(0, '../database')
+
+from stock import Stock
+
 
 
 
@@ -20,11 +26,26 @@ EXPLORER_HTML = ExplorerGraphiQL().html(None)
 type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
+db = SQLAlchemy(app)
 
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 @cross_origin()
 def hello_world():
+    # test insertion, works in here, no clue about elsewhere
+    stock1 = Stock(
+        ticker = "TSLA", 
+        currPrice = 20523, 
+        highPrice = 24543, 
+        lowPrice = 19234, 
+        openPrice = 20326, 
+        prevClosePrice = 21032
+        )
+    db.session.add(stock1)
+    db.session.commit()
     return 'Hello, World!'
 
 
@@ -75,6 +96,3 @@ def get_quote(symbol):
 if __name__ == '__main__':
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
-
-
-    

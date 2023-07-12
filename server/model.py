@@ -53,26 +53,6 @@ def resolve_order_coffee(_, info,
 # class Orderr(db.Model):
 #    order_id = db.Column(db.String, nullable = False)
 
-
-class Order:
-    def __init__(self, order_id,
-        user_id, type, side,
-        purchaseDate,
-        stock_id, status, purchasePrice,
-        quantity):
-        self.order_id = order_id
-        self.user_id = user_id
-        self.type = type
-        self.side = side
-        self.purchaseDate = purchaseDate
-        self.stock_id = stock_id
-        self.status = status
-        self.purchasePrice = purchasePrice
-        self.quantity = quantity
-
-
-orders = []
-
 @query.field("orders")
 def resolve_orders(_, info):
     return orders
