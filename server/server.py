@@ -3,6 +3,9 @@ from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_
 from ariadne.explorer import ExplorerGraphiQL
 from flask_cors import CORS, cross_origin
 from model import query, mutation
+from apiRequests import get_stock_quote
+
+
 
 """
     This is the server file which handles the GraphQL route. The route we
@@ -66,3 +69,12 @@ def _build_cors_preflight_response():
 if __name__ == '__main__':
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
+# defining GET request for a quote
+@app.route('/get_quote/<symbol>', methods=["GET"])
+def get_quote(symbol):
+    return get_stock_quote(symbol)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+    
