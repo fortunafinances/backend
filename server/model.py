@@ -32,8 +32,6 @@ def resolve_orders(_, info):
     return orders
 
 #############################################################
-#############################################################
-#############################################################
 
 @mutation.field("mutateOrder")
 def resolve_order_coffee(_, info,
@@ -50,6 +48,10 @@ def resolve_order_coffee(_, info,
     return newOrder
 
 
+#############################################################
+#                   QUERIES                                 #
+#############################################################
+
 @query.field("orders")
 def resolve_orders(_, info):
     return orders
@@ -58,4 +60,9 @@ def resolve_orders(_, info):
 @query.field("holdings")
 def resolve_holdings(_, info):
     return fake_holdings.holding_list
+
+@query.field("stocks")
+def resolve_stocks(_, info):
+    stock_list = []
+    return stock_list
 

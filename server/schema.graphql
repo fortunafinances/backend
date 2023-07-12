@@ -56,10 +56,20 @@ type Holding {
     price: Int!
 }
 
+type Stock {
+    ticker: String!
+    currPrice: Int!
+    highPrice: Int!
+    lowPrice: Int!
+    openPrice: Int!
+    prevClosePrice: Int!
+}
+
 type Query {
     coffeeOrders: [Coffee]!
     orders: [Order]!
     holdings: [Holding]!
+    stocks: [Stock]!
 }
 
 type Mutation {

@@ -11,8 +11,6 @@ sys.path.insert(0, '../database')
 from stock import Stock
 
 
-
-
 """
     This is the server file which handles the GraphQL route. The route we
     will be using is /graphql
