@@ -10,3 +10,6 @@ six==1.16.0
 starlette==0.28.0
 typing-extensions==4.7.1
 Werkzeug==2.3.6
+
+# requests
+# flask-cors

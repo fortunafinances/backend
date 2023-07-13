@@ -2,13 +2,12 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
-import sys
-sys.path.insert(0, '../database')
-from inserters import *
 from flask_cors import CORS, cross_origin
 from model import query, mutation
 from apiRequests import get_stock_quote
-
+import sys
+sys.path.insert(1, '../database')
+from inserters import *
 
 
 """
@@ -93,4 +92,3 @@ if __name__ == '__main__':
         db.create_all()
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
-    

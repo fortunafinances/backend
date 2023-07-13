@@ -1,59 +1,55 @@
 from ariadne import QueryType, MutationType
 from uuid import uuid4   
-
 import sys
 sys.path.insert(1, '../dummy_data') 
 import fake_holdings
 
+sys.path.insert(1, '../database')
+from inserters import testTrade
+
+
 query = QueryType()
 mutation = MutationType()
 
-
-@mutation.field("orderCoffee")
-def resolve_order_coffee(_, info, size, name, type):
-    newOrder = Coffee(size, name, type)
-    coffeeOrders.append(newOrder)
-
-    # message to database
-    return newOrder
-
-
-class Coffee:
-   def __init__(self, size, name, coffee_type):
+class Stock:
+    def __init__(self, size, name, coffee_type):
        self.size = size
        self.name = name
        self.type = coffee_type
        self.id = uuid4()    # universally unique identifier
 
-coffeeOrders = []
 
-@query.field("coffeeOrders")
-def resolve_orders(_, info):
-    return orders
+#####################################################
+#                   MUTATIONS                       #
+#####################################################
 
-#############################################################
-#############################################################
-#############################################################
-
-@mutation.field("mutateOrder")
-def resolve_order_coffee(_, info,
-        order_id, user_id, type, side,
-        purchaseDate,
-        stock_id,
+# This resolver is for when the frontend executes a BUY
+# or SELL trade 
+@mutation.field("insertTrade")
+def resolve_trade_order(_, info,
+        tradeID,
+        accID,
+        type,
+        side,
         status,
-        purchasePrice,
-        quantity):
-    newOrder = Order(order_id, user_id, type, side,
-                     purchaseDate, stock_id, status,
-                     purchasePrice, quantity)
-    orders.append(newOrder)
-    return newOrder
+        date,
+        ticker,
+        tradePrice,
+        tradeQty):
 
-# Possible Buzz class
-# class Orderr(db.Model):
-#    order_id = db.Column(db.String, nullable = False)
+    #print('add trade resolver execution', file=sys.stdout)
+    # add the trade to the database
+    testTrade()
+    
+    
+    return "Trade Inserted"
 
-@query.field("orders")
+
+#####################################################
+#                   QUERIES                         #
+#####################################################
+
+@query.field("trades")
 def resolve_orders(_, info):
     return orders
 
@@ -61,3 +57,9 @@ def resolve_orders(_, info):
 @query.field("holdings")
 def resolve_holdings(_, info):
     return fake_holdings.holding_list
+
+@query.field("stocks")
+def resolve_stocks(_, info):
+    stock_list = []
+    return stock_list
+
