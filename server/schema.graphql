@@ -1,23 +1,4 @@
 
-enum Size {
-    SMALL
-    REGULAR
-}
-
-enum CoffeeType {
-    CAPPUCCINO
-    FLAT_WHITE
-    ESPRESSO
-}
-
-type Coffee {
-    id: String!
-    size: Size!
-    name: String!
-    type: CoffeeType!
-}
-
-
 enum OrderSide {
     Buy
     Sell
@@ -34,17 +15,17 @@ enum OrderStatus {
     Executed
 }
 
-# This is a comment
-type Order {
-    order_id: String!
-    user_id: String!
+# Trade is a buy or sell of a stock
+type Trade {
+    tradeID: Int!
+    accID: Int!
     type: OrderType!
     side: OrderSide!
-    purchaseDate: String!
-    stock_id: String!
-    status: OrderStatus
-    purchasePrice: Int!
-    quantity: Int!
+    status: OrderStatus!
+    date: String!
+    ticker: String!
+    tradePrice: Int!
+    tradeQty: Int!
 }
 
 type Holding {
@@ -66,24 +47,22 @@ type Stock {
 }
 
 type Query {
-    coffeeOrders: [Coffee]!
-    orders: [Order]!
+    trades: [Trade]!
     holdings: [Holding]!
     stocks: [Stock]!
 }
 
 type Mutation {
-    orderCoffee(size: Size!, name: String!, type: CoffeeType!): Coffee
 
-    mutateOrder(
-        order_id: String!,
-        user_id: String!,
-        type: OrderType!,
-        side: OrderSide!,
-        purchaseDate: String!,
-        stock_id: String!,
-        status: OrderStatus,
-        purchasePrice: Int!,
-        quantity: Int!
-    ): Order
+    insertTrade(
+        tradeID: Int!
+        accID: Int!
+        type: OrderType!
+        side: OrderSide!
+        status: OrderStatus!
+        date: String!
+        ticker: String!
+        tradePrice: Int!
+        tradeQty: Int!
+    ): String
 }
