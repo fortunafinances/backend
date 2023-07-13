@@ -39,6 +39,7 @@ def resolve_trade_order(_, info,
 
     #print('add trade resolver execution', file=sys.stdout)
     # add the trade to the database
+    
     testTrade()
     
     
