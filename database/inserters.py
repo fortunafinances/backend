@@ -1,5 +1,8 @@
 from tables import *
-
+import sys
+sys.path.insert(0, '../server')
+from apiRequests import get_stock_quote
+from dataProcessing import handle_quote_data
 
 def testAcc():
     acc1 = Acc(
@@ -36,6 +39,24 @@ def testStock():
     db.session.add(stock1)
     db.session.commit()
 
+stockList = ["NKE", "MSFT", "AAPL", "CVNA", "META", "SOFI"]
+
+def fillStocks():
+    for x in stockList:
+        data = get_stock_quote(x)
+        price = handle_quote_data(data, x)
+        newStock = Stock(
+            ticker = x, 
+            currPrice = price.curr_price, 
+            highPrice = price.high_price, 
+            lowPrice = price.low_price, 
+            openPrice = price.opening_price, 
+            prevClosePrice = price.previous_closing_price)
+        db.session.add(newStock)
+    db.session.commit()
+
+    
+
 def testTrade():
     trade1 = Trade(
         accId = 1,
@@ -64,3 +85,4 @@ def testRelations():
 #     )
 #     db.session.add(transfer1)
 #     db.session.commit()
+
