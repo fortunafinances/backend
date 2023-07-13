@@ -1,22 +1,33 @@
 from ariadne import QueryType, MutationType
-from uuid import uuid4   
+from uuid import uuid4
+import json 
 import sys
 sys.path.insert(1, '../dummy_data') 
 import fake_holdings
 
 sys.path.insert(1, '../database')
-from inserters import testTrade
+import inserters
+import getters
 
 
 query = QueryType()
 mutation = MutationType()
 
 class Stock:
-    def __init__(self, size, name, coffee_type):
-       self.size = size
-       self.name = name
-       self.type = coffee_type
-       self.id = uuid4()    # universally unique identifier
+    def __init__(self, 
+                ticker,
+                currPrice,
+                highPrice,
+                lowPrice,
+                openPrice,
+                prevClosePrice):
+       self.ticker = ticker
+       self.currPrice = currPrice
+       self.highPrice = highPrice
+       self.lowPrice = lowPrice
+       self.openPrice = openPrice
+       self.prevClosePrice = prevClosePrice
+
 
 
 #####################################################
@@ -39,7 +50,7 @@ def resolve_trade_order(_, info,
 
     #print('add trade resolver execution', file=sys.stdout)
     # add the trade to the database
-    testTrade()
+    inserters.testTrade()
     
     
     return "Trade Inserted"
@@ -60,6 +71,18 @@ def resolve_holdings(_, info):
 
 @query.field("stocks")
 def resolve_stocks(_, info):
-    stock_list = []
-    return stock_list
+    list_of_stocks = getters.getStocks()
+
+    returned_stocks = []
+    for stock in list_of_stocks:
+        new_stock = Stock( 
+                stock["ticker"],
+                stock["currPrice"],
+                stock["highPrice"],
+                stock["lowPrice"],
+                stock["openPrice"],
+                stock["prevClosePrice"])
+        returned_stocks.append(new_stock)
+    
+    return returned_stocks
 
