@@ -12,9 +12,4 @@ typing-extensions==4.7.1
 Werkzeug==2.3.6
 authlib==1.2.0
 requests==2.28.2
-
-# requests
-# flask-cors
-
-# requests
-# flask-cors
+PyJWT==2.7.0

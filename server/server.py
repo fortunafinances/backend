@@ -5,6 +5,7 @@ from ariadne.explorer import ExplorerGraphiQL
 from flask_cors import CORS, cross_origin
 from model import query, mutation
 from apiRequests import get_stock_quote
+from usersApi import api_blueprint
 import sys
 
 # Database file imports
@@ -26,6 +27,7 @@ EXPLORER_HTML = ExplorerGraphiQL().html(None)
 type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 app = Flask(__name__)
+CORS(app)
 
 # Database initialisation 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
@@ -96,6 +98,12 @@ def _build_cors_preflight_response():
 @app.route('/get_quote/<symbol>', methods=["GET"])
 def get_quote(symbol):
     return get_stock_quote(symbol)
+
+
+"""
+Auth
+"""
+app.register_blueprint(api_blueprint)
 
 if __name__ == '__main__':
     with app.app_context():
