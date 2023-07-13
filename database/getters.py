@@ -19,4 +19,4 @@ def getStocks():
 # Returns a list of all of the accs
 def getAccs():
     accs = (Acc.query.all())
-    return (jsonify([acc.serialize() for acc in accs]))
+    return [acc.serialize() for acc in accs]
