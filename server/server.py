@@ -97,6 +97,9 @@ def _build_cors_preflight_response():
 def get_quote(symbol):
     return get_stock_quote(symbol)
 
+
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

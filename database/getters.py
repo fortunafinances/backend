@@ -1,5 +1,6 @@
 import json
 from flask import jsonify
+import sys
 from tables import *
 
 # Tester function to test a query and relations 
@@ -12,7 +13,8 @@ def testRelations():
 # Returns a list of all of the stocks
 def getStocks():
     stocks = (Stock.query.all())
-    return (jsonify([stock.serialize() for stock in stocks]))
+    list_of_stocks = [stock.serialize() for stock in stocks]
+    return list_of_stocks
 
 # Returns a list of all of the accs
 def getAccs():
