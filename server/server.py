@@ -2,9 +2,13 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
+import sys
+from dataProcessing import handle_stock_list
+sys.path.insert(0, '../database')
+from inserters import *
 from flask_cors import CORS, cross_origin
 from model import query, mutation
-from apiRequests import get_stock_quote
+from apiRequests import get_stock_list, get_stock_quote
 import sys
 
 # Database file imports
@@ -51,6 +55,7 @@ def test():
     #testTransfer()
     #testRelations()
     fillStocks()
+    #clearStockTable()
     return "success"
     
 
@@ -95,7 +100,16 @@ def _build_cors_preflight_response():
 # defining GET request for a quote
 @app.route('/get_quote/<symbol>', methods=["GET"])
 def get_quote(symbol):
-    return get_stock_quote(symbol)
+    data = get_stock_quote(symbol)
+    print(type(data))
+    return data
+
+@app.route('/get_list/<exchange>', methods=["GET"])
+def get_list(exchange):
+    data = get_stock_list(exchange)
+    handled = handle_stock_list(data)
+    print(handled)
+    return data
 
 
 
