@@ -4,32 +4,52 @@ sys.path.insert(0, '../server')
 from apiRequests import get_stock_list, get_stock_quote
 from dataProcessing import handle_quote_data, handle_stock_list
 
-# Static test method for inserting an account into the database.
-def testAcc():
-    acc1 = Acc(
-        name = "Joe",
-        cash = 1000
+# Inserting an account into the database.
+def addAcc(name, cash):
+    acc = Acc(
+        name = name,
+        cash = cash
     )
-    acc2 = Acc(
-        name = "Cathy",
-        cash = 500
-    )
-    db.session.add(acc1)
-    db.session.commit()
-    db.session.add(acc2)
+    db.session.add(acc)
     db.session.commit()
 
-# Static test method for inserting an accStock into the database
-def testAccStock():
-    accStock1 = AccStock(
-        accId = 1,
-        ticker = "MSFT",
-        stockQty = 1 
+# Inserting an accStock into the database
+def addAccStock(accId, ticker, stockQty):
+    accStock = AccStock(
+        accId = accId,
+        ticker = ticker,
+        stockQty = stockQty
     )
-    db.session.add(accStock1)
+    db.session.add(accStock)
     db.session.commit()
 
-# Static test method for inserting a Stock into the database
+# Inserting a Trade into the database
+def addTrade(accId, type, side, status, tradeDate, ticker, tradePrice, tradeQty):
+    trade = Trade(
+        accId = accId,
+        type = type,
+        side = side,
+        status = status,
+        tradeDate = tradeDate,
+        ticker = ticker,
+        tradePrice = tradePrice,
+        tradeQty = tradeQty
+    )
+    db.session.add(trade)
+    db.session.commit()
+
+# Inserting a Transfer into the database
+def addTransfer(sendAccId, receiveAccId, transferAmt, date):
+    transfer = Transfer(
+        sendAccId = sendAccId,
+        receiveAccId = receiveAccId,
+        transferAmt = transferAmt,
+        date = date,
+    )
+    db.session.add(transfer)
+    db.session.commit()
+
+# Inserting a Stock into the database
 def testStock():
     stock1 = Stock(
         ticker = "MSFT", 
@@ -41,6 +61,7 @@ def testStock():
     )
     db.session.add(stock1)
     db.session.commit()
+    
 #makes and API call and returns a list of available stock symbols
 def stock_list():
     data = get_stock_list('US')
@@ -96,30 +117,3 @@ def clearStockTable():
     Stock.query.delete()
     db.session.commit()
 
-
-# Static test method for inserting a Trade into the database
-def testTrade():
-    trade1 = Trade(
-        accId = 1,
-        #tradeId = 1,
-        type = "Buy",
-        side = "Market",
-        status = "Executed",
-        tradeDate = "12/31/1969",
-        ticker = "MSFT",
-        tradePrice = 24523,
-        tradeQty = 1
-    )
-    db.session.add(trade1)
-    db.session.commit()
-
-# Static test method for inserting a Transfer into the database
-def testTransfer():
-    transfer1 = Transfer(
-        sendAccId = 1,
-        receiveAccId = 2,
-        transferAmt = 200,
-        date = "12/31/1969",
-    )
-    db.session.add(transfer1)
-    db.session.commit()

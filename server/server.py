@@ -48,15 +48,8 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    #testAcc()
-    #testAccStock()
-    #testStock()
-    #testTrade()
-    #testTransfer()
-    #testRelations()
-    fillStocks()
-    #clearStockTable()
-    return "success"
+    addAcc("Jack", 100)
+    return getAccs()
     
 
 @app.route("/graphql", methods=["GET"])
