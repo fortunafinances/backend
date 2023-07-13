@@ -1,9 +1,9 @@
 from tables import *
-import sys
-sys.path.insert(0, '../server')
-from apiRequests import get_stock_quote
-from dataProcessing import handle_quote_data
 
+# Global constants
+stockList = ["NKE", "MSFT", "AAPL", "CVNA", "META", "SOFI"]
+
+# Static test method for inserting an account into the database.
 def testAcc():
     acc1 = Acc(
         name = "Joe",
@@ -18,28 +18,28 @@ def testAcc():
     db.session.add(acc2)
     db.session.commit()
 
+# Static test method for inserting an accStock into the database
 def testAccStock():
     accStock1 = AccStock(
         accId = 1,
-        ticker = "TSLA",
+        ticker = "MSFT",
         stockQty = 1 
     )
     db.session.add(accStock1)
     db.session.commit()
 
+# Static test method for inserting a Stock into the database
 def testStock():
     stock1 = Stock(
-        ticker = "TSLA", 
-        currPrice = 20523, 
-        highPrice = 24543, 
-        lowPrice = 19234, 
-        openPrice = 20326, 
-        prevClosePrice = 21032
+        ticker = "MSFT", 
+        currPrice = 8523, 
+        highPrice = 10543, 
+        lowPrice = 7834, 
+        openPrice = 8326, 
+        prevClosePrice = 9032
     )
     db.session.add(stock1)
     db.session.commit()
-
-stockList = ["NKE", "MSFT", "AAPL", "CVNA", "META", "SOFI"]
 
 def fillStocks():
     for x in stockList:
@@ -57,6 +57,7 @@ def fillStocks():
 
     
 
+# Static test method for inserting a Trade into the database
 def testTrade():
     trade1 = Trade(
         accId = 1,
@@ -72,17 +73,13 @@ def testTrade():
     db.session.add(trade1)
     db.session.commit()
 
-def testRelations():
-    trades = Acc.query.get(1).orders
-    print(trades[0].tradePrice)
-
-# def testTransfer():
-#     transfer1 = Transfer(
-#         sendAccId = 1,
-#         receiveAccId = 2,
-#         transferAmt = 200,
-#         date = "12/31/1969",
-#     )
-#     db.session.add(transfer1)
-#     db.session.commit()
-
+# Static test method for inserting a Transfer into the database
+def testTransfer():
+    transfer1 = Transfer(
+        sendAccId = 1,
+        receiveAccId = 2,
+        transferAmt = 200,
+        date = "12/31/1969",
+    )
+    db.session.add(transfer1)
+    db.session.commit()

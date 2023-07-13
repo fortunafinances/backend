@@ -6,8 +6,11 @@ from flask_cors import CORS, cross_origin
 from model import query, mutation
 from apiRequests import get_stock_quote
 import sys
-sys.path.insert(1, '../database')
+
+# Database file imports
+sys.path.insert(0, '../database')
 from inserters import *
+from getters import *
 
 
 """
@@ -23,6 +26,8 @@ EXPLORER_HTML = ExplorerGraphiQL().html(None)
 type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 app = Flask(__name__)
+
+# Database initialisation 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
@@ -32,6 +37,11 @@ def hello_world():
     
     return 'Hello, World!'
 
+# Functionality testing route.
+# Allows for different aspects of the database to be tested
+# You may need to uncomment/comment certain functions in
+# get functions return the query data and insert functions 
+# do not.
 @app.route("/test")
 def test():
     #testAcc()
