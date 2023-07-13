@@ -2,14 +2,14 @@ import json
 
 
 class Price:
-    def __init__(self, ticker, curr_price, high_price, low_price, opening_price, previous_closing_price, price_change):
+    def __init__(self, ticker, curr_price, high_price, low_price, opening_price, previous_closing_price):
         self.ticker = ticker
         self.curr_price = curr_price
         self.high_price = high_price
         self.low_price = low_price
         self.opening_price = opening_price
         self.previous_closing_price = previous_closing_price
-        self.price_change = price_change
+        #self.price_change = price_change
 
     def to_dict(self):
         return {
@@ -19,26 +19,35 @@ class Price:
             'low_price': self.low_price,
             'opening_price': self.opening_price,
             'previous_closing_price': self.previous_closing_price,
-            'price_changed': self.price_change,
+            #'price_changed': self.price_change,
         }
 
 
 def handle_quote_data(data, symbol):
-    ticker = symbol
-    curr_price = round(data["c"] * 100)
-    high_price = round(data["h"] * 100)
-    low_price = round(data["l"] * 100)
-    opening_price = round(data["o"] * 100)
-    previous_close_price = round(data["pc"] * 100)
-    price_change = round(data["d"] * 100)
-
-    price = Price(ticker, curr_price, high_price, low_price, opening_price, previous_close_price, price_change)
+    try:
+        ticker = symbol
+        curr_price = round(data['c'] * 100)
+        high_price = round(data['h'] * 100)
+        low_price = round(data['l'] * 100)
+        opening_price = round(data['o'] * 100)
+        previous_close_price = round(data['pc'] * 100)
+        #price_change = round(data["d"] * 100)
+    except KeyError as ke:
+        print(f"KeyError: {ke}. This key does not exist in the provided data")
+        return None
+    except TypeError as te:
+        print(f"TypeError: {te}. Expected a number for rounding but got a different type.")
+        return None
+    
+    price = Price(ticker, curr_price, high_price, low_price, opening_price, previous_close_price)
 
     return price
 
 def handle_stock_list(data):
-    parsed_list = json.load(data)
-    new_list = []
-    ticker = [item['symbol'] for item in parsed_list]
+    if isinstance(data, str):
+        parsed_list = json.load(data)
+    else:
+        parsed_list = data
+    ticker = [item['symbol'] for item in parsed_list[:100]]
     return ticker
 
