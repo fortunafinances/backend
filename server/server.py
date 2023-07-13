@@ -6,11 +6,16 @@ from flask_cors import CORS, cross_origin
 from model import query, mutation
 from apiRequests import get_stock_quote
 import sys
+<<<<<<< HEAD
 sys.path.insert(0, '../database')
 
 from stock import Stock
 
 
+=======
+sys.path.insert(1, '../database')
+from inserters import *
+>>>>>>> dev
 
 
 """
@@ -27,16 +32,22 @@ type_defs = gql(load_schema_from_path("schema.graphql"))
 schema = make_executable_schema(type_defs, query, mutation)
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
+<<<<<<< HEAD
 db = SQLAlchemy(app)
 
 with app.app_context():
     db.create_all()
+=======
+db.init_app(app)
+>>>>>>> dev
 
 @app.route('/')
 @cross_origin()
 def hello_world():
+    
     return 'Hello, World!'
 
+<<<<<<< HEAD
 # accessing this link will produce an error because it is trying to add a new stock
 # and not updating a row. Therefore, we get a Unique constraint failed error
 @app.route('/dbStock')
@@ -55,6 +66,19 @@ def add_stock_to_db():
     db.session.commit()
     return 'Hello, World!'
 
+=======
+@app.route("/test")
+def test():
+    #testAcc()
+    #testAccStock()
+    #testStock()
+    #testTrade()
+    #testTransfer()
+    #testRelations()
+    fillStocks()
+    return "success"
+    
+>>>>>>> dev
 
 @app.route("/graphql", methods=["GET"])
 @cross_origin()
@@ -99,8 +123,16 @@ def _build_cors_preflight_response():
 def get_quote(symbol):
     return get_stock_quote(symbol)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
+<<<<<<< HEAD
 
+=======
+>>>>>>> dev
