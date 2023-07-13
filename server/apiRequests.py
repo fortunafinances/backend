@@ -21,6 +21,15 @@ def get_stock_quote(symbol):
 def get_stock_list(exchange):
     url = "https://finnhub.io/api/v1/stock/symbol"
     token = "cimn4r1r01qhp3kcngjgcimn4r1r01qhp3kcngk0"
+    params = {'exchange': exchange, 'token': token}
+
+    response = requests.get(url, params=params)
+
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else: 
+        return f"Error:{response.status_code}"
 
 
 

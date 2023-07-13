@@ -39,23 +39,34 @@ def testStock():
     db.session.add(stock1)
     db.session.commit()
 
-stockList = ["NKE", "MSFT", "AAPL", "CVNA", "META", "SOFI"]
+stockList = ["TSLA", "NKE", "MSFT", "AAPL", "CVNA", "META", "SOFI", "ETSY"]
 
 def fillStocks():
     for x in stockList:
+        existing_stock = Stock.query.filter_by(ticker=x).first()
         data = get_stock_quote(x)
         price = handle_quote_data(data, x)
-        newStock = Stock(
-            ticker = x, 
-            currPrice = price.curr_price, 
-            highPrice = price.high_price, 
-            lowPrice = price.low_price, 
-            openPrice = price.opening_price, 
-            prevClosePrice = price.previous_closing_price)
-        db.session.add(newStock)
+        if existing_stock is None:
+            newStock = Stock(
+                ticker = x, 
+                currPrice = price.curr_price, 
+                highPrice = price.high_price, 
+                lowPrice = price.low_price, 
+                openPrice = price.opening_price, 
+                prevClosePrice = price.previous_closing_price)
+            db.session.add(newStock)
+        else:
+            existing_stock.currPrice = price.curr_price
+            existing_stock.highPrice = price.high_price
+            existing_stock.lowPrice = price.low_price
+            existing_stock.openPrice = price.opening_price
+            existing_stock.prevClosePrice = price.previous_closing_price
+            return f"Stock {x} already exists"
     db.session.commit()
 
-    
+def clearStockTable():
+    Stock.query.delete()
+    db.session.commit()
 
 def testTrade():
     trade1 = Trade(

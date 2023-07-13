@@ -1,3 +1,6 @@
+import json
+
+
 class Price:
     def __init__(self, ticker, curr_price, high_price, low_price, opening_price, previous_closing_price, price_change):
         self.ticker = ticker
@@ -32,3 +35,10 @@ def handle_quote_data(data, symbol):
     price = Price(ticker, curr_price, high_price, low_price, opening_price, previous_close_price, price_change)
 
     return price
+
+def handle_stock_list(data):
+    parsed_list = json.load(data)
+    new_list = []
+    ticker = [item['symbol'] for item in parsed_list]
+    return ticker
+

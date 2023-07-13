@@ -7,7 +7,7 @@ sys.path.insert(0, '../database')
 from inserters import *
 from flask_cors import CORS, cross_origin
 from model import query, mutation
-from apiRequests import get_stock_quote
+from apiRequests import get_stock_list, get_stock_quote
 
 
 
@@ -42,6 +42,7 @@ def test():
     #testTransfer()
     #testRelations()
     fillStocks()
+    #clearStockTable()
     return "success"
     
 
@@ -87,6 +88,10 @@ def _build_cors_preflight_response():
 @app.route('/get_quote/<symbol>', methods=["GET"])
 def get_quote(symbol):
     return get_stock_quote(symbol)
+
+@app.route('/get_list/<exchange>', methods=["GET"])
+def get_list(exchange):
+    return get_stock_list(exchange)
 
 if __name__ == '__main__':
     with app.app_context():
