@@ -13,6 +13,10 @@ import getters
 query = QueryType()
 mutation = MutationType()
 
+#####################################################
+#                   CLASSES                         #
+#####################################################
+
 class Stock:
     def __init__(self, 
                 ticker,
@@ -28,6 +32,25 @@ class Stock:
        self.openPrice = openPrice
        self.prevClosePrice = prevClosePrice
 
+       
+class Trade:
+    def __init__(self, 
+                accID,
+                type,
+                side,
+                status,
+                date,
+                ticker,
+                tradePrice,
+                tradeQty):
+       self.accID = accID
+       self.type = type
+       self.side = side
+       self.status = status
+       self.date = date
+       self.ticker = ticker
+       self.tradePrice = tradePrice
+       self.tradeQty = tradeQty
 
 
 #####################################################
@@ -47,16 +70,33 @@ def resolve_trade_order(_, info,
         tradePrice,
         tradeQty):
 
-    #print('add trade resolver execution', file=sys.stdout)
-    # add the trade to the database
-    #inserters.testTrade()
-
-    inserters.addTrade(accID, type, side, status, date, ticker, tradePrice, tradeQty)
-
+    inserters.addTrade(accID,
+                        type,
+                        side,
+                        status,
+                        date, 
+                        ticker, 
+                        tradePrice, 
+                        tradeQty)
     # need to send modification to update number of account stock
     
-    
     return "Trade Inserted"
+
+@mutation.field("insertTransfer")
+def resolve_trade_order(_, info,
+        transferId,
+        sendAccId,
+        receiveAccId,
+        transferAmt,
+        date
+        ):
+    
+    inserters.addTransfer(sendAccId, 
+                          receiveAccId, 
+                          transferAmt, 
+                          date)
+    
+    return "Transfer Inserted"
 
 
 #####################################################
@@ -65,6 +105,7 @@ def resolve_trade_order(_, info,
 
 @query.field("trades")
 def resolve_orders(_, info):
+    # query database to get list of trades
     return orders
 
 
