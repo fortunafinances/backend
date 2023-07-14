@@ -84,7 +84,6 @@ def resolve_trade_order(_, info,
 
 @mutation.field("insertTransfer")
 def resolve_trade_order(_, info,
-        transferId,
         sendAccId,
         receiveAccId,
         transferAmt,

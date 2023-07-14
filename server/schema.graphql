@@ -46,7 +46,6 @@ type Stock {
 }
 
 type Transfer {
-    transferId: Int!
     sendAccId: Int!
     receiveAccId: Int!
     transferAmt: Float!
@@ -73,7 +72,6 @@ type Mutation {
     ): String
 
     insertTransfer(
-        transferId: Int!
         sendAccId: Int!
         receiveAccId: Int!
         transferAmt: Float!
