@@ -10,7 +10,7 @@ class Acc(db.Model):
     accId = db.Column(db.Integer, primary_key = True)
     # userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
     name = db.Column(db.String, nullable = False)
-    cash = db.Column(db.Integer, nullable = False)
+    cash = db.Column(db.Float, nullable = False)
 
     def serialize(self):
         return {
@@ -44,11 +44,11 @@ class AccStock(db.Model):
 # high, low, open and previous close prices
 class Stock(db.Model):
     ticker = db.Column(db.String, primary_key = True)
-    currPrice = db.Column(db.Integer, nullable = False)
-    highPrice = db.Column(db.Integer)
-    lowPrice = db.Column(db.Integer)
-    openPrice = db.Column(db.Integer)
-    prevClosePrice = db.Column(db.Integer)
+    currPrice = db.Column(db.Float, nullable = False)
+    highPrice = db.Column(db.Float)
+    lowPrice = db.Column(db.Float)
+    openPrice = db.Column(db.Float)
+    prevClosePrice = db.Column(db.Float)
 
     def serialize(self):
         return {
@@ -75,7 +75,7 @@ class Trade(db.Model):
     status = db.Column(db.String, nullable = False)
     tradeDate = db.Column(db.Integer, nullable = False)
     ticker = db.Column(db.String, nullable = False)
-    tradePrice = db.Column(db.Integer, nullable = False)
+    tradePrice = db.Column(db.Float, nullable = False)
     tradeQty = db.Column(db.Integer, nullable = False)
     acc = db.relationship("Acc", backref = db.backref("orders"),lazy = True)
 
@@ -98,8 +98,8 @@ class Trade(db.Model):
 class Transfer(db.Model):
     transferId = db.Column(db.Integer, primary_key = True)
     sendAccId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
-    receiveAccId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
-    transferAmt = db.Column(db.Integer, nullable = False)
+    receiveAccId = db.Column(db.Float, db.ForeignKey("acc.accId"), nullable = False)
+    transferAmt = db.Column(db.Float, nullable = False)
     date = db.Column(db.String, nullable = False)
     sendAcc = db.relationship("Acc", foreign_keys = [sendAccId], backref = db.backref("outgoing", lazy = True))
     receiveAcc = db.relationship("Acc", foreign_keys = [receiveAccId], backref = db.backref("incoming"), lazy = True)
