@@ -17,7 +17,6 @@ enum OrderStatus {
 
 # Trade is a buy or sell of a stock
 type Trade {
-    tradeID: Int!
     accID: Int!
     type: OrderType!
     side: OrderSide!
@@ -55,7 +54,6 @@ type Query {
 type Mutation {
 
     insertTrade(
-        tradeID: Int!
         accID: Int!
         type: OrderType!
         side: OrderSide!
