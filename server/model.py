@@ -38,7 +38,6 @@ class Stock:
 # or SELL trade 
 @mutation.field("insertTrade")
 def resolve_trade_order(_, info,
-        tradeID,
         accID,
         type,
         side,
@@ -50,7 +49,11 @@ def resolve_trade_order(_, info,
 
     #print('add trade resolver execution', file=sys.stdout)
     # add the trade to the database
-    inserters.testTrade()
+    #inserters.testTrade()
+
+    inserters.addTrade(accID, type, side, status, date, ticker, tradePrice, tradeQty)
+
+    # need to send modification to update number of account stock
     
     
     return "Trade Inserted"
