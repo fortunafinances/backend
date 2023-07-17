@@ -43,21 +43,40 @@ class AccStock(db.Model):
 # Includes data about the ticker, current,
 # high, low, open and previous close prices
 class Stock(db.Model):
+    #identifying data
     ticker = db.Column(db.String, primary_key = True)
+    companyName = db.Column(db.String)
+
+    #price data
     currPrice = db.Column(db.Float, nullable = False)
     highPrice = db.Column(db.Float)
     lowPrice = db.Column(db.Float)
     openPrice = db.Column(db.Float)
     prevClosePrice = db.Column(db.Float)
+    
+    #meta data
+    businessDescription = db.Column(db.String)
+    sector = db.Column(db.String)
+    country = db.Column(db.String)
+    website = db.Column(db.String)
+    officerTitle = db.Column(db.String)
+    officerName = db.Column(db.String)
 
     def serialize(self):
         return {
             "ticker": self.ticker,
+            "companyName": self.companyName,
             "currPrice": self.currPrice,
             "highPrice": self.highPrice,
             "lowPrice": self.lowPrice,
             "openPrice": self.openPrice,
-            "prevClosePrice": self.prevClosePrice
+            "prevClosePrice": self.prevClosePrice,
+            "businessDescription": self.businessDescription,
+            "sector": self.sector,
+            "country": self.country,
+            "website": self.website,
+            "officerTitle": self.officerTitle,
+            "officerName": self.officerName
         }
 
 # The trade table

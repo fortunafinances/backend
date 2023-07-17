@@ -52,7 +52,7 @@ def getAccs():
     accs = (Acc.query.all())
     return [acc.serialize() for acc in accs]
 
-#Returns a list of transfers and trades associated with a certain acc_id
+#Returns a list of transfers and trades associated with a certain account id
 def getActivity(accID):
     trades = getTrades(accID)
     transfers = getTransfers(accID)

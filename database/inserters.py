@@ -1,8 +1,8 @@
 from tables import *
 import sys
 sys.path.insert(0, '../server')
-from apiRequests import get_stock_list, get_stock_quote
-from dataProcessing import handle_quote_data, handle_stock_list
+from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
+from dataProcessing import handle_metadata, handle_quote_data, handle_stock_list
 
 # Inserting an account into the database.
 def addAcc(name, cash):
@@ -105,7 +105,7 @@ def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice)
     db.session.add(stock1)
     db.session.commit()
     
-#makes and API call and returns a list of available stock symbols
+#makes and API call and returns a list of dictionaries, [ticker, companyName]
 def stock_list():
     data = get_stock_list('US')
     return handle_stock_list(data)
@@ -115,31 +115,47 @@ def stock_list():
 def fillStocks():
     stockList = stock_list()
     for x in stockList:
-        existing_stock = Stock.query.filter_by(ticker=x).first()
-        data = get_stock_quote(x)
-        price = handle_quote_data(data, x)
-        # check if stock exists in table already
-        if existing_stock is None:
-            newStock = addNewStock(price)
+        ticker = list(x.keys())[0]
+        description = x[ticker]
+        data = get_stock_quote(ticker)
+        price = handle_quote_data(data)
+        existing_stock = Stock.query.filter_by(ticker=ticker).first()
+        
+        if existing_stock is not None:
+            #update stock prices
+            updateStock(existing_stock, price)
+        else:
+            #add new stock
+            newStock = addNewStock(ticker, description, price)
             if newStock is not None:
                 db.session.add(newStock)
-        else:
-            updateStock(existing_stock, price)
     db.session.commit()
 
+
 #helper function that adds a new stock to the db
-def addNewStock(price):
+def addNewStock(ticker, description, price):
+    data = get_stock_metadata(ticker)
+    metadata = handle_metadata(data)
+
     if price is None:
         print("Error: price is None")
         return None
     try:
         newStock = Stock(
-            ticker = price.ticker, 
+            ticker = ticker,
+            companyName = description,
             currPrice = price.curr_price, 
             highPrice = price.high_price, 
             lowPrice = price.low_price, 
             openPrice = price.opening_price, 
-            prevClosePrice = price.previous_closing_price)
+            prevClosePrice = price.previous_closing_price,
+            businessDescription = metadata.businessDescription,
+            country = metadata.country,
+            sector = metadata.sector,            
+            website = metadata.website,
+            officerTitle = metadata.headOfficer[0],
+            officerName = metadata.headOfficer[1])
+
     except AttributeError as e:
         print(f"Error: {e}")
         return None

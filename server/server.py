@@ -5,12 +5,12 @@ from ariadne.explorer import ExplorerGraphiQL
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from dataProcessing import handle_stock_list
+from dataProcessing import handle_metadata, handle_stock_list
 sys.path.insert(0, '../database')
 from inserters import *
 from flask_cors import CORS, cross_origin
 from model import query, mutation
-from apiRequests import get_stock_list, get_stock_quote
+from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
 from usersApi import api_blueprint
 import sys
 
@@ -57,7 +57,7 @@ def test():
     # testStock("APPL", 90.93, 100.24, 89.26, 93.75, 94.67)
     # testStock("SOFI", 3.93, 4.24, 3.26, 4.75, 4.84)
     # addAccStock(1, "TSLA", 13)
-    # addAccStock(1, "APPL", 4)
+    addAccStock(1, "APPL", 4)
     # addAccStock(1, "SOFI", 8)
     # getHoldings(1)
     return buyMarket(1, "APPL", 2, "07/17/2023")
@@ -115,9 +115,17 @@ def get_list(exchange):
     print(handled)
     return data
 
-# run this route if you want to update the stock table in the database
-@app.route('/updateStocks', methods=["GET"])
-def updateStocks():
+@app.route('/get_meta/<symbol>', methods=['GET'])
+def get_meta(symbol):
+    data = get_stock_metadata(symbol)
+    print(type(data))
+    print(handle_metadata(data))
+    return data
+
+
+#This endpoint can be used to initialize the Stock table and update prices
+@app.route('/testStocks')
+def testStocks():
     fillStocks()
     return "The stock list has been updated"
 
