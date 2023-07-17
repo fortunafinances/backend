@@ -50,14 +50,14 @@ def addTransfer(sendAccId, receiveAccId, transferAmt, date):
     db.session.commit()
 
 # Inserting a Stock into the database
-def testStock():
+def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice):
     stock1 = Stock(
-        ticker = "MSFT", 
-        currPrice = 8523, 
-        highPrice = 10543, 
-        lowPrice = 7834, 
-        openPrice = 8326, 
-        prevClosePrice = 9032
+        ticker = ticker, 
+        currPrice = currPrice, 
+        highPrice = highPrice, 
+        lowPrice = lowPrice, 
+        openPrice = openPrice, 
+        prevClosePrice = prevClosePrice
     )
     db.session.add(stock1)
     db.session.commit()
