@@ -52,6 +52,14 @@ class Trade:
        self.tradePrice = tradePrice
        self.tradeQty = tradeQty
 
+class Holding:
+    def __init__(self, accountId, ticker, name, stockQuantity, price):
+        self.accountId = accountId
+        self.ticker = ticker
+        self.name = name
+        self.stockQuantity = stockQuantity
+        self.price = price
+
 
 #####################################################
 #                   MUTATIONS                       #
@@ -109,8 +117,33 @@ def resolve_orders(_, info):
 
 
 @query.field("holdings")
-def resolve_holdings(_, info):
-    return fake_holdings.holding_list
+def resolve_holdings(_, info, input):
+
+    account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
+    db_holdings = getters.getHoldings(account_id)
+
+    returned_holdings = []
+    for holding in db_holdings:
+        new_holding = Holding( 
+            account_id,
+            holding["ticker"],
+            "no name yet",
+            holding["stockQty"],
+            holding["currPrice"]
+        )
+        returned_holdings.append(new_holding)
+
+    #holding1 = Holding('123', '32', 'TSLA', 'Tesla', 300, 26976)
+    #holding2 = Holding('123', '72', 'APPL', 'Apple', 20, 1311)
+    #holding3 = Holding('123', '5', 'AMZN', 'Amazon', 2, 301245)
+    #holding4 = Holding('123', '2', 'FORT', 'Fortuna', 521, 4523)
+
+    # acc id 44 exists in the database
+
+    #holding_list = [holding1, holding2, holding3, holding4]
+    return returned_holdings
+
+
 
 @query.field("stocks")
 def resolve_stocks(_, info):
