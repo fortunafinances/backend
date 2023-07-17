@@ -32,4 +32,17 @@ def get_stock_list(exchange):
         return f"Error:{response.status_code}"
 
 
+def get_stock_metadata(symbol):
+    url = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/mo/module/{symbol}"
+    querystring = {"symbol": {symbol}, "module":"asset-profile,financial-data,earnings"}
+    headers = {
+	    "X-RapidAPI-Key": "644b6f939cmsh7870173263c710dp1b2239jsn7d641867ae16",
+	    "X-RapidAPI-Host": "yahoo-finance15.p.rapidapi.com"
+    }
 
+    response = requests.get(url, headers=headers, params=querystring)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        return f"Error:{response.status_code}"
