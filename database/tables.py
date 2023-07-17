@@ -110,6 +110,5 @@ class Transfer(db.Model):
             "sendAccId": self.sendAccId,
             "receiveAccId": self.receiveAccId,
             "transferAmt": self.transferAmt,
-            "date": self.date,
-            "prevClosePrice": self.prevClosePrice
+            "date": self.date
         }

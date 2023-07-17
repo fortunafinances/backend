@@ -27,7 +27,7 @@ type Trade {
     status: OrderStatus!
     date: String!
     ticker: String!
-    tradePrice: Int!
+    tradePrice: Float!
     tradeQty: Int!
 }
 
@@ -37,6 +37,14 @@ type Holding {
     name: String!
     stockQuantity: Int!
     price: Float!
+}
+
+type Activity {
+    accountId: Int!
+    date: String!
+    type: String!
+    description: String!
+    amount: Float!
 }
 
 type Stock {
@@ -57,8 +65,9 @@ type Transfer {
 
 type Query {
     trades: [Trade]!
-    holdings(input: AccIdInput): [Holding]!
     stocks: [Stock]!
+    holdings(input: AccIdInput): [Holding]!
+    activity(input: AccIdInput): [Activity]!
 }
 
 type Mutation {
@@ -70,7 +79,7 @@ type Mutation {
         status: OrderStatus!
         date: String!
         ticker: String!
-        tradePrice: Int!
+        tradePrice: Float!
         tradeQty: Int!
     ): String
 
