@@ -59,7 +59,14 @@ class Holding:
         self.name = name
         self.stockQuantity = stockQuantity
         self.price = price
-
+        
+class Activity:
+    def __init__(self, accountId, date, type, description, amount):
+        self.accountId = accountId
+        self.date = date
+        self.type = type
+        self.description = description
+        self.amount = amount
 
 #####################################################
 #                   MUTATIONS                       #
@@ -115,10 +122,10 @@ def resolve_orders(_, info):
     # query database to get list of trades
     return orders
 
-
+# returns a list of holdings for an account ID to display on the
+# holdings table
 @query.field("holdings")
 def resolve_holdings(_, info, input):
-
     account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
     db_holdings = getters.getHoldings(account_id)
 
@@ -133,16 +140,69 @@ def resolve_holdings(_, info, input):
         )
         returned_holdings.append(new_holding)
 
-    #holding1 = Holding('123', '32', 'TSLA', 'Tesla', 300, 26976)
-    #holding2 = Holding('123', '72', 'APPL', 'Apple', 20, 1311)
-    #holding3 = Holding('123', '5', 'AMZN', 'Amazon', 2, 301245)
-    #holding4 = Holding('123', '2', 'FORT', 'Fortuna', 521, 4523)
-
-    # acc id 44 exists in the database
-
-    #holding_list = [holding1, holding2, holding3, holding4]
     return returned_holdings
 
+# returns a list of activities for an account ID to display on the
+# activity table
+@query.field("activity")
+def resolve_activity(_, info, input):
+    account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
+    db_activities = getters.getActivity(account_id)
+    #print(db_activities, file=sys.stdout)
+
+    returned_activities = []
+
+    trades_list = getters.getTrades(account_id)
+    for trade in trades_list:
+        new_amount = trade['tradePrice'] * trade['tradeQty']
+        new_description = ''
+        if trade['side'] == 'Buy':
+            new_amount *= -1   # buy is a subtraction from account total
+            new_description = 'Bought ' + str(trade['tradeQty']) + ' shares of ' + \
+                                str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
+        else:
+            new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
+                                str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
+        new_activity = Activity(
+            accountId=trade["accId"],
+            date=trade["tradeDate"],
+            type="Trade",
+            description=new_description,
+            amount= new_amount
+        )
+        returned_activities.append(new_activity)
+
+    transfer_list = getters.getTransfers(account_id)
+    print(transfer_list, file=sys.stdout)
+    for transfer in transfer_list:
+        transfer_amount = transfer['transferAmt']
+        new_description = 'Transfer in'
+        if transfer['sendAccId'] == account_id:
+            transfer_amount *= -1
+            new_description = 'Transfer out'
+
+        new_activity = Activity(
+            accountId=account_id,
+            date=transfer["date"],
+            type="Transfer",
+            description=new_description,
+            amount=transfer_amount
+        )
+        returned_activities.append(new_activity)
+
+    """
+    for activity in db_activities:
+        new_holding = Holding( 
+            account_id,
+            holding["ticker"],
+            "no name yet",
+            holding["stockQty"],
+            holding["currPrice"]
+        )
+        returned_holdings.append(new_holding)
+
+    """
+    return returned_activities
 
 
 @query.field("stocks")
