@@ -147,8 +147,6 @@ def resolve_holdings(_, info, input):
 @query.field("activity")
 def resolve_activity(_, info, input):
     account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
-    db_activities = getters.getActivity(account_id)
-    #print(db_activities, file=sys.stdout)
 
     returned_activities = []
 
@@ -173,7 +171,6 @@ def resolve_activity(_, info, input):
         returned_activities.append(new_activity)
 
     transfer_list = getters.getTransfers(account_id)
-    print(transfer_list, file=sys.stdout)
     for transfer in transfer_list:
         transfer_amount = transfer['transferAmt']
         new_description = 'Transfer in'
@@ -190,18 +187,6 @@ def resolve_activity(_, info, input):
         )
         returned_activities.append(new_activity)
 
-    """
-    for activity in db_activities:
-        new_holding = Holding( 
-            account_id,
-            holding["ticker"],
-            "no name yet",
-            holding["stockQty"],
-            holding["currPrice"]
-        )
-        returned_holdings.append(new_holding)
-
-    """
     return returned_activities
 
 
