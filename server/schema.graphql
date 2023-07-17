@@ -45,6 +45,13 @@ type Stock {
     prevClosePrice: Int!
 }
 
+type Transfer {
+    sendAccId: Int!
+    receiveAccId: Int!
+    transferAmt: Float!
+    date: String!
+}
+
 type Query {
     trades: [Trade]!
     holdings: [Holding]!
@@ -62,5 +69,12 @@ type Mutation {
         ticker: String!
         tradePrice: Int!
         tradeQty: Int!
+    ): String
+
+    insertTransfer(
+        sendAccId: Int!
+        receiveAccId: Int!
+        transferAmt: Float!
+        date: String!
     ): String
 }
