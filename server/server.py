@@ -55,7 +55,8 @@ def test():
     # addAccStock(1, "TSLA", 13)
     # addAccStock(1, "APPL", 4)
     # addAccStock(1, "SOFI", 8)
-    return getHoldings(1)
+    # getHoldings(1)
+    return buyMarket(1, "APPL", 2, "07/17/2023")
     
 
 @app.route("/graphql", methods=["GET"])
