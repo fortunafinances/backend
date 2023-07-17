@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 import sys
-from dataProcessing import handle_stock_list
+from dataProcessing import handle_metadata, handle_stock_list
 sys.path.insert(0, '../database')
 from inserters import *
 from flask_cors import CORS, cross_origin
@@ -115,6 +115,8 @@ def get_list(exchange):
 @app.route('/get_meta/<symbol>', methods=['GET'])
 def get_meta(symbol):
     data = get_stock_metadata(symbol)
+    print(type(data))
+    print(handle_metadata(data))
     return data
 
 """

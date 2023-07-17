@@ -53,3 +53,29 @@ def handle_stock_list(data):
     ticker = [item['symbol'] for item in parsed_list[:100]]
     return ticker
 
+def handle_metadata(data):
+    try:
+        businessDescription = data.get('assetProfile', {}).get('longBusinessSummary')
+        country = data.get('assetProfile', {}).get('country')
+        sector = data.get('assetProfile', {}).get('sector')
+        website = data.get('assetProfile', {}).get('website')
+        officers = data.get('assetProfile', {}).get('companyOfficers', [])
+
+        if officers:
+            officer_title = officers[0].get('title')
+            officer_name = officers[0].get('name')
+        else:
+            officer_title = None
+            officer_name = None
+        
+        headOfficer = [officer_title, officer_name]
+
+    except KeyError as ke:
+        print(f"KeyError: {ke}. This key does not exist in the provided data")
+        return None
+    except TypeError as te:
+        print(f"TypeError: {te}. Expected a number for rounding but got a different type.")
+        return None
+
+    metadata = [businessDescription, country, sector, website, headOfficer]    
+    return metadata 
