@@ -119,6 +119,8 @@ def get_meta(symbol):
     print(handle_metadata(data))
     return data
 
+
+#This endpoint can be used to initialize the Stock table and update prices
 @app.route('/testStocks')
 def testStocks():
     fillStocks()

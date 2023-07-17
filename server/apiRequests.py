@@ -3,6 +3,7 @@ import json
 import requests
 from dataProcessing import handle_quote_data
 
+#calls finnhub API and gets current price data
 def get_stock_quote(symbol):
     url= "https://finnhub.io/api/v1/quote"
     token = "cimn4r1r01qhp3kcngjgcimn4r1r01qhp3kcngk0"
@@ -18,6 +19,7 @@ def get_stock_quote(symbol):
     else:
         return f"Error:{response.status_code}"
     
+#calls finhub api and gets a list of available stocks
 def get_stock_list(exchange):
     url = "https://finnhub.io/api/v1/stock/symbol"
     token = "cimn4r1r01qhp3kcngjgcimn4r1r01qhp3kcngk0"
@@ -31,7 +33,7 @@ def get_stock_list(exchange):
     else: 
         return f"Error:{response.status_code}"
 
-
+#calls yahoo api and gets the metadata for a certain stock
 def get_stock_metadata(symbol):
     url = "https://yahoo-finance15.p.rapidapi.com/api/yahoo/mo/module/{symbol}"
     querystring = {"symbol": {symbol}, "module":"asset-profile,financial-data,earnings"}

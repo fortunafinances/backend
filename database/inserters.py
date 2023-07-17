@@ -62,7 +62,7 @@ def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice)
     db.session.add(stock1)
     db.session.commit()
     
-#makes and API call and returns a list of available stock symbols
+#makes and API call and returns a list of dictionaries, [ticker, companyName]
 def stock_list():
     data = get_stock_list('US')
     return handle_stock_list(data)
@@ -77,13 +77,8 @@ def fillStocks():
         data = get_stock_quote(ticker)
         price = handle_quote_data(data)
         existing_stock = Stock.query.filter_by(ticker=ticker).first()
-
-        if existing_stock is None:
-            exists=False
-        else:
-            exists=True
         
-        if exists:
+        if existing_stock is not None:
             #update stock prices
             updateStock(existing_stock, price)
         else:
@@ -91,24 +86,8 @@ def fillStocks():
             newStock = addNewStock(ticker, description, price)
             if newStock is not None:
                 db.session.add(newStock)
-            
-
-        # if existing_stock is None:
-        #     newStock = addNewStock(price)
-        #     if newStock is not None:
-        #         db.session.add(newStock)
-        # else:
-        #     updateStock(existing_stock, price)
     db.session.commit()
 
-#helper method that checks if a stock symbol already exists in the stock database
-#returns True if the stock exists and False if the stock does not exist
-def checkStockDatabase(symbol):
-    existing_stock = Stock.query.filter_by(ticker=symbol).first()
-    if existing_stock is None:
-        return False
-    else:
-        return True
 
 #helper function that adds a new stock to the db
 def addNewStock(ticker, description, price):
@@ -129,12 +108,11 @@ def addNewStock(ticker, description, price):
             prevClosePrice = price.previous_closing_price,
             businessDescription = metadata.businessDescription,
             country = metadata.country,
-            sector = metadata.sector,
+            sector = metadata.sector,            
             website = metadata.website,
             officerTitle = metadata.headOfficer[0],
             officerName = metadata.headOfficer[1])
 
-        
     except AttributeError as e:
         print(f"Error: {e}")
         return None
