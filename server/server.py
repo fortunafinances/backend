@@ -119,6 +119,10 @@ def get_meta(symbol):
     print(handle_metadata(data))
     return data
 
+@app.route('/testStocks')
+def testStocks():
+    fillStocks()
+
 """
 Auth
 """

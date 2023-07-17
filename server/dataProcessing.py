@@ -2,37 +2,31 @@ import json
 
 #Price object
 class Price:
-    def __init__(self, ticker, curr_price, high_price, low_price, opening_price, previous_closing_price):
-        self.ticker = ticker
+    def __init__(self, curr_price, high_price, low_price, opening_price, previous_closing_price):
         self.curr_price = curr_price
         self.high_price = high_price
         self.low_price = low_price
         self.opening_price = opening_price
         self.previous_closing_price = previous_closing_price
-        #self.price_change = price_change
 
-    def to_dict(self):
-        return {
-            'ticker': self.ticker,
-            'curr_price': self.curr_price,
-            'high_price': self.high_price,
-            'low_price': self.low_price,
-            'opening_price': self.opening_price,
-            'previous_closing_price': self.previous_closing_price,
-            #'price_changed': self.price_change,
-        }
+#Metadata object
+class Metadata:
+    def __init__(self, businessDescription, country, sector, website, headOfficer):
+        self.businessDescription = businessDescription
+        self.country = country
+        self.sector = sector
+        self.website = website
+        self.headOfficer = headOfficer
 
 
 #function that processes the quote data returned from the stock api and returns rounded int price data as a Price object
-def handle_quote_data(data, symbol):
+def handle_quote_data(data):
     try:
-        ticker = symbol
-        curr_price = round(data['c'] * 100)
-        high_price = round(data['h'] * 100)
-        low_price = round(data['l'] * 100)
-        opening_price = round(data['o'] * 100)
-        previous_close_price = round(data['pc'] * 100)
-        #price_change = round(data["d"] * 100)
+        curr_price = data['c']
+        high_price = data['h']
+        low_price = data['l']
+        opening_price = data['o']
+        previous_close_price = data['pc']
     except KeyError as ke:
         print(f"KeyError: {ke}. This key does not exist in the provided data")
         return None
@@ -40,18 +34,16 @@ def handle_quote_data(data, symbol):
         print(f"TypeError: {te}. Expected a number for rounding but got a different type.")
         return None
     
-    price = Price(ticker, curr_price, high_price, low_price, opening_price, previous_close_price)
+    price = Price(curr_price, high_price, low_price, opening_price, previous_close_price)
 
     return price
 
 #function that iterates through the stock list data returned from the stock api and returns a list of the first 100 available stock symbols
 def handle_stock_list(data):
-    if isinstance(data, str):
-        parsed_list = json.load(data)
-    else:
-        parsed_list = data
-    ticker = [item['symbol'] for item in parsed_list[:100]]
-    return ticker
+    parsed_list = data
+    stocks = [{item['symbol']: item['description']} for item in parsed_list[:50]]
+
+    return stocks
 
 def handle_metadata(data):
     try:
@@ -77,5 +69,5 @@ def handle_metadata(data):
         print(f"TypeError: {te}. Expected a number for rounding but got a different type.")
         return None
 
-    metadata = [businessDescription, country, sector, website, headOfficer]    
+    metadata = Metadata(businessDescription, country, sector, website, headOfficer)    
     return metadata 
