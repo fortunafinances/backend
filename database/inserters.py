@@ -49,6 +49,49 @@ def addTransfer(sendAccId, receiveAccId, transferAmt, date):
     db.session.add(transfer)
     db.session.commit()
 
+def buyMarket(accId, ticker, tradeQty, tradeDate):
+    acc = Acc.query.get(accId)
+    tradePrice = Stock.query.get(ticker).currPrice
+
+    if (acc.cash > tradePrice * tradeQty):
+        acc.cash -= tradePrice * tradeQty
+        db.session.commit()
+
+        addTrade(accId, "Market", "Buy", "Executed", 
+                    tradeDate, ticker, tradePrice, tradeQty)
+
+        accStock = AccStock.query.filter_by(accId = accId, ticker = ticker).first()
+
+        if (accStock):
+            accStock.stockQty += tradeQty
+            db.session.commit()
+        else:
+            addAccStock(accId, ticker, tradeQty)
+        return "Success"
+
+    return "Error: Not enough funds in account"
+            
+def sellMarket(accId, ticker, tradeQty, tradeDate):
+    acc = Acc.query.get(accId)
+    accStock = AccStock.query.filter_by(accId = accId, ticker = ticker).first()
+    tradePrice = Stock.query.get(ticker).currPrice
+
+    if (accStock and accStock.stockQty >= tradeQty):
+        acc.cash += tradePrice * tradeQty
+
+        addTrade(accId, "Market", "Sell", "Executed", 
+                    tradeDate, ticker, tradePrice, tradeQty)
+        
+        if (accStock.stockQty == tradeQty):
+            db.session.delete(accStock)
+            db.session.commit()
+        else:
+            accStock.stockQty -= tradeQty
+            db.session.commit()
+        return "Success"
+    
+    return "Error: Not enough shares to sell"
+
 # Inserting a Stock into the database
 def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice):
     stock1 = Stock(
