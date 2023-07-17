@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 import sys
+
+#from fsi-23-bos-back-end.database.inserters import fillStocks
 from dataProcessing import handle_stock_list
 sys.path.insert(0, '../database')
 from inserters import *
@@ -112,6 +114,12 @@ def get_list(exchange):
     handled = handle_stock_list(data)
     print(handled)
     return data
+
+# run this route if you want to update the stock table in the database
+@app.route('/updateStocks', methods=["GET"])
+def updateStocks():
+    fillStocks()
+    return "The stock list has been updated"
 
 """
 Auth
