@@ -15,6 +15,10 @@ enum OrderStatus {
     Executed
 }
 
+input AccIdInput {
+    accId: Int!
+}
+
 # Trade is a buy or sell of a stock
 type Trade {
     accID: Int!
@@ -29,11 +33,10 @@ type Trade {
 
 type Holding {
     accountId: String!
-    accStockId: String!
     ticker: String!
     name: String!
     stockQuantity: Int!
-    price: Int!
+    price: Float!
 }
 
 type Stock {
@@ -54,7 +57,7 @@ type Transfer {
 
 type Query {
     trades: [Trade]!
-    holdings: [Holding]!
+    holdings(input: AccIdInput): [Holding]!
     stocks: [Stock]!
 }
 
