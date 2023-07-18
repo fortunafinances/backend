@@ -2,7 +2,7 @@
 **/*.pyc
 venv/
 .env
-database.db
+**/*database.db
 
 # Auth0
 auth0-variables.env
