@@ -92,6 +92,26 @@ def sellMarket(accId, ticker, tradeQty, tradeDate):
     
     return "Error: Not enough shares to sell"
 
+def doTransfer(sendAccId, receiveAccId, transferAmt, date):
+    sendAcc = Acc.query.get(sendAccId)
+    receiveAcc = Acc.query.get(receiveAccId)
+
+    if (sendAcc == None or sendAcc.cash > transferAmt):
+        addTransfer(sendAccId, receiveAccId, transferAmt, date)
+
+        if (sendAcc):
+            sendAcc.cash -= transferAmt
+            db.session.commit()
+
+        if (receiveAcc):
+            receiveAcc.cash += transferAmt
+            db.session.commit()
+        
+        return "Success"
+    
+    return "Error: Not enough funds in sending account"
+
+        
 # Inserting a Stock into the database
 def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice):
     stock1 = Stock(
