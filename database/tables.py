@@ -117,7 +117,7 @@ class Trade(db.Model):
 class Transfer(db.Model):
     transferId = db.Column(db.Integer, primary_key = True)
     sendAccId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
-    receiveAccId = db.Column(db.Float, db.ForeignKey("acc.accId"), nullable = False)
+    receiveAccId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
     transferAmt = db.Column(db.Float, nullable = False)
     date = db.Column(db.String, nullable = False)
     sendAcc = db.relationship("Acc", foreign_keys = [sendAccId], backref = db.backref("outgoing", lazy = True))
