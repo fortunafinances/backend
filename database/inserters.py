@@ -128,7 +128,8 @@ def fillStocks():
             #add new stock
             newStock = addNewStock(ticker, description, price)
             if newStock is not None:
-                db.session.add(newStock)
+                if newStock.businessDescription is not None and newStock.sector is not None:
+                    db.session.add(newStock)
     db.session.commit()
 
 

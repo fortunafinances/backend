@@ -41,7 +41,7 @@ def handle_quote_data(data):
 #function that iterates through the stock list data returned from the stock api and returns a list of the first 100 available stock symbols
 def handle_stock_list(data):
     parsed_list = data
-    stocks = [{item['symbol']: item['description']} for item in parsed_list[:100]]
+    stocks = [{item['symbol']: item['description']} for item in parsed_list[:150]]
 
     return stocks
 
