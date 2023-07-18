@@ -80,22 +80,20 @@ def resolve_trade_order(_, info,
         type,
         side,
         status,
-        date,
         ticker,
         tradePrice,
         tradeQty):
-
-    inserters.addTrade(accID,
-                        type,
-                        side,
-                        status,
-                        date, 
-                        ticker, 
-                        tradePrice, 
-                        tradeQty)
-    # need to send modification to update number of account stock
-    
-    return "Trade Inserted"
+    date = 'dateshouldnotbeinserted'
+    message = 'Trade Error in FLask Server resolve_trade_order function'
+    if type == "Market":
+        if side == "Buy":
+            message = inserters.buyMarket(accID, ticker, tradeQty, date)
+        if side == "Sell":
+            message = inserters.sellMarket(accID, ticker, tradeQty, date)
+    if type == "Limit":
+        inserters.addTrade(accID, type, side, status, date, ticker, tradePrice, tradeQty)
+        message = "Limit functionality has not been fully implemented"
+    return message
 
 @mutation.field("insertTransfer")
 def resolve_trade_order(_, info,
