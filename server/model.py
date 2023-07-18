@@ -20,17 +20,31 @@ mutation = MutationType()
 class Stock:
     def __init__(self, 
                 ticker,
+                name,
                 currPrice,
                 highPrice,
                 lowPrice,
                 openPrice,
-                prevClosePrice):
+                prevClosePrice,
+                description,
+                sector,
+                country,
+                website,
+                officerTitle,
+                officerName):
        self.ticker = ticker
+       self.name = name
        self.currPrice = currPrice
        self.highPrice = highPrice
        self.lowPrice = lowPrice
        self.openPrice = openPrice
        self.prevClosePrice = prevClosePrice
+       self.description = description
+       self.sector = sector
+       self.country = country
+       self.website = website
+       self.officerTitle = officerTitle
+       self.officerName = officerName
 
        
 class Trade:
@@ -196,11 +210,18 @@ def resolve_stocks(_, info):
     for stock in list_of_stocks:
         new_stock = Stock( 
                 stock["ticker"],
+                stock["companyName"],
                 stock["currPrice"],
                 stock["highPrice"],
                 stock["lowPrice"],
                 stock["openPrice"],
-                stock["prevClosePrice"])
+                stock["prevClosePrice"],
+                stock["businessDescription"],
+                stock["sector"],
+                stock["country"],
+                stock["website"],
+                stock["officerTitle"],
+                stock["officerName"])
         returned_stocks.append(new_stock)
     
     return returned_stocks

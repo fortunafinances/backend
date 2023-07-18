@@ -48,11 +48,18 @@ type Activity {
 
 type Stock {
     ticker: String!
-    currPrice: Int!
-    highPrice: Int!
-    lowPrice: Int!
-    openPrice: Int!
-    prevClosePrice: Int!
+    name: String!
+    currPrice: Float!
+    highPrice: Float!
+    lowPrice: Float!
+    openPrice: Float!
+    prevClosePrice: Float!
+    description: String
+    sector: String
+    country: String
+    website: String
+    officerTitle: String
+    officerName: String
 }
 
 type Transfer {
