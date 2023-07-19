@@ -19,6 +19,10 @@ input AccIdInput {
     accId: Int!
 }
 
+input TickerInput {
+    ticker: String!
+}
+
 # Trade is a buy or sell of a stock
 type Trade {
     accID: Int!
@@ -32,10 +36,8 @@ type Trade {
 
 type Holding {
     accountId: String!
-    ticker: String!
-    name: String!
     stockQuantity: Int!
-    price: Float!
+    stock: Stock!
 }
 
 type Activity {
@@ -72,6 +74,7 @@ type Transfer {
 type Query {
     trades: [Trade]!
     stocks: [Stock]!
+    oneStock(input: TickerInput): Stock!
     holdings(input: AccIdInput): [Holding]!
     activity(input: AccIdInput): [Activity]!
 }
