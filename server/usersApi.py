@@ -14,8 +14,8 @@ def authenticate(func):
         if not auth_header:
             return {'message': 'Authorization header is missinggg'}, 401
 
-        token = auth_header.split(' ')[1]
-        print("\nTOKEN.... ", token, " ", file=sys.stdout)
+        access_token = auth_header.split(' ')[1]
+        print("\nTOKEN.... ", access_token, " ", file=sys.stdout)
         # TODO: validate the token using Auth0's API
         # if the token is valid, extract the user information and pass it to the wrapped function
         
@@ -23,11 +23,13 @@ def authenticate(func):
         try:
           print("\nSTARTING DECODING ACCESS TOKEN...", file=sys.stdout)
           # decode the token using the secret key used to sign it
-          decoded_token = jwt.decode(token, 'my_secret_key', algorithms=['HS256'])
+          decoded_token = jwt.decode(access_token, algorithms=['RS256'], aud=['http://127.0.0.1:5000/api/users'])
           # extract the user information from the decoded token
           user_info = {
-              'name': decoded_token['name'],
-              'email': decoded_token['email']
+            'openid': decoded_token['openid'],
+            'email': decoded_token['email'],
+            'id': decoded_token['sub'],
+            'nickname': decoded_token['nickname'],
           }
           return {'user_info': user_info}, 200
         except jwt.exceptions.InvalidTokenError:
