@@ -23,7 +23,7 @@ def authenticate(func):
         try:
           print("\nSTARTING DECODING ACCESS TOKEN...", file=sys.stdout)
           # decode the token using the secret key used to sign it
-          decoded_token = jwt.decode(access_token, algorithms=['RS256'], aud=['http://127.0.0.1:5000/api/users'])
+          decoded_token = jwt.decode(access_token, algorithms=['RS256'], aud=['http://127.0.0.1:5000/'])
           # extract the user information from the decoded token
           user_info = {
             'openid': decoded_token['openid'],
