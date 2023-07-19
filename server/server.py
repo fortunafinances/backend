@@ -5,7 +5,7 @@ from ariadne.explorer import ExplorerGraphiQL
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from dataProcessing import handle_metadata, handle_stock_list
+from dataProcessing import handle_metadata
 sys.path.insert(0, '../database')
 from inserters import *
 from flask_cors import CORS, cross_origin
@@ -16,8 +16,11 @@ import sys
 
 # Database file imports
 sys.path.insert(0, '../database')
-from inserters import *
-from getters import *
+import inserters
+import getters
+
+sys.path.insert(0, '../mockData')
+import mockDb
 
 
 """
@@ -52,17 +55,20 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    # addAcc("Jack", 100)
-    # testStock("TSLA", 9.93, 10.24, 9.26, 9.75, 9.67)
-    # testStock("APPL", 90.93, 100.24, 89.26, 93.75, 94.67)
-    # testStock("SOFI", 3.93, 4.24, 3.26, 4.75, 4.84)
-    # addAccStock(1, "TSLA", 13)
-    # addAccStock(1, "APPL", 4)
-    # addAccStock(1, "SOFI", 8)
-    # getHoldings(1)
-    # buyMarket(1, "APPL", 2, "07/17/2023")
-    return getStock("RCBOS")
     
+    return datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+    
+@app.route("/createMockDb")
+def createMockDb():
+    fillStocks()
+    mockDb.initUsers()
+    mockDb.initAccs()
+    mockDb.initBuyMarket()
+    mockDb.initSellMarket()
+    mockDb.initTransferIn()
+    mockDb.initTransferOut()
+    mockDb.initTransferBetween()
+    return "MockDb created"
 
 @app.route("/graphql", methods=["GET"])
 @cross_origin()
@@ -109,12 +115,12 @@ def get_quote(symbol):
     print(type(data))
     return data
 
-@app.route('/get_list/<exchange>', methods=["GET"])
-def get_list(exchange):
-    data = get_stock_list(exchange)
-    handled = handle_stock_list(data)
-    print(handled)
-    return data
+# @app.route('/get_list/<exchange>', methods=["GET"])
+# def get_list(exchange):
+#     data = get_stock_list(exchange)
+#     handled = handle_stock_list(data)
+#     print(handled)
+#     return data
 
 @app.route('/get_meta/<symbol>', methods=['GET'])
 def get_meta(symbol):
@@ -127,7 +133,7 @@ def get_meta(symbol):
 #This endpoint can be used to initialize the Stock table and update prices
 @app.route('/testStocks')
 def testStocks():
-    fillStocks()
+    inserters.fillStocks()
     return "The stock list has been updated"
 
 """
