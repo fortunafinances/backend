@@ -5,7 +5,7 @@ from ariadne.explorer import ExplorerGraphiQL
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from dataProcessing import handle_metadata, handle_stock_list
+from dataProcessing import handle_metadata
 sys.path.insert(0, '../database')
 from inserters import *
 from flask_cors import CORS, cross_origin
@@ -18,6 +18,8 @@ import sys
 sys.path.insert(0, '../database')
 import inserters
 import getters
+
+sys.path.insert(0, '../mockData')
 import mockDb
 
 
@@ -59,9 +61,15 @@ def test():
     
 @app.route("/createMockDb")
 def createMockDb():
-    # mockDb.initUsers()
-    # fillStocks()
-    return "success"
+    fillStocks()
+    mockDb.initUsers()
+    mockDb.initAccs()
+    mockDb.initBuyMarket()
+    mockDb.initSellMarket()
+    mockDb.initTransferIn()
+    mockDb.initTransferOut()
+    mockDb.initTransferBetween()
+    return "MockDb created"
 
 @app.route("/graphql", methods=["GET"])
 @cross_origin()
@@ -108,12 +116,12 @@ def get_quote(symbol):
     print(type(data))
     return data
 
-@app.route('/get_list/<exchange>', methods=["GET"])
-def get_list(exchange):
-    data = get_stock_list(exchange)
-    handled = handle_stock_list(data)
-    print(handled)
-    return data
+# @app.route('/get_list/<exchange>', methods=["GET"])
+# def get_list(exchange):
+#     data = get_stock_list(exchange)
+#     handled = handle_stock_list(data)
+#     print(handled)
+#     return data
 
 @app.route('/get_meta/<symbol>', methods=['GET'])
 def get_meta(symbol):

@@ -4,6 +4,8 @@ from sqlalchemy.sql import func
 # Database import for model creating
 db = SQLAlchemy()
 
+# TODO REVAMP
+# WILL BE REVAMPED AFTER AUTHENTICATION IMPLEMENTATION
 class User(db.Model):
     userId = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String, nullable = False)

@@ -3,8 +3,10 @@ from datetime import datetime, date
 import pytz
 import sys
 sys.path.insert(0, '../server')
+sys.path.insert(0, '../mockData')
+from constants import STOCK_LIST
 from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
-from dataProcessing import handle_metadata, handle_quote_data, handle_stock_list
+from dataProcessing import handle_metadata, handle_quote_data
 
 def addUser(username, email, dateOfBirth):
     user = User(
@@ -141,15 +143,14 @@ def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice)
     db.session.commit()
     
 #makes and API call and returns a list of dictionaries, [ticker, companyName]
-def stock_list():
-    data = get_stock_list('US')
-    return handle_stock_list(data)
+# def stock_list():
+#     data = get_stock_list('US')
+#     return handle_stock_list(data)
 
 #function that updates the stock table
 #can add a new stock or update the stock prices
 def fillStocks():
-    stockList = stock_list()
-    for x in stockList:
+    for x in STOCK_LIST:
         ticker = list(x.keys())[0]
         description = x[ticker]
         data = get_stock_quote(ticker)
