@@ -57,11 +57,11 @@ def test():
     # testStock("APPL", 90.93, 100.24, 89.26, 93.75, 94.67)
     # testStock("SOFI", 3.93, 4.24, 3.26, 4.75, 4.84)
     # addAccStock(1, "TSLA", 13)
-    addAccStock(1, "APPL", 4)
+    # addAccStock(1, "APPL", 4)
     # addAccStock(1, "SOFI", 8)
     # getHoldings(1)
     # buyMarket(1, "APPL", 2, "07/17/2023")
-    return doTransfer(0, 1, 50.00, "07/17/2023")
+    return getStock("RCBOS")
     
 
 @app.route("/graphql", methods=["GET"])

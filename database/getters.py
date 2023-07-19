@@ -41,6 +41,11 @@ def getHoldings(accId):
         
     return holdings
 
+# Returns the contents of a singular stock
+def getStock(ticker):
+    stock = Stock.query.get(ticker)
+    return stock.serialize()
+
 # Returns a list of all of the stocks
 def getStocks():
     stocks = (Stock.query.all())
