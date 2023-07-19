@@ -1,13 +1,26 @@
 from tables import *
+from datetime import datetime, date
+import pytz
 import sys
 sys.path.insert(0, '../server')
 from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
 from dataProcessing import handle_metadata, handle_quote_data, handle_stock_list
 
+def addUser(username, email, dateOfBirth):
+    user = User(
+        username = username,
+        email = email,
+        dateOfBirth = dateOfBirth,
+        registerDate = date.today()
+    )
+    db.session.add(user)
+    db.session.commit()
+
 # Inserting an account into the database.
-def addAcc(name, cash):
+def addAcc(name, userId, cash):
     acc = Acc(
         name = name,
+        userId = userId,
         cash = cash
     )
     db.session.add(acc)
@@ -49,9 +62,10 @@ def addTransfer(sendAccId, receiveAccId, transferAmt, date):
     db.session.add(transfer)
     db.session.commit()
 
-def buyMarket(accId, ticker, tradeQty, tradeDate):
+def buyMarket(accId, ticker, tradeQty):
     acc = Acc.query.get(accId)
     tradePrice = Stock.query.get(ticker).currPrice
+    tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
 
     if (acc.cash > tradePrice * tradeQty):
         acc.cash -= tradePrice * tradeQty
@@ -71,11 +85,11 @@ def buyMarket(accId, ticker, tradeQty, tradeDate):
 
     return "Error: Not enough funds in account"
             
-def sellMarket(accId, ticker, tradeQty, tradeDate):
+def sellMarket(accId, ticker, tradeQty):
     acc = Acc.query.get(accId)
     accStock = AccStock.query.filter_by(accId = accId, ticker = ticker).first()
     tradePrice = Stock.query.get(ticker).currPrice
-
+    tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
     if (accStock and accStock.stockQty >= tradeQty):
         acc.cash += tradePrice * tradeQty
 
@@ -92,9 +106,10 @@ def sellMarket(accId, ticker, tradeQty, tradeDate):
     
     return "Error: Not enough shares to sell"
 
-def doTransfer(sendAccId, receiveAccId, transferAmt, date):
+def doTransfer(sendAccId, receiveAccId, transferAmt):
     sendAcc = Acc.query.get(sendAccId)
     receiveAcc = Acc.query.get(receiveAccId)
+    date = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
 
     if (sendAcc == None or sendAcc.cash > transferAmt):
         addTransfer(sendAccId, receiveAccId, transferAmt, date)

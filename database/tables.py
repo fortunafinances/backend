@@ -1,21 +1,38 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 
 # Database import for model creating
 db = SQLAlchemy()
+
+class User(db.Model):
+    userId = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String, nullable = False)
+    email = db.Column(db.String, nullable = False)
+    dateOfBirth = db.Column(db.String, nullable = False)
+    registerDate = db.Column(db.String, nullable = False)
+
+    def serialize(self):
+        return {
+            "userId": self.userId,
+            "username": self.username,
+            "email": self.email,
+            "dateOfBirth": self.dateOfBirth,
+            "registerDate": self.registerDate
+        }
 
 # The accounts table
 # Includes data on the name of the account,
 # the user it belongs to and the amount of cash in the account
 class Acc(db.Model):
     accId = db.Column(db.Integer, primary_key = True)
-    # userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
+    userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
     name = db.Column(db.String, nullable = False)
     cash = db.Column(db.Float, nullable = False)
 
     def serialize(self):
         return {
             "accId": self.accId,
-            # "userId": self.userId,
+            "userId": self.userId,
             "name": self.name,
             "cash": self.cash
         }
@@ -92,7 +109,7 @@ class Trade(db.Model):
     side = db.Column(db.String, nullable = False)
     # Possible statuses: "Placed" and "Executed"
     status = db.Column(db.String, nullable = False)
-    tradeDate = db.Column(db.Integer, nullable = False)
+    tradeDate = db.Column(db.String, nullable = False)
     ticker = db.Column(db.String, nullable = False)
     tradePrice = db.Column(db.Float, nullable = False)
     tradeQty = db.Column(db.Integer, nullable = False)

@@ -16,8 +16,9 @@ import sys
 
 # Database file imports
 sys.path.insert(0, '../database')
-from inserters import *
-from getters import *
+import inserters
+import getters
+import mockDb
 
 
 """
@@ -52,17 +53,15 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    # addAcc("Jack", 100)
-    # testStock("TSLA", 9.93, 10.24, 9.26, 9.75, 9.67)
-    # testStock("APPL", 90.93, 100.24, 89.26, 93.75, 94.67)
-    # testStock("SOFI", 3.93, 4.24, 3.26, 4.75, 4.84)
-    # addAccStock(1, "TSLA", 13)
-    addAccStock(1, "APPL", 4)
-    # addAccStock(1, "SOFI", 8)
-    # getHoldings(1)
-    # buyMarket(1, "APPL", 2, "07/17/2023")
-    return doTransfer(0, 1, 50.00, "07/17/2023")
+
     
+    return datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+    
+@app.route("/createMockDb")
+def createMockDb():
+    # mockDb.initUsers()
+    # fillStocks()
+    return "success"
 
 @app.route("/graphql", methods=["GET"])
 @cross_origin()
@@ -127,7 +126,7 @@ def get_meta(symbol):
 #This endpoint can be used to initialize the Stock table and update prices
 @app.route('/testStocks')
 def testStocks():
-    fillStocks()
+    inserters.fillStocks()
     return "The stock list has been updated"
 
 """
