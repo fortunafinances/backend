@@ -6,8 +6,6 @@ import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
 from dataProcessing import handle_metadata, handle_stock_list
-sys.path.insert(0, '../database')
-from inserters import *
 from flask_cors import CORS, cross_origin
 from model import query, mutation
 from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
@@ -19,8 +17,11 @@ sys.path.insert(0, '../database')
 from inserters import *
 from getters import *
 
-# Auth imports
+# Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
+from authlib.integrations.flask_client import OAuth
+from authlib.oauth2 import OAuth2Error
+
 sys.path.insert(0, '../authentication')
 from validator import Auth0JWTBearerTokenValidator
 
@@ -50,6 +51,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
+# Create an instance of OAuth
+oauth = OAuth(app)
+
 @app.route('/')
 @cross_origin()
 def hello_world():
@@ -74,6 +78,8 @@ def test():
     # buyMarket(1, "APPL", 2, "07/17/2023")
     return getStock("RCBOS")
 
+
+""" ----------------- Auth testing ----------------- """
 # auth test for protected route
 @app.route("/api/private")
 @require_auth(None)
@@ -83,7 +89,33 @@ def private():
         "Hello from a private endpoint! You need to be"
         " authenticated to see this."
     )
+    
     return jsonify(message=response)
+
+data_list = []
+
+@app.route('/addUser', methods=['POST'])
+def add_data():
+    data = request.get_json()
+    data_list.append(data)
+    # Process the data as needed
+    # Example: Save the data to a database
+    # Return a response
+    return jsonify({'message': 'User received successfully'})
+
+@app.route('/addUser', methods=['GET'])
+def get_users():
+    return jsonify(data_list)
+
+""" ---------------- END AUTH TEST ----------------- """
+
+# @app.route('/user')
+# @require_oauth(['profile'])
+# def user_profile():
+#     user = User.query.get(current_token.user_id)
+#     return jsonify(user.to_dict())
+
+""" End of auth testing """
 
 @app.route("/graphql", methods=["GET"])
 @cross_origin()
