@@ -202,7 +202,7 @@ def resolve_activity(_, info, input):
 # returns a list of activities for an account ID to display on the
 # activity table
 @query.field("oneStock")
-def resolve_one_stock(_, info, input):
+def resolve_one_stock(_, input):
     ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput
 
     stock = getters.getStock(ticker_input) # buzz method
