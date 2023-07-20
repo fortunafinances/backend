@@ -111,14 +111,12 @@ def resolve_trade_order(_, info,
 def resolve_transfer_order(_, info,
         sendAccId,
         receiveAccId,
-        transferAmt,
-        date
+        transferAmt
         ):
     
-    inserters.addTransfer(sendAccId, 
+    inserters.doTransfer(sendAccId, 
                           receiveAccId, 
-                          transferAmt, 
-                          date)
+                          transferAmt)
     
     return "Transfer Inserted"
 
