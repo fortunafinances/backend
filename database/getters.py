@@ -52,6 +52,10 @@ def getStocks():
     list_of_stocks = [stock.serialize() for stock in stocks]
     return list_of_stocks
 
+def getUserAccs(userId):
+    accs = User.query.get(userId).accs
+    return [acc.serialize() for acc in accs]
+
 # Returns a list of all of the accs
 def getAccs():
     accs = (Acc.query.all())

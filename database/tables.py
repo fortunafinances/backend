@@ -10,7 +10,7 @@ class User(db.Model):
     userId = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String, nullable = False)
     email = db.Column(db.String, nullable = False)
-    dateOfBirth = db.Column(db.String, nullable = False)
+    # dateOfBirth = db.Column(db.String, nullable = False)
     registerDate = db.Column(db.String, nullable = False)
 
     def serialize(self):
@@ -18,7 +18,7 @@ class User(db.Model):
             "userId": self.userId,
             "username": self.username,
             "email": self.email,
-            "dateOfBirth": self.dateOfBirth,
+            # "dateOfBirth": self.dateOfBirth,
             "registerDate": self.registerDate
         }
 
@@ -30,6 +30,7 @@ class Acc(db.Model):
     userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
     name = db.Column(db.String, nullable = False)
     cash = db.Column(db.Float, nullable = False)
+    user = db.relationship("User", backref = db.backref("accs"), lazy = True)
 
     def serialize(self):
         return {

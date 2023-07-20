@@ -8,11 +8,13 @@ from constants import STOCK_LIST
 from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
 from dataProcessing import handle_metadata, handle_quote_data
 
-def addUser(username, email, dateOfBirth):
+# TODO REVAMP
+# Inserting a user into the database
+def addUser(username, email):
     user = User(
         username = username,
         email = email,
-        dateOfBirth = dateOfBirth,
+        # dateOfBirth = dateOfBirth,
         registerDate = date.today()
     )
     db.session.add(user)
@@ -64,62 +66,86 @@ def addTransfer(sendAccId, receiveAccId, transferAmt, date):
     db.session.add(transfer)
     db.session.commit()
 
+# Buys a stock using the market order option
 def buyMarket(accId, ticker, tradeQty):
+    # Initial set up of grabbing the account, stockprice and the current time
     acc = Acc.query.get(accId)
     tradePrice = Stock.query.get(ticker).currPrice
     tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
 
+    # Checks if the account has enough funds and 
+    # to return success or error based on that
     if (acc.cash > tradePrice * tradeQty):
+        # Update account cash value
         acc.cash -= tradePrice * tradeQty
         db.session.commit()
 
         addTrade(accId, "Market", "Buy", "Executed", 
                     tradeDate, ticker, tradePrice, tradeQty)
 
+        # accStock existence check
         accStock = AccStock.query.filter_by(accId = accId, ticker = ticker).first()
 
+        # updates the accStock if it exists, adds one if not
         if (accStock):
             accStock.stockQty += tradeQty
             db.session.commit()
         else:
             addAccStock(accId, ticker, tradeQty)
+
         return "Success"
 
     return "Error: Not enough funds in account"
             
+# Sells a stock using the market order option
 def sellMarket(accId, ticker, tradeQty):
+    # Initial set up of grabbing the account, accStock
+    # stockprice and the current time
     acc = Acc.query.get(accId)
     accStock = AccStock.query.filter_by(accId = accId, ticker = ticker).first()
     tradePrice = Stock.query.get(ticker).currPrice
     tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+
+    # Checks if the account has enough stocks 
+    # and to return success or error based on that
     if (accStock and accStock.stockQty >= tradeQty):
+        # update account cash value
         acc.cash += tradePrice * tradeQty
 
         addTrade(accId, "Market", "Sell", "Executed", 
                     tradeDate, ticker, tradePrice, tradeQty)
         
+        # removes accStock if it reaches 0 or simply subtracts the amount
         if (accStock.stockQty == tradeQty):
             db.session.delete(accStock)
             db.session.commit()
         else:
             accStock.stockQty -= tradeQty
             db.session.commit()
+
         return "Success"
     
     return "Error: Not enough shares to sell"
 
+# Transfers funds from one account to another. 
+# Can involve an outside account in either direction or between accounts
 def doTransfer(sendAccId, receiveAccId, transferAmt):
+    # Initial set up of grabbing accounts and the current time
     sendAcc = Acc.query.get(sendAccId)
     receiveAcc = Acc.query.get(receiveAccId)
     date = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
 
+    # Allows the transfer if there is an external account
+    # or the sender account has enough money
     if (sendAcc == None or sendAcc.cash > transferAmt):
         addTransfer(sendAccId, receiveAccId, transferAmt, date)
 
+        # Removes cash from sender account if it's internal
         if (sendAcc):
             sendAcc.cash -= transferAmt
             db.session.commit()
 
+        # Adds cash to the receiver account if it's internal
         if (receiveAcc):
             receiveAcc.cash += transferAmt
             db.session.commit()
@@ -150,12 +176,10 @@ def testStock(ticker, currPrice, highPrice, lowPrice, openPrice, prevClosePrice)
 #function that updates the stock table
 #can add a new stock or update the stock prices
 def fillStocks():
-    for x in STOCK_LIST:
-        ticker = list(x.keys())[0]
-        description = x[ticker]
+    for ticker, description in STOCK_LIST.items():
         data = get_stock_quote(ticker)
         price = handle_quote_data(data)
-        existing_stock = Stock.query.filter_by(ticker=ticker).first()
+        existing_stock = Stock.query.get(ticker)
         
         if existing_stock is not None:
             #update stock prices
