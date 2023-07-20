@@ -71,12 +71,19 @@ type Transfer {
     date: String!
 }
 
+type DisplayBar {
+    total: Float!
+    invest: Float!
+    cash: Float!
+}
+
 type Query {
     trades: [Trade]!
     stocks: [Stock]!
     oneStock(input: TickerInput): Stock!
     holdings(input: AccIdInput): [Holding]!
     activity(input: AccIdInput): [Activity]!
+    displayBar(input: AccIdInput): DisplayBar!
 }
 
 type Mutation {
@@ -85,9 +92,7 @@ type Mutation {
         accID: Int!
         type: OrderType!
         side: OrderSide!
-        status: OrderStatus!
         ticker: String!
-        tradePrice: Float!
         tradeQty: Int!
     ): String
 
@@ -95,6 +100,5 @@ type Mutation {
         sendAccId: Int!
         receiveAccId: Int!
         transferAmt: Float!
-        date: String!
     ): String
 }

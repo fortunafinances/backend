@@ -8,13 +8,14 @@ from constants import STOCK_LIST
 from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
 from dataProcessing import handle_metadata, handle_quote_data
 
-# TODO REVAMP
-# Inserting a user into the database
-def addUser(username, email):
+def addUser(username, nickname, email, picture):
     user = User(
         username = username,
+        nickname = nickname,
         email = email,
         # dateOfBirth = dateOfBirth,
+        picture = picture,
+        
         registerDate = date.today()
     )
     db.session.add(user)

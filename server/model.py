@@ -52,18 +52,12 @@ class Trade:
                 accID,
                 type,
                 side,
-                status,
-                date,
                 ticker,
-                tradePrice,
                 tradeQty):
        self.accID = accID
        self.type = type
        self.side = side
-       self.status = status
-       self.date = date
        self.ticker = ticker
-       self.tradePrice = tradePrice
        self.tradeQty = tradeQty
 
 class Holding:
@@ -80,6 +74,12 @@ class Activity:
         self.description = description
         self.amount = amount
 
+class DisplayBar:
+    def __init__(self, total, invest, cash):
+        self.total = total
+        self.invest = invest
+        self.cash = cash
+
 #####################################################
 #                   MUTATIONS                       #
 #####################################################
@@ -91,34 +91,32 @@ def resolve_trade_order(_, info,
         accID,
         type,
         side,
-        status,
         ticker,
-        tradePrice,
         tradeQty):
-    date = 'dateshouldnotbeinserted'
     message = 'Trade Error in FLask Server resolve_trade_order function'
     if type == "Market":
         if side == "Buy":
-            message = inserters.buyMarket(accID, ticker, tradeQty, date)
+            message = inserters.buyMarket(accID, ticker, tradeQty)
         if side == "Sell":
-            message = inserters.sellMarket(accID, ticker, tradeQty, date)
+            message = inserters.sellMarket(accID, ticker, tradeQty)
     if type == "Limit":
+        status = "Placed"
+        date = "notrealdateforlimit"
+        tradePrice = "45"
         inserters.addTrade(accID, type, side, status, date, ticker, tradePrice, tradeQty)
         message = "Limit functionality has not been fully implemented"
     return message
 
 @mutation.field("insertTransfer")
-def resolve_trade_order(_, info,
+def resolve_transfer_order(_, info,
         sendAccId,
         receiveAccId,
-        transferAmt,
-        date
+        transferAmt
         ):
     
-    inserters.addTransfer(sendAccId, 
+    inserters.doTransfer(sendAccId, 
                           receiveAccId, 
-                          transferAmt, 
-                          date)
+                          transferAmt)
     
     return "Transfer Inserted"
 
@@ -132,6 +130,18 @@ def resolve_orders(_, info):
     # query database to get list of trades
     return orders
 
+# returns a information for the display bar
+@query.field("displayBar")
+def resolve_holdings(_, info, input):
+    account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
+    db_display_bar = getters.getDisplayBar(account_id)
+    new_display_bar = DisplayBar( 
+            db_display_bar["total"],
+            db_display_bar["invest"],
+            db_display_bar["cash"]
+        )
+    return new_display_bar
+
 # returns a list of holdings for an account ID to display on the
 # holdings table
 @query.field("holdings")
@@ -142,7 +152,7 @@ def resolve_holdings(_, info, input):
     returned_holdings = []
     for holding in db_holdings:
 
-        new_stock = resolve_one_stock(None, holding)
+        new_stock = resolve_one_stock(None, None, holding)
         new_holding = Holding( 
             account_id,
             holding["stockQty"],
@@ -199,10 +209,9 @@ def resolve_activity(_, info, input):
 
     return returned_activities
 
-# returns a list of activities for an account ID to display on the
-# activity table
+# returns one stock given that stocks ticker
 @query.field("oneStock")
-def resolve_one_stock(_, input):
+def resolve_one_stock(_, info, input):
     ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput
 
     stock = getters.getStock(ticker_input) # buzz method
