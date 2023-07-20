@@ -31,17 +31,26 @@ Go to the address where your server is running on and go to `/graphql` (http://1
 1. Allow scripts to run on your device 
     1. Run command prompt as administrator and enter powershell to start powershell
     2. use the command `Get-ExecutionPolicy` to view what permissions you have to run scripts on your device
-    3. If your policy is `Restricted` or anything other than `AllSigned`, use the command `Set-ExecutionPolicy -ExecutionPolicy AllSigned` to allow scripts to be run on your device 
+    3. If your policy is `Restricted` or anything other than `AllSigned`, use this command to allow scripts to be run on your device 
+    
+        `Set-ExecutionPolicy -ExecutionPolicy AllSigned` 
+        
 
-2. Install virtualenv by using the command `pip install virtualenv`
+2. Install virtualenv by using the command 
+
+    `pip install virtualenv`
 
 3. Create a virtual environment
     1. navigate to the root directory
-    2. to create a directory called "venv", run the command `virtualenv venv`
+    2. to create a directory called "venv", run the command 
+    
+        `virtualenv venv`
 
 4. `cd` to the root folder. Activate the virtual environment by running the commmand `.\\venv\Scripts\activate`. (venv) should appear at the begining of each command line
 
-5. Install all packages by running `pip install -r requirements.txt`
+5. Install all packages by running 
+
+    `pip install -r requirements.txt`
 
 6. Add venv/ to your `.gitignore` file so that venv/ does not get pushed to version control. **Every developer will have their own virtual environment on their own device.** 
 

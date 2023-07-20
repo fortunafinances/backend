@@ -2,7 +2,7 @@ from ariadne import QueryType, MutationType
 from uuid import uuid4
 import json 
 import sys
-sys.path.insert(1, '../dummy_data') 
+sys.path.insert(1, '../mockData') 
 import fake_holdings
 
 sys.path.insert(1, '../database')

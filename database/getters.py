@@ -45,7 +45,7 @@ def getHoldings(accId):
 def getStock(ticker):
     stock = Stock.query.get(ticker)
     return stock.serialize()
-
+    
 # Returns a list of all of the stocks
 def getStocks():
     stocks = (Stock.query.all())
