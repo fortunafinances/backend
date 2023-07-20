@@ -2,7 +2,7 @@ from ariadne import QueryType, MutationType
 from uuid import uuid4
 import json 
 import sys
-sys.path.insert(1, '../dummy_data') 
+sys.path.insert(1, '../mockData') 
 import fake_holdings
 
 sys.path.insert(1, '../database')
@@ -67,12 +67,10 @@ class Trade:
        self.tradeQty = tradeQty
 
 class Holding:
-    def __init__(self, accountId, ticker, name, stockQuantity, price):
+    def __init__(self, accountId, stockQuantity, stock):
         self.accountId = accountId
-        self.ticker = ticker
-        self.name = name
         self.stockQuantity = stockQuantity
-        self.price = price
+        self.stock = stock
         
 class Activity:
     def __init__(self, accountId, date, type, description, amount):
@@ -143,12 +141,12 @@ def resolve_holdings(_, info, input):
 
     returned_holdings = []
     for holding in db_holdings:
+
+        new_stock = resolve_one_stock(None, holding)
         new_holding = Holding( 
             account_id,
-            holding["ticker"],
-            "no name yet",
             holding["stockQty"],
-            holding["currPrice"]
+            new_stock
         )
         returned_holdings.append(new_holding)
 
@@ -200,6 +198,30 @@ def resolve_activity(_, info, input):
         returned_activities.append(new_activity)
 
     return returned_activities
+
+# returns a list of activities for an account ID to display on the
+# activity table
+@query.field("oneStock")
+def resolve_one_stock(_, input):
+    ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput
+
+    stock = getters.getStock(ticker_input) # buzz method
+    returned_stock = Stock(
+                stock["ticker"],
+                stock["companyName"],
+                stock["currPrice"],
+                stock["highPrice"],
+                stock["lowPrice"],
+                stock["openPrice"],
+                stock["prevClosePrice"],
+                stock["businessDescription"],
+                stock["sector"],
+                stock["country"],
+                stock["website"],
+                stock["officerTitle"],
+                stock["officerName"]
+    )
+    return returned_stock
 
 
 @query.field("stocks")
