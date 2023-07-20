@@ -52,18 +52,12 @@ class Trade:
                 accID,
                 type,
                 side,
-                status,
-                date,
                 ticker,
-                tradePrice,
                 tradeQty):
        self.accID = accID
        self.type = type
        self.side = side
-       self.status = status
-       self.date = date
        self.ticker = ticker
-       self.tradePrice = tradePrice
        self.tradeQty = tradeQty
 
 class Holding:
@@ -97,18 +91,18 @@ def resolve_trade_order(_, info,
         accID,
         type,
         side,
-        status,
         ticker,
-        tradePrice,
         tradeQty):
-    date = 'dateshouldnotbeinserted'
     message = 'Trade Error in FLask Server resolve_trade_order function'
     if type == "Market":
         if side == "Buy":
-            message = inserters.buyMarket(accID, ticker, tradeQty, date)
+            message = inserters.buyMarket(accID, ticker, tradeQty)
         if side == "Sell":
-            message = inserters.sellMarket(accID, ticker, tradeQty, date)
+            message = inserters.sellMarket(accID, ticker, tradeQty)
     if type == "Limit":
+        status = "Placed"
+        date = "notrealdateforlimit"
+        tradePrice = "45"
         inserters.addTrade(accID, type, side, status, date, ticker, tradePrice, tradeQty)
         message = "Limit functionality has not been fully implemented"
     return message

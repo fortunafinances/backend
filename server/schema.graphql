@@ -92,9 +92,7 @@ type Mutation {
         accID: Int!
         type: OrderType!
         side: OrderSide!
-        status: OrderStatus!
         ticker: String!
-        tradePrice: Float!
         tradeQty: Int!
     ): String
 
