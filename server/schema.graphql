@@ -23,6 +23,16 @@ input TickerInput {
     ticker: String!
 }
 
+input UserIdInput {
+    userId: String!
+}
+
+type Account {
+    accId: Int!
+    name: String!
+    cash: Float!
+}
+
 # Order displays trade information
 # transfers are not included in orders
 type Order {
@@ -86,6 +96,7 @@ type Query {
     holdings(input: AccIdInput): [Holding]!
     activity(input: AccIdInput): [Activity]!
     displayBar(input: AccIdInput): DisplayBar!
+    accounts(input: UserIdInput): [Account]!
 }
 
 type Mutation {
