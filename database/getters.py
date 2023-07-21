@@ -72,6 +72,7 @@ def getActivity(accID):
 def getTrades(accID):
     trades = (Trade.query.filter_by(accId = accID).all())
     list_of_trades = [trade.serialize() for trade in trades]
+    
     return list_of_trades
 
 #helper method that returns a list of all the transfers associated with a certain account id
