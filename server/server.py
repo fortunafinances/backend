@@ -81,7 +81,7 @@ def hello_world():
 @app.route("/test")
 def test():
     
-    return datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+    return getters.getUserAccs(1)
     
 @app.route("/createMockDb")
 def createMockDb():

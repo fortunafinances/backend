@@ -52,6 +52,10 @@ def getStocks():
     list_of_stocks = [stock.serialize() for stock in stocks]
     return list_of_stocks
 
+def getUserAccs(userId):
+    accs = User.query.get(userId).accs
+    return [acc.serialize() for acc in accs]
+
 # Returns a list of all of the accs
 def getAccs():
     accs = (Acc.query.all())
@@ -68,6 +72,7 @@ def getActivity(accID):
 def getTrades(accID):
     trades = (Trade.query.filter_by(accId = accID).all())
     list_of_trades = [trade.serialize() for trade in trades]
+    
     return list_of_trades
 
 #helper method that returns a list of all the transfers associated with a certain account id

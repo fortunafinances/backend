@@ -8,9 +8,9 @@ from getters import *
 # TODO REVAMP
 # WILL BE REVAMPED AFTER AUTHENTICATION IMPLEMENTATION
 def initUsers():
-    addUser("user1", "user1@email.com", "2002-11-29")
-    addUser("user2", "user2@email.com", "1998-01-03")
-    addUser("user3", "user3@email.com", "2000-04-17")
+    addUser("user1", "user1@email.com")
+    addUser("user2", "user2@email.com")
+    addUser("user3", "user3@email.com")
 
 def initAccs():
     addAcc("user1's brokerage account", 1, 10000.00)
