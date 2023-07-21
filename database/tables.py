@@ -10,9 +10,9 @@ class User(db.Model):
     # This data is fed from auth0 through frontend
     userId = db.Column(db.String, primary_key = True)
     username = db.Column(db.String, nullable = False)
-    nickname = db.Column(db.String, nullable = False)
+    #nickname = db.Column(db.String, nullable = False)
     email = db.Column(db.String, nullable = False)
-    picture = db.Column(db.String, nullable = True)
+    #picture = db.Column(db.String, nullable = True)
     # dateOfBirth = db.Column(db.String, nullable = False)
     registerDate = db.Column(db.String, nullable = False)
 
@@ -23,7 +23,7 @@ class User(db.Model):
             "nickname": self.nickname,
             "email": self.email,
             "picture": self.picture,
-            # "dateOfBirth": self.dateOfBirth,
+            "dateOfBirth": self.dateOfBirth,
             "registerDate": self.registerDate
         }
 

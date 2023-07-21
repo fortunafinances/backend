@@ -92,6 +92,12 @@ class DisplayBar:
         self.invest = invest
         self.cash = cash
 
+class Account:
+    def __init__(self, accId, name, cash):
+        self.accId = accId
+        self.name = name
+        self.cash = cash
+
 #####################################################
 #                   MUTATIONS                       #
 #####################################################
@@ -136,6 +142,20 @@ def resolve_transfer_order(_, info,
 #####################################################
 #                   QUERIES                         #
 #####################################################
+@query.field("accounts")
+def resolve_accounts(_, info, input):
+    userId = input.get("userId")  # gets the accId field from the input type AccIdInput
+    accounts = getters.getUserAccs(userId)
+    returned_accounts = []
+    for account in accounts:
+        new_account = Account(
+            account["userId"],
+            account["name"],
+            account["cash"]
+        )
+        returned_accounts.append(new_account)
+    return returned_accounts
+
 
 @query.field("orders")
 def resolve_orders(_, info, input):
