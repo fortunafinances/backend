@@ -1,4 +1,5 @@
 
+######################### ENUMS ################################
 enum OrderSide {
     Buy
     Sell
@@ -14,6 +15,7 @@ enum OrderStatus {
     Placed
     Executed
 }
+######################### INPUTS ################################
 
 input AccIdInput {
     accId: Int!
@@ -26,6 +28,8 @@ input TickerInput {
 input UserIdInput {
     userId: String!
 }
+
+######################### TYPES ################################
 
 type Account {
     accId: Int!
@@ -89,6 +93,18 @@ type DisplayBar {
     cash: Float!
 }
 
+type User {
+    userId: String!
+    username: String!
+    nickname: String
+    email: String
+    picture: String
+    dateOfBirth: String
+
+}
+
+######################### QUERIES ################################
+
 type Query {
     oneStock(input: TickerInput): Stock!
     stocks: [Stock]!
@@ -98,6 +114,8 @@ type Query {
     displayBar(input: AccIdInput): DisplayBar!
     accounts(input: UserIdInput): [Account]!
 }
+
+######################### MUTATIONS ################################
 
 type Mutation {
 
