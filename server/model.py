@@ -149,7 +149,7 @@ def resolve_accounts(_, info, input):
     returned_accounts = []
     for account in accounts:
         new_account = Account(
-            account["userId"],
+            account["accId"],
             account["name"],
             account["cash"]
         )
