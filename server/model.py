@@ -65,6 +65,18 @@ class Holding:
         self.accountId = accountId
         self.stockQuantity = stockQuantity
         self.stock = stock
+
+class Order:
+    def __init__(self, accountId, type, side, status, tradePrice, tradeQty, date, stock):
+        self.accId = accountId
+        self.type = type
+        self.side = side
+        self.status = status
+        self.tradePrice = tradePrice
+        self.tradeQty = tradeQty
+        self.date = date
+        self.stock = stock
+
         
 class Activity:
     def __init__(self, accountId, date, type, description, amount):
@@ -125,10 +137,28 @@ def resolve_transfer_order(_, info,
 #                   QUERIES                         #
 #####################################################
 
-@query.field("trades")
-def resolve_orders(_, info):
-    # query database to get list of trades
-    return orders
+@query.field("orders")
+def resolve_orders(_, info, input):
+    account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
+    db_trades = getters.getTrades(account_id)
+    
+    returned_orders = []
+    for trade in db_trades:
+
+        new_stock = resolve_one_stock(None, None, trade)
+        new_order = Order( 
+            account_id,
+            trade["type"],
+            trade["side"],
+            trade["status"],
+            trade["tradePrice"],
+            trade["tradeQty"],
+            trade["tradeDate"],
+            new_stock
+        )
+        returned_orders.append(new_order)
+
+    return returned_orders
 
 # returns a information for the display bar
 @query.field("displayBar")
