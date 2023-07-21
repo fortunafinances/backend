@@ -146,7 +146,6 @@ def resolve_transfer_order(_, info,
 def resolve_accounts(_, info, input):
     userId = input.get("userId")  # gets the accId field from the input type AccIdInput
     accounts = getters.getUserAccs(userId)
-    print(accounts, file=sys.stdout)
     returned_accounts = []
     for account in accounts:
         new_account = Account(
