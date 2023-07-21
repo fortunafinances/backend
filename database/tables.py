@@ -23,7 +23,7 @@ class User(db.Model):
             "nickname": self.nickname,
             "email": self.email,
             "picture": self.picture,
-            # "dateOfBirth": self.dateOfBirth,
+            "dateOfBirth": self.dateOfBirth,
             "registerDate": self.registerDate
         }
 
