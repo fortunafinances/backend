@@ -35,6 +35,7 @@ class Acc(db.Model):
     userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
     name = db.Column(db.String, nullable = False)
     cash = db.Column(db.Float, nullable = False)
+    user = db.relationship("User", backref = db.backref("accs"), lazy = True)
 
     def serialize(self):
         return {

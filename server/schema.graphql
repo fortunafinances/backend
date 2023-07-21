@@ -23,15 +23,17 @@ input TickerInput {
     ticker: String!
 }
 
-# Trade is a buy or sell of a stock
-type Trade {
-    accID: Int!
+# Order displays trade information
+# transfers are not included in orders
+type Order {
+    accId: Int!
     type: OrderType!
     side: OrderSide!
     status: OrderStatus!
-    ticker: String!
     tradePrice: Float!
     tradeQty: Int!
+    date: String!
+    stock: Stock!
 }
 
 type Holding {
@@ -78,9 +80,9 @@ type DisplayBar {
 }
 
 type Query {
-    trades: [Trade]!
-    stocks: [Stock]!
     oneStock(input: TickerInput): Stock!
+    stocks: [Stock]!
+    orders(input: AccIdInput): [Order]!
     holdings(input: AccIdInput): [Holding]!
     activity(input: AccIdInput): [Activity]!
     displayBar(input: AccIdInput): DisplayBar!
@@ -92,9 +94,7 @@ type Mutation {
         accID: Int!
         type: OrderType!
         side: OrderSide!
-        status: OrderStatus!
         ticker: String!
-        tradePrice: Float!
         tradeQty: Int!
     ): String
 
@@ -102,6 +102,5 @@ type Mutation {
         sendAccId: Int!
         receiveAccId: Int!
         transferAmt: Float!
-        date: String!
     ): String
 }
