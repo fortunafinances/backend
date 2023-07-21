@@ -4,16 +4,14 @@ from sqlalchemy.sql import func
 # Database import for model creating
 db = SQLAlchemy()
 
-# TODO REVAMP
-# WILL BE REVAMPED AFTER AUTHENTICATION IMPLEMENTATION
 class User(db.Model):
     # This data is fed from auth0 through frontend
     userId = db.Column(db.String, primary_key = True)
     username = db.Column(db.String, nullable = False)
-    #nickname = db.Column(db.String, nullable = False)
+    nickname = db.Column(db.String, nullable = False)
     email = db.Column(db.String, nullable = False)
-    #picture = db.Column(db.String, nullable = True)
-    # dateOfBirth = db.Column(db.String, nullable = False)
+    picture = db.Column(db.String, nullable = True)
+    dateOfBirth = db.Column(db.String, nullable = False)
     registerDate = db.Column(db.String, nullable = False)
 
     def serialize(self):

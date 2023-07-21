@@ -101,6 +101,20 @@ class Account:
 #####################################################
 #                   MUTATIONS                       #
 #####################################################
+@mutation.field("insertUser")
+def resolve_insert_user(_, info,
+        userId,
+        username,
+        nickname,
+        email,
+        picture,
+        dateOfBirth
+        ):
+    message = 'Trade Error in FLask Server resolve_insert_user function'
+    inserters.addUser(userId, username, nickname, email, picture, dateOfBirth)
+    return "User Inserted"
+
+
 
 # This resolver is for when the frontend executes a BUY
 # or SELL trade 
