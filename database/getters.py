@@ -10,6 +10,39 @@ def testRelations():
     # gets the tradePrice of the 0th trade in the orders array
     print(trades[0].tradePrice)
 
+def getSectorValue(accId, sector):
+    sectorSum = 0.0
+    sectorStocks = db.session.query(Acc, AccStock, Stock) \
+        .join(AccStock, Acc.accId == AccStock.accId) \
+        .join(Stock, AccStock.ticker == Stock.ticker) \
+        .filter(Acc.accId == accId, Stock.sector == sector)
+    
+    for sectorStock in sectorStocks:
+        sectorSum += sectorStock[1].stockQty * sectorStock[2].currPrice
+
+    return sectorSum
+
+def getPieStats(accId):
+    sectors = db.session.query(Stock.sector).distinct()
+    stats = dict()
+    
+    for sector in sectors:
+        sectorValue = getSectorValue(accId, sector[0])
+        if (sectorValue != 0.0):
+            stats[sector[0]] = sectorValue
+
+    return stats
+
+def getHoldingsValue(accId):
+    acc = (Acc.query.get(accId))
+    invest = 0.0
+
+    # For loop to add up all of the investments 
+    for accStock in acc.accStocks:
+        invest += (Stock.query.get(accStock.ticker)).currPrice * accStock.stockQty
+    
+    return invest
+
 # Returns an account's monetary values in terms of total assets,
 # investments and cash
 def getDisplayBar(accId):
@@ -46,11 +79,17 @@ def getStock(ticker):
     stock = Stock.query.get(ticker)
     return stock.serialize()
     
+def getSectorStocks(sector):
+    return Stock.query.filter(Stock.sector == sector) 
+
 # Returns a list of all of the stocks
 def getStocks():
     stocks = (Stock.query.all())
     list_of_stocks = [stock.serialize() for stock in stocks]
     return list_of_stocks
+
+def getUserAcc(accId):
+    return (Acc.query.get(accId)).serialize()
 
 def getUserAccs(userId):
     accs = User.query.get(userId).accs
