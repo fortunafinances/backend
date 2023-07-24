@@ -94,12 +94,15 @@ type DisplayBar {
 }
 
 type User {
-    userId: String!
-    username: String!
+    userId: ID!
+    onboardingComplete: Boolean
+    username: String
     nickname: String
     email: String
     picture: String
     dateOfBirth: String
+    apiMessage: String
+    userAlreadyExisted: Boolean
 }
 
 ######################### QUERIES ################################
@@ -118,11 +121,12 @@ type Query {
 
 type Mutation {
     insertUser(
-        userId: String!
-        username: String!
-        nickname: String!
-        email: String!
-        dateOfBirth: String!
+        userId: ID!
+        onboardingComplete: Boolean!
+        username: String
+        nickname: String
+        email: String
+        dateOfBirth: String
         picture: String
     ): User
 
