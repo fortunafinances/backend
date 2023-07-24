@@ -7,10 +7,8 @@ import sys
 #from fsi-23-bos-back-end.database.inserters import fillStocks
 from stockAPI.dataProcessing import handle_metadata
 from flask_cors import CORS, cross_origin
-from model import query, mutation
-from stockAPI.apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
+from stockAPI.apiRequests import get_stock_metadata, get_stock_quote
 from usersApi import api_blueprint
-import sys
 
 # Database file imports
 sys.path.insert(0, '../database')
@@ -20,6 +18,11 @@ from tables import db
 
 sys.path.insert(0, '../mockData')
 import mockDb
+import stockConfig
+
+sys.path.insert(0, './graphQL')
+from mutations import mutation
+from queries import query
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -54,7 +57,7 @@ require_auth.register_token_validator(validator)
 
 EXPLORER_HTML = ExplorerGraphiQL().html(None)
 
-type_defs = gql(load_schema_from_path("schema.graphql"))
+type_defs = gql(load_schema_from_path('./graphQL/schema.graphql'))
 schema = make_executable_schema(type_defs, query, mutation)
 app = Flask(__name__)
 CORS(app)
@@ -84,7 +87,7 @@ def test():
     
 @app.route("/createMockDb")
 def createMockDb():
-    inserters.fillStocks()
+    stockConfig.fillStocks()
     mockDb.initUsers()
     mockDb.initAccs()
     mockDb.initBuyMarket()
