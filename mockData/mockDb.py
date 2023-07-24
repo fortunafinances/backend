@@ -7,9 +7,9 @@ from getters import *
 
 
 def initUsers():
-    addUser("AUTHuser1", "username1", "usr1nickname", "user1@email.com", "picture", "03212000")
-    addUser("AUTHuser2", "username2", "usr2nickname", "user2@email.com", "picture", "01301995")
-    addUser("AUTHuser3", "username3", "usr3nickname", "user3@email.com", "picture", "12012001")
+    addUser("AUTHuser1", "username1", "usr1nickname", "user1@email.com", "picture", "03212000", True)
+    addUser("AUTHuser2", "username2", "usr2nickname", "user2@email.com", "picture", "01301995", True)
+    addUser("AUTHuser3", "username3", "usr3nickname", "user3@email.com", "picture", "12012001", True)
 
 def initAccs():
     addAcc("user1's brokerage account", "AUTHuser1", 10000.00)

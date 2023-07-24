@@ -17,15 +17,15 @@ mutation = MutationType()
 @mutation.field("insertUser")
 def resolve_insert_user(_, info,
         userId,
-        username,
-        nickname,
-        email,
-        dateOfBirth,
-        picture = 'NoPictureGiven'
+        onboardingComplete,
+        username = None,
+        nickname = None,
+        email = None,
+        dateOfBirth = None,
+        picture = None
         ):
-    message = 'Trade Error in FLask Server resolve_insert_user function'
-    inserters.addUser(userId, username, nickname, email, picture, dateOfBirth)
-    new_user = User(userId, username, nickname, email, dateOfBirth, picture)
+    message, userAlreadyExisted = inserters.addUser(userId, username, nickname, email, picture, dateOfBirth, onboardingComplete)
+    new_user = User(userId, username, nickname, email, dateOfBirth, picture, message, userAlreadyExisted, onboardingComplete)
     return new_user
 
 
