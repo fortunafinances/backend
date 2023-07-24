@@ -8,14 +8,14 @@ from constants import STOCK_LIST
 from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
 from dataProcessing import handle_metadata, handle_quote_data
 
-def addUser(userId, username, nickname, email, picture, dateOfBirth):
+def addUser(userId, username, nickname, email, dateOfBirth, picture):
     user = User(
         userId = userId,
         username = username,
         nickname = nickname,
         email = email,
-        picture = picture,
         dateOfBirth = dateOfBirth,
+        picture = picture,
         registerDate = date.today(),
     )
     db.session.add(user)

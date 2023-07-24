@@ -124,7 +124,7 @@ type Mutation {
         email: String!
         dateOfBirth: String!
         picture: String
-    ): String
+    ): User
 
     insertTrade(
         accID: Int!
