@@ -157,11 +157,11 @@ def resolve_transfer_order(_, info,
         transferAmt
         ):
     
-    inserters.doTransfer(sendAccId, 
+    message = inserters.doTransfer(sendAccId, 
                           receiveAccId, 
                           transferAmt)
     
-    return "Transfer Inserted"
+    return message
 
 
 #####################################################
