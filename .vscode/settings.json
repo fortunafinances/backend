@@ -3,6 +3,7 @@
         "./database",
         "./server",
         "./mockData",
-        "./authentication"
+        "./authentication",
+        "./server/graphQL"
     ]
 }
