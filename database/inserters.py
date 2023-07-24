@@ -1,8 +1,16 @@
 from tables import db, User, Acc, AccStock, User, Trade, Transfer, Stock
 from datetime import datetime, date
 import pytz
+from sqlalchemy import exc
+import sys
 
-def addUser(userId, username, nickname, email, dateOfBirth, picture):
+def addUser(userId, username, nickname, email, dateOfBirth, picture, onboardingComplete):
+    existing_user = User.query.get(userId)
+    if existing_user is not None:  # if the user already exists
+        updateUser(existing_user, username, nickname, email, dateOfBirth, picture, onboardingComplete)
+        db.session.commit()
+        return "userId already exists, necessary fields were updated", True 
+    
     user = User(
         userId = userId,
         username = username,
@@ -11,9 +19,31 @@ def addUser(userId, username, nickname, email, dateOfBirth, picture):
         dateOfBirth = dateOfBirth,
         picture = picture,
         registerDate = date.today(),
+        onboardingComplete = onboardingComplete
     )
+
     db.session.add(user)
     db.session.commit()
+    return "Success", False
+
+
+def updateUser(existing_user, username, nickname, email, dateOfBirth, picture, onboardingComplete):
+    # the below functionality only updates the field if it has been provided by the frontend
+    # a default value of None is given for non inserted fields in graphql
+    if username is not None:
+        existing_user.username = username
+    if nickname is not None:
+        existing_user.nickname = nickname
+    if email is not None:
+        existing_user.email = email
+    if dateOfBirth is not None:
+        existing_user.dateOfBirth = dateOfBirth
+    if picture is not None:
+        existing_user.picture = picture
+    if onboardingComplete is not None:
+        existing_user.onboardingComplete = onboardingComplete
+    
+
 
 # Inserting an account into the database.
 def addAcc(name, userId, cash):
