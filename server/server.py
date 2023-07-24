@@ -5,12 +5,10 @@ from ariadne.explorer import ExplorerGraphiQL
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from dataProcessing import handle_metadata
-sys.path.insert(0, '../database')
-from inserters import *
+from stockAPI.dataProcessing import handle_metadata
 from flask_cors import CORS, cross_origin
 from model import query, mutation
-from apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
+from stockAPI.apiRequests import get_stock_list, get_stock_metadata, get_stock_quote
 from usersApi import api_blueprint
 import sys
 
@@ -18,6 +16,7 @@ import sys
 sys.path.insert(0, '../database')
 import inserters
 import getters
+from tables import db
 
 sys.path.insert(0, '../mockData')
 import mockDb
@@ -81,11 +80,11 @@ def hello_world():
 @app.route("/test")
 def test():
     
-    return getters.getUserAcc(1)
+    return getters.getUserAccs(1)
     
 @app.route("/createMockDb")
 def createMockDb():
-    fillStocks()
+    inserters.fillStocks()
     mockDb.initUsers()
     mockDb.initAccs()
     mockDb.initBuyMarket()

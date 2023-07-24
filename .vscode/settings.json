@@ -1,6 +1,8 @@
 {
     "python.analysis.extraPaths": [
         "./database",
-        "./server"
+        "./server",
+        "./mockData",
+        "./authentication"
     ]
 }
