@@ -98,6 +98,16 @@ class Account:
         self.name = name
         self.cash = cash
 
+class User:
+    def __init__(self, userId, username, nickname, email, dateOfBirth, picture):
+        self.userId = userId
+        self.username = username
+        self.nickname = nickname
+        self.email = email
+        self.dateOfBirth = dateOfBirth
+        self.picture = picture
+
+
 #####################################################
 #                   MUTATIONS                       #
 #####################################################
@@ -112,7 +122,8 @@ def resolve_insert_user(_, info,
         ):
     message = 'Trade Error in FLask Server resolve_insert_user function'
     inserters.addUser(userId, username, nickname, email, picture, dateOfBirth)
-    return "User Inserted"
+    new_user = User(userId, username, nickname, email, dateOfBirth, picture)
+    return new_user
 
 
 
@@ -146,11 +157,11 @@ def resolve_transfer_order(_, info,
         transferAmt
         ):
     
-    message = inserters.doTransfer(sendAccId, 
+    inserters.doTransfer(sendAccId, 
                           receiveAccId, 
                           transferAmt)
     
-    return message
+    return "Transfer Inserted"
 
 
 #####################################################
