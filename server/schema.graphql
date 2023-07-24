@@ -100,7 +100,6 @@ type User {
     email: String
     picture: String
     dateOfBirth: String
-
 }
 
 ######################### QUERIES ################################
@@ -118,6 +117,14 @@ type Query {
 ######################### MUTATIONS ################################
 
 type Mutation {
+    insertUser(
+        userId: String!
+        username: String!
+        nickname: String!
+        email: String!
+        dateOfBirth: String!
+        picture: String
+    ): String
 
     insertTrade(
         accID: Int!

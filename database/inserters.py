@@ -14,7 +14,6 @@ def addUser(userId, username, nickname, email, picture, dateOfBirth):
         username = username,
         nickname = nickname,
         email = email,
-        # dateOfBirth = dateOfBirth,
         picture = picture,
         dateOfBirth = dateOfBirth,
         registerDate = date.today(),

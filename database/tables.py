@@ -4,16 +4,14 @@ from sqlalchemy.sql import func
 # Database import for model creating
 db = SQLAlchemy()
 
-# TODO REVAMP
-# WILL BE REVAMPED AFTER AUTHENTICATION IMPLEMENTATION
 class User(db.Model):
     # This data is fed from auth0 through frontend
     userId = db.Column(db.String, primary_key = True)
     username = db.Column(db.String, nullable = False)
-    #nickname = db.Column(db.String, nullable = False)
+    nickname = db.Column(db.String, nullable = False)
     email = db.Column(db.String, nullable = False)
-    #picture = db.Column(db.String, nullable = True)
-    # dateOfBirth = db.Column(db.String, nullable = False)
+    picture = db.Column(db.String, nullable = True)
+    dateOfBirth = db.Column(db.String, nullable = False)
     registerDate = db.Column(db.String, nullable = False)
 
     def serialize(self):
@@ -32,7 +30,7 @@ class User(db.Model):
 # the user it belongs to and the amount of cash in the account
 class Acc(db.Model):
     accId = db.Column(db.Integer, primary_key = True)
-    userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
+    userId = db.Column(db.String, db.ForeignKey("user.userId"), nullable = False)
     name = db.Column(db.String, nullable = False)
     cash = db.Column(db.Float, nullable = False)
     user = db.relationship("User", backref = db.backref("accs"), lazy = True)
