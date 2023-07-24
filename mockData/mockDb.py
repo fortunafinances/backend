@@ -5,20 +5,19 @@ sys.path.insert(0, '../database')
 from inserters import *
 from getters import *
 
-# TODO REVAMP
-# WILL BE REVAMPED AFTER AUTHENTICATION IMPLEMENTATION
+
 def initUsers():
-    addUser("user1", "user1@email.com")
-    addUser("user2", "user2@email.com")
-    addUser("user3", "user3@email.com")
+    addUser("AUTHuser1", "username1", "usr1nickname", "user1@email.com", "picture", "03212000")
+    addUser("AUTHuser2", "username2", "usr2nickname", "user2@email.com", "picture", "01301995")
+    addUser("AUTHuser3", "username3", "usr3nickname", "user3@email.com", "picture", "12012001")
 
 def initAccs():
-    addAcc("user1's brokerage account", 1, 10000.00)
-    addAcc("user1's retirement account", 1, 5000.00)
-    addAcc("user1's college fund account", 1, 2600.00)
+    addAcc("user1's brokerage account", "AUTHuser1", 10000.00)
+    addAcc("user1's retirement account", "AUTHuser1", 5000.00)
+    addAcc("user1's college fund account", "AUTHuser1", 2600.00)
 
-    addAcc("user2's brokerage account", 2, 3000.00)
-    addAcc("user3's brokerage account", 3, 7000.00)
+    addAcc("user2's brokerage account", "AUTHuser2", 3000.00)
+    addAcc("user3's brokerage account", "AUTHuser3", 7000.00)
 
 def initBuyMarket():
     stocks = getStocks()

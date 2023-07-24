@@ -107,8 +107,8 @@ def resolve_insert_user(_, info,
         username,
         nickname,
         email,
-        picture,
-        dateOfBirth
+        dateOfBirth,
+        picture = 'NoPictureGiven'
         ):
     message = 'Trade Error in FLask Server resolve_insert_user function'
     inserters.addUser(userId, username, nickname, email, picture, dateOfBirth)
@@ -146,11 +146,11 @@ def resolve_transfer_order(_, info,
         transferAmt
         ):
     
-    inserters.doTransfer(sendAccId, 
+    message = inserters.doTransfer(sendAccId, 
                           receiveAccId, 
                           transferAmt)
     
-    return "Transfer Inserted"
+    return message
 
 
 #####################################################

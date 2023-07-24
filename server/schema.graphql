@@ -122,8 +122,8 @@ type Mutation {
         username: String!
         nickname: String!
         email: String!
-        picture: String
         dateOfBirth: String!
+        picture: String
     ): String
 
     insertTrade(

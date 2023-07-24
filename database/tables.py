@@ -30,7 +30,7 @@ class User(db.Model):
 # the user it belongs to and the amount of cash in the account
 class Acc(db.Model):
     accId = db.Column(db.Integer, primary_key = True)
-    userId = db.Column(db.Integer, db.ForeignKey("user.userId"), nullable = False)
+    userId = db.Column(db.String, db.ForeignKey("user.userId"), nullable = False)
     name = db.Column(db.String, nullable = False)
     cash = db.Column(db.Float, nullable = False)
     user = db.relationship("User", backref = db.backref("accs"), lazy = True)
