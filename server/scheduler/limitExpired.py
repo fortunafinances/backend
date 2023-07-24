@@ -1,1 +1,1 @@
-#changes status of expired limit orders from 
+#changes status of expired limit orders from placed to expired
