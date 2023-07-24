@@ -1,7 +1,7 @@
 from flask import jsonify
 import json
 import requests
-from dataProcessing import handle_quote_data
+from stockAPI.dataProcessing import handle_quote_data
 from dotenv import load_dotenv
 import os
 
