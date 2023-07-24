@@ -17,15 +17,23 @@ mutation = MutationType()
 @mutation.field("insertUser")
 def resolve_insert_user(_, info,
         userId,
-        onboardingComplete,
+        onboardingComplete = None,
         username = None,
         nickname = None,
         email = None,
-        dateOfBirth = None,
-        picture = None
+        picture = None,
+        dateOfBirth = None
         ):
-    message, userAlreadyExisted = inserters.addUser(userId, username, nickname, email, picture, dateOfBirth, onboardingComplete)
-    new_user = User(userId, username, nickname, email, dateOfBirth, picture, message, userAlreadyExisted, onboardingComplete)
+    message, userAlreadyExisted, returned_user = inserters.addUser(userId, username, nickname, email, picture, dateOfBirth, onboardingComplete)
+    new_user = User(returned_user.userId, 
+                    returned_user.username, 
+                    returned_user.nickname, 
+                    returned_user.email,
+                    returned_user.picture,
+                    returned_user.dateOfBirth,
+                    message, 
+                    userAlreadyExisted, 
+                    returned_user.onboardingComplete)
     return new_user
 
 

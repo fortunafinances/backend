@@ -4,30 +4,30 @@ import pytz
 from sqlalchemy import exc
 import sys
 
-def addUser(userId, username, nickname, email, dateOfBirth, picture, onboardingComplete):
+def addUser(userId, username, nickname, email, picture, dateOfBirth, onboardingComplete):
     existing_user = User.query.get(userId)
     if existing_user is not None:  # if the user already exists
-        updateUser(existing_user, username, nickname, email, dateOfBirth, picture, onboardingComplete)
+        updated_user = updateUser(existing_user, username, nickname, email, picture, dateOfBirth, onboardingComplete)
         db.session.commit()
-        return "userId already exists, necessary fields were updated", True 
+        return "userId already exists, necessary fields were updated", True, updated_user
     
     user = User(
         userId = userId,
         username = username,
         nickname = nickname,
         email = email,
-        dateOfBirth = dateOfBirth,
         picture = picture,
+        dateOfBirth = dateOfBirth,
         registerDate = date.today(),
-        onboardingComplete = onboardingComplete
+        onboardingComplete = False
     )
 
     db.session.add(user)
     db.session.commit()
-    return "Success", False
+    return "Success", False, user
 
 
-def updateUser(existing_user, username, nickname, email, dateOfBirth, picture, onboardingComplete):
+def updateUser(existing_user, username, nickname, email, picture, dateOfBirth, onboardingComplete):
     # the below functionality only updates the field if it has been provided by the frontend
     # a default value of None is given for non inserted fields in graphql
     if username is not None:
@@ -42,6 +42,8 @@ def updateUser(existing_user, username, nickname, email, dateOfBirth, picture, o
         existing_user.picture = picture
     if onboardingComplete is not None:
         existing_user.onboardingComplete = onboardingComplete
+    
+    return existing_user
     
 
 
