@@ -81,7 +81,7 @@ def hello_world():
 @app.route("/test")
 def test():
     
-    return getters.getUserAccs(1)
+    return getters.getUserAcc(1)
     
 @app.route("/createMockDb")
 def createMockDb():
