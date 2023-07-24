@@ -1,0 +1,1 @@
+#checks database against open limit order prices
