@@ -67,11 +67,11 @@ def getHoldings(accId):
     for holding in accStocks:
         stock = Stock.query.get(holding.ticker)
         holdings.append({
+            "accStockId": holding.accStockId,
             "ticker": holding.ticker,
             "stockQty": holding.stockQty,
             "currPrice": stock.currPrice
             })
-        
     return holdings
 
 # Returns the contents of a singular stock
