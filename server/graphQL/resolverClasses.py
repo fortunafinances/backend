@@ -86,21 +86,23 @@ class Account:
 class User:
     def __init__(self, userId, 
                 username, 
-                nickname, 
+                firstName,
+                lastName, 
                 email,
+                phoneNumber,
                 picture,
-                dateOfBirth,   
-                apiMessage, 
-                userAlreadyExisted, 
+                bankName,   
+                registerDate,
                 onboardingComplete):
         self.userId = userId
         self.username = username
-        self.nickname = nickname
+        self.firstName = firstName
+        self.lastName = lastName
         self.email = email
+        self.phoneNumber = phoneNumber
         self.picture = picture
-        self.dateOfBirth = dateOfBirth
-        self.apiMessage = apiMessage
-        self.userAlreadyExisted = userAlreadyExisted
+        self.bankName = bankName
+        self.registerDate = registerDate
         self.onboardingComplete = onboardingComplete
 
 class PieData:
@@ -112,6 +114,11 @@ class PieData:
 
 
 ################ RETURN CLASSES #########################
+class ReturnUser:
+    def __init__(self, user, message):
+        self.user = user
+        self.message = message
+
 class ReturnAccount:
     def __init__(self, account, message):
         self.account = account

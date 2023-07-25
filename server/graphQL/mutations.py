@@ -2,7 +2,7 @@ from ariadne import MutationType
 from uuid import uuid4
 import sys
 
-from resolverClasses import User, Account, ReturnAccount
+from resolverClasses import User, Account, ReturnAccount, ReturnUser
 
 sys.path.insert(1, '../database')
 import inserters
@@ -19,22 +19,27 @@ def resolve_insert_user(_, info,
         userId,
         onboardingComplete = None,
         username = None,
-        nickname = None,
+        firstName = None,
+        lastName = None,
         email = None,
+        phoneNumber = None,
         picture = None,
-        dateOfBirth = None
+        bankName = None
         ):
-    message, userAlreadyExisted, returned_user = inserters.addUser(userId, username, nickname, email, picture, dateOfBirth, onboardingComplete)
+    message, returned_user = inserters.addUser(userId, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete)
     new_user = User(returned_user.userId, 
                     returned_user.username, 
-                    returned_user.nickname, 
+                    returned_user.firstName, 
+                    returned_user.lastName,
                     returned_user.email,
+                    returned_user.phoneNumber,
                     returned_user.picture,
-                    returned_user.dateOfBirth,
-                    message, 
-                    userAlreadyExisted, 
+                    returned_user.bankName,
+                    returned_user.registerDate,
                     returned_user.onboardingComplete)
-    return new_user
+    
+    return_user = ReturnUser(new_user, message)
+    return return_user
 
 @mutation.field("insertAccount")
 def resolve_insert_account(_, info, name, userId):
