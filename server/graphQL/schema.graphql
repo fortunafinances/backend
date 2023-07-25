@@ -131,6 +131,7 @@ type Query {
     displayBar(input: AccIdInput): DisplayBar!
     accounts(input: UserIdInput): [Account]!
     pieData(input:AccIdInput): PieData!
+    allAccValue(input: UserIdInput): Float!
 }
 
 ######################### MUTATIONS ################################
