@@ -2,7 +2,7 @@ from ariadne import MutationType
 from uuid import uuid4
 import sys
 
-from resolverClasses import User
+from resolverClasses import User, Account, ReturnAccount, ReturnUser
 
 sys.path.insert(1, '../database')
 import inserters
@@ -17,17 +17,36 @@ mutation = MutationType()
 @mutation.field("insertUser")
 def resolve_insert_user(_, info,
         userId,
-        username,
-        nickname,
-        email,
-        dateOfBirth,
-        picture = 'NoPictureGiven'
+        onboardingComplete = None,
+        username = None,
+        firstName = None,
+        lastName = None,
+        email = None,
+        phoneNumber = None,
+        picture = None,
+        bankName = None
         ):
-    message = 'Trade Error in FLask Server resolve_insert_user function'
-    inserters.addUser(userId, username, nickname, email, picture, dateOfBirth)
-    new_user = User(userId, username, nickname, email, dateOfBirth, picture)
-    return new_user
+    message, returned_user = inserters.addUser(userId, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete)
+    new_user = User(returned_user.userId, 
+                    returned_user.username, 
+                    returned_user.firstName, 
+                    returned_user.lastName,
+                    returned_user.email,
+                    returned_user.phoneNumber,
+                    returned_user.picture,
+                    returned_user.bankName,
+                    returned_user.registerDate,
+                    returned_user.onboardingComplete)
+    
+    return_user = ReturnUser(new_user, message)
+    return return_user
 
+@mutation.field("insertAccount")
+def resolve_insert_account(_, info, name, userId):
+    db_acc, message = inserters.addAcc(name, userId, 0)
+    new_account = Account(db_acc.accId, db_acc.name, db_acc.cash) 
+    return_account = ReturnAccount(new_account, message)
+    return return_account
 
 
 # This resolver is for when the frontend executes a BUY

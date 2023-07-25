@@ -7,22 +7,28 @@ db = SQLAlchemy()
 class User(db.Model):
     # This data is fed from auth0 through frontend
     userId = db.Column(db.String, primary_key = True)
-    username = db.Column(db.String, nullable = False)
-    nickname = db.Column(db.String, nullable = False)
-    email = db.Column(db.String, nullable = False)
+    username = db.Column(db.String, nullable = True)
+    firstName = db.Column(db.String, nullable = True)
+    lastName = db.Column(db.String, nullable = True)
+    email = db.Column(db.String, nullable = True)
+    phoneNumber = db.Column(db.String, nullable = True)
     picture = db.Column(db.String, nullable = True)
-    dateOfBirth = db.Column(db.String, nullable = False)
+    bankName = db.Column(db.String, nullable = True)
     registerDate = db.Column(db.String, nullable = False)
+    onboardingComplete = db.Column(db.Boolean, nullable = False)
 
     def serialize(self):
         return {
             "userId": self.userId,
             "username": self.username,
-            "nickname": self.nickname,
+            "firstName": self.firstName,
+            "lastName": self.lastName,
             "email": self.email,
+            "phoneNumber": self.phoneNumber,
             "picture": self.picture,
-            "dateOfBirth": self.dateOfBirth,
-            "registerDate": self.registerDate
+            "bankName": self.bankName,
+            "registerDate": self.registerDate,
+            "onboardingComplete": self.onboardingComplete
         }
 
 # The accounts table

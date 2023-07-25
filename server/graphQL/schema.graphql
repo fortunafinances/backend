@@ -29,10 +29,35 @@ input UserIdInput {
     userId: String!
 }
 
+######################### RETURN TYPES ##########################
+type UserReturn {
+    user: User
+    message: String
+}
+
+type AccountReturn {
+    account: Account
+    message: String
+}
+
+
+
 ######################### TYPES ################################
+type User {
+    userId: ID!
+    onboardingComplete: Boolean
+    username: String
+    firstName: String
+    lastName: String
+    email: String
+    phoneNumber: String
+    picture: String
+    bankName: String
+    registerDate: String
+}
 
 type Account {
-    accId: Int!
+    accId: ID!
     name: String!
     cash: Float!
 }
@@ -40,6 +65,7 @@ type Account {
 # Order displays trade information
 # transfers are not included in orders
 type Order {
+    id: ID!
     accId: Int!
     type: OrderType!
     side: OrderSide!
@@ -51,13 +77,15 @@ type Order {
 }
 
 type Holding {
-    accountId: String!
+    id: ID!
+    accId: String!
     stockQuantity: Int!
     stock: Stock!
 }
 
 type Activity {
-    accountId: Int!
+    id: ID!
+    accId: Int!
     date: String!
     type: String!
     description: String!
@@ -93,14 +121,13 @@ type DisplayBar {
     cash: Float!
 }
 
-type User {
-    userId: String!
-    username: String!
-    nickname: String
-    email: String
-    picture: String
-    dateOfBirth: String
+type PieData {
+    labels: [String]
+    values: [Float]
+    message: String
 }
+
+
 
 ######################### QUERIES ################################
 
@@ -112,19 +139,29 @@ type Query {
     activity(input: AccIdInput): [Activity]!
     displayBar(input: AccIdInput): DisplayBar!
     accounts(input: UserIdInput): [Account]!
+    pieData(input:AccIdInput): PieData!
+    allAccValue(input: UserIdInput): Float!
 }
 
 ######################### MUTATIONS ################################
 
 type Mutation {
     insertUser(
-        userId: String!
-        username: String!
-        nickname: String!
-        email: String!
-        dateOfBirth: String!
+        userId: ID!
+        onboardingComplete: Boolean
+        username: String
+        firstName: String
+        lastName: String
+        email: String
+        phoneNumber: String
         picture: String
-    ): User
+        bankName: String
+        ): UserReturn
+
+    insertAccount(
+        name: String!
+        userId: ID!
+    ): AccountReturn
 
     insertTrade(
         accID: Int!

@@ -1,19 +1,57 @@
 from tables import db, User, Acc, AccStock, User, Trade, Transfer, Stock
 from datetime import datetime, date
 import pytz
+from sqlalchemy import exc
+import sys
 
-def addUser(userId, username, nickname, email, dateOfBirth, picture):
+def addUser(userId, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete):
+    existing_user = User.query.get(userId)
+    if existing_user is not None:  # if the user already exists
+        updated_user = updateUser(existing_user, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete)
+        db.session.commit()
+        return "userId already exists, necessary fields were updated", updated_user
+    
     user = User(
         userId = userId,
         username = username,
-        nickname = nickname,
+        firstName = firstName,
+        lastName = lastName,
         email = email,
-        dateOfBirth = dateOfBirth,
+        phoneNumber = phoneNumber,
         picture = picture,
+        bankName = bankName,
         registerDate = date.today(),
+        onboardingComplete = False
     )
+
     db.session.add(user)
     db.session.commit()
+    return "Success", user
+
+
+def updateUser(existing_user, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete):
+    # the below functionality only updates the field if it has been provided by the frontend
+    # a default value of None is given for non inserted fields in graphql
+    if username is not None:
+        existing_user.username = username
+    if firstName is not None:
+        existing_user.firstName = firstName
+    if lastName is not None:
+        existing_user.lastName = lastName
+    if email is not None:
+        existing_user.email = email
+    if phoneNumber is not None:
+        existing_user.phoneNumber = phoneNumber
+    if picture is not None:
+        existing_user.picture = picture
+    if bankName is not None:
+        existing_user.bankName = bankName
+    if onboardingComplete is not None:
+        existing_user.onboardingComplete = onboardingComplete
+    
+    return existing_user
+    
+
 
 # Inserting an account into the database.
 def addAcc(name, userId, cash):
@@ -24,6 +62,7 @@ def addAcc(name, userId, cash):
     )
     db.session.add(acc)
     db.session.commit()
+    return acc, "Account Inserted"
 
 # Inserting an accStock into the database
 def addAccStock(accId, ticker, stockQty):

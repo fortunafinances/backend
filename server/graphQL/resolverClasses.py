@@ -46,13 +46,15 @@ class Trade:
        self.tradeQty = tradeQty
 
 class Holding:
-    def __init__(self, accountId, stockQuantity, stock):
-        self.accountId = accountId
+    def __init__(self, id, accId, stockQuantity, stock):
+        self.id = id
+        self.accId = accId
         self.stockQuantity = stockQuantity
         self.stock = stock
 
 class Order:
-    def __init__(self, accountId, type, side, status, tradePrice, tradeQty, date, stock):
+    def __init__(self, id, accountId, type, side, status, tradePrice, tradeQty, date, stock):
+        self.id = id
         self.accId = accountId
         self.type = type
         self.side = side
@@ -64,8 +66,9 @@ class Order:
 
         
 class Activity:
-    def __init__(self, accountId, date, type, description, amount):
-        self.accountId = accountId
+    def __init__(self, id, accId, date, type, description, amount):
+        self.id = id
+        self.accId = accId
         self.date = date
         self.type = type
         self.description = description
@@ -84,10 +87,42 @@ class Account:
         self.cash = cash
 
 class User:
-    def __init__(self, userId, username, nickname, email, dateOfBirth, picture):
+    def __init__(self, userId, 
+                username, 
+                firstName,
+                lastName, 
+                email,
+                phoneNumber,
+                picture,
+                bankName,   
+                registerDate,
+                onboardingComplete):
         self.userId = userId
         self.username = username
-        self.nickname = nickname
+        self.firstName = firstName
+        self.lastName = lastName
         self.email = email
-        self.dateOfBirth = dateOfBirth
+        self.phoneNumber = phoneNumber
         self.picture = picture
+        self.bankName = bankName
+        self.registerDate = registerDate
+        self.onboardingComplete = onboardingComplete
+
+class PieData:
+    def __init__(self, dic_labels_values, message):
+        self.labels = list(dic_labels_values.keys())
+        self.values = list(dic_labels_values.values())
+        self.message = message
+
+
+
+################ RETURN CLASSES #########################
+class ReturnUser:
+    def __init__(self, user, message):
+        self.user = user
+        self.message = message
+
+class ReturnAccount:
+    def __init__(self, account, message):
+        self.account = account
+        self.message = message

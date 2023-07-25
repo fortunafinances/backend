@@ -7,17 +7,22 @@ from getters import *
 
 
 def initUsers():
-    addUser("AUTHuser1", "username1", "usr1nickname", "user1@email.com", "picture", "03212000")
-    addUser("AUTHuser2", "username2", "usr2nickname", "user2@email.com", "picture", "01301995")
-    addUser("AUTHuser3", "username3", "usr3nickname", "user3@email.com", "picture", "12012001")
+    addUser("AUTHuser1", "tyj", "Tyler", "Jones", "tyjones@email.com", "4017324554", "picture", "Fortuna", True)
+    addUser("AUTHuser2", "jr1", "JR", "Byers", "jr@email.com", "6174357213", "picture", "Fortuna", True)
+    addUser("AUTHuser3", "claudia27", "Claudia", "Alves", "claudia_alves@email.com", "6177320019", "picture", "Fortuna", True)
+
+    # This needs to be done twice because the first time a user is added their onboarding is set to false
+    addUser("AUTHuser1", "tyj", "Tyler", "Jones", "tyjones@email.com", "4017324554", "picture", "Fortuna", True)
+    addUser("AUTHuser2", "jr1", "JR", "Byers", "jr@email.com", "6174357213", "picture", "Fortuna", True)
+    addUser("AUTHuser3", "claudia27", "Claudia", "Alves", "claudia_alves@email.com", "6177320019", "picture", "Fortuna", True)
 
 def initAccs():
-    addAcc("user1's brokerage account", "AUTHuser1", 10000.00)
-    addAcc("user1's retirement account", "AUTHuser1", 5000.00)
-    addAcc("user1's college fund account", "AUTHuser1", 2600.00)
+    addAcc("Brokerage account", "AUTHuser1", 10000.00)
+    addAcc("Retirement account", "AUTHuser1", 5000.00)
+    addAcc("College fund account", "AUTHuser1", 2600.00)
 
-    addAcc("user2's brokerage account", "AUTHuser2", 3000.00)
-    addAcc("user3's brokerage account", "AUTHuser3", 7000.00)
+    addAcc("Brokerage account", "AUTHuser2", 3000.00)
+    addAcc("Brokerage account", "AUTHuser3", 7000.00)
 
 def initBuyMarket():
     stocks = getStocks()
