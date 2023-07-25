@@ -65,6 +65,7 @@ type Account {
 # Order displays trade information
 # transfers are not included in orders
 type Order {
+    id: ID!
     accId: Int!
     type: OrderType!
     side: OrderSide!
@@ -76,6 +77,7 @@ type Order {
 }
 
 type Holding {
+    id: ID!
     accountId: String!
     stockQuantity: Int!
     stock: Stock!

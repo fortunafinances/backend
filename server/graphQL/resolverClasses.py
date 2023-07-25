@@ -46,13 +46,15 @@ class Trade:
        self.tradeQty = tradeQty
 
 class Holding:
-    def __init__(self, accountId, stockQuantity, stock):
+    def __init__(self, id, accountId, stockQuantity, stock):
+        self.id = id
         self.accountId = accountId
         self.stockQuantity = stockQuantity
         self.stock = stock
 
 class Order:
-    def __init__(self, accountId, type, side, status, tradePrice, tradeQty, date, stock):
+    def __init__(self, id, accountId, type, side, status, tradePrice, tradeQty, date, stock):
+        self.id = id
         self.accId = accountId
         self.type = type
         self.side = side

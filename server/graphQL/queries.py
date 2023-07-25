@@ -34,7 +34,8 @@ def resolve_orders(_, info, input):
     for trade in db_trades:
 
         new_stock = resolve_one_stock(None, None, trade)
-        new_order = Order( 
+        new_order = Order(
+            trade["tradeId"],
             account_id,
             trade["type"],
             trade["side"],
@@ -72,6 +73,7 @@ def resolve_holdings(_, info, input):
 
         new_stock = resolve_one_stock(None, None, holding)
         new_holding = Holding( 
+            holding["accStockId"],
             account_id,
             holding["stockQty"],
             new_stock
