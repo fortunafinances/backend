@@ -1,10 +1,15 @@
 import asyncio
 import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+pschat_token = os.environ.get('PSCHAT_TOKEN')
 
 async def getGPTData(topic, modelType):
     # pass in token to headers for authentication 
     headers = {
-        "Authorization": f"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJpZCI6MjE0MDksInJvbGVzIjpbImRlZmF1bHQiXSwicGF0aWQiOiI0NjBkMzRkZS0xNjlkLTRlZTItYWE4Ni0yMzcxMWIxNTY5NDIifSwiaWF0IjoxNjkwMzA3MzgwLCJleHAiOjE2OTI4OTkzODB9.fa7Mf3g6MoeOO6SfYQ79b8ORB9vAlwv9lUVjj-ZCZ4M",
+        "Authorization": f"Bearer " + pschat_token,
         "Content-Type": "application/json",
     }
     data = {
@@ -40,7 +45,6 @@ async def main():
     modelType = "gpt35turbo"
     result = await getGPTData(topic, modelType)
     print(result)
-
 
 # Run the event loop
 asyncio.run(main())
