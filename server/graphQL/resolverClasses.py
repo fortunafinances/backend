@@ -103,6 +103,14 @@ class User:
         self.userAlreadyExisted = userAlreadyExisted
         self.onboardingComplete = onboardingComplete
 
+class PieData:
+    def __init__(self, dic_labels_values, message):
+        self.labels = list(dic_labels_values.keys())
+        self.values = list(dic_labels_values.values())
+        self.message = message
+
+
+
 ################ RETURN CLASSES #########################
 class ReturnAccount:
     def __init__(self, account, message):
