@@ -43,19 +43,21 @@ def getHoldingsValue(accId):
     
     return invest
 
+def getAccTotalValue(accId):
+    acc = Acc.query.get(accId)
+    
+    return (getHoldingsValue(accId) + acc.cash)
+
 # Returns an account's monetary values in terms of total assets,
 # investments and cash
 def getDisplayBar(accId):
     acc = (Acc.query.get(accId))
-    total = 0
-    invest = 0    
-
-    # For loop to add up all of the investments 
-    for accStock in acc.accStocks:
-        invest += (Stock.query.get(accStock.ticker)).currPrice * accStock.stockQty
-    total = acc.cash + invest
     
-    return {"total": total, "invest": invest, "cash": acc.cash}
+    return {
+        "total": getAccTotalValue(accId), 
+        "invest": getHoldingsValue(accId), 
+        "cash": acc.cash
+        }
 
 # Returns a list of stocks that the account owns and the respective
 # prices of those stocks
@@ -79,6 +81,10 @@ def getStock(ticker):
     stock = Stock.query.get(ticker)
     return stock.serialize()
     
+def getStockHistory(ticker):
+    stockHistory = StockHistory.query.filter(StockHistory.ticker == ticker)
+    return [stockLog.serialize() for stockLog in stockHistory]
+
 def getSectorStocks(sector):
     return Stock.query.filter(Stock.sector == sector) 
 

@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 import sys
+# import time
+# from multiprocessing import Process
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
 from stockAPI.dataProcessing import handle_metadata
@@ -19,10 +21,14 @@ from tables import db
 sys.path.insert(0, '../mockData')
 import mockDb
 import stockConfig
+from constants import SP_500
 
 sys.path.insert(0, './graphQL')
 from mutations import mutation
 from queries import query
+
+sys.path.insert(0, './scheduler')
+from historicalProcessing import runHistoryUpdates
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -83,7 +89,7 @@ def hello_world():
 @app.route("/test")
 def test():
     
-    return getters.getUserAccs(1)
+    return getters.getStockHistory(SP_500)
     
 @app.route("/createMockDb")
 def createMockDb():
@@ -209,5 +215,14 @@ app.register_blueprint(api_blueprint)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+    runHistoryUpdates()
+        # appProcess = Process(target=app.run, kwargs={"debug":True})
+        # scheduleProcess = Process(target=testMultiprocessing)
+
+        # scheduleProcess.start()
+        # appProcess.start()
+    
+        # appProcess.join()
+        # scheduleProcess.join()
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer

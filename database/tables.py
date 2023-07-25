@@ -43,6 +43,21 @@ class Acc(db.Model):
             "cash": self.cash
         }
 
+class AccHistory(db.Model):
+    accHistoryId = db.Column(db.Integer, primary_key = True)
+    accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
+    value = db.Column(db.Float, nullable = False)
+    date = db.Column(db.String, nullable = False)
+    acc = db.relationship("Acc", backref = db.backref("accHistory"), lazy = True)
+
+    def serialize(self):
+        return {
+            "accHistoryId": self.accHistoryId,
+            "accId": self.accId,
+            "value": self.value,
+            "date": self.date
+        }
+
 # The AccStock table
 # Includes data on the name of the stock,
 # which account it belongs to and 
@@ -102,6 +117,20 @@ class Stock(db.Model):
             "officerName": self.officerName
         }
 
+class StockHistory(db.Model):
+    stockHistoryId = db.Column(db.Integer, primary_key = True)
+    ticker = db.Column(db.String, nullable = False)
+    price = db.Column(db.Float, nullable = False)
+    date = db.Column(db.String, nullable = False)
+
+    def serialize(self):
+        return {
+            "stockHistoryId": self.stockHistoryId,
+            "ticker": self.ticker,
+            "price": self.price,
+            "date": self.date,
+        }
+    
 # The trade table
 # Includes data on the trade's type, side, status,
 # trade date, ticker, trade price and qty with a 
