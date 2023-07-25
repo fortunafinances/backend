@@ -29,10 +29,18 @@ input UserIdInput {
     userId: String!
 }
 
+######################### RETURN TYPES ##########################
+type AccountReturn {
+    account: Account
+    message: String
+}
+
+
+
 ######################### TYPES ################################
 
 type Account {
-    accId: Int!
+    accId: ID!
     name: String!
     cash: Float!
 }
@@ -129,6 +137,11 @@ type Mutation {
         picture: String
         dateOfBirth: String
     ): User
+
+    insertAccount(
+        name: String!
+        userId: ID!
+    ): AccountReturn
 
     insertTrade(
         accID: Int!
