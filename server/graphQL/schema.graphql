@@ -78,14 +78,14 @@ type Order {
 
 type Holding {
     id: ID!
-    accountId: String!
+    accId: String!
     stockQuantity: Int!
     stock: Stock!
 }
 
 type Activity {
     id: ID!
-    accountId: Int!
+    accId: Int!
     date: String!
     type: String!
     description: String!

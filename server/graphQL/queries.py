@@ -103,7 +103,7 @@ def resolve_activity(_, info, input):
                                 str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
         new_activity = Activity(
             id=trade["tradeId"],
-            accountId=trade["accId"],
+            accId=trade["accId"],
             date=trade["tradeDate"],
             type="Trade",
             description=new_description,
@@ -122,7 +122,7 @@ def resolve_activity(_, info, input):
         modified_id = str(transfer["transferId"]) + str(".5")
         new_activity = Activity(
             id=modified_id,
-            accountId=account_id,
+            accId=account_id,
             date=transfer["date"],
             type="Transfer",
             description=new_description,
