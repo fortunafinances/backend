@@ -30,6 +30,11 @@ input UserIdInput {
 }
 
 ######################### RETURN TYPES ##########################
+type UserReturn {
+    user: User
+    message: String
+}
+
 type AccountReturn {
     account: Account
     message: String
@@ -42,12 +47,13 @@ type User {
     userId: ID!
     onboardingComplete: Boolean
     username: String
-    nickname: String
+    firstName: String
+    lastName: String
     email: String
+    phoneNumber: String
     picture: String
-    dateOfBirth: String
-    apiMessage: String
-    userAlreadyExisted: Boolean
+    bankName: String
+    registerDate: String
 }
 
 type Account {
@@ -141,11 +147,13 @@ type Mutation {
         userId: ID!
         onboardingComplete: Boolean
         username: String
-        nickname: String
+        firstName: String
+        lastName: String
         email: String
+        phoneNumber: String
         picture: String
-        dateOfBirth: String
-    ): User
+        bankName: String
+        ): UserReturn
 
     insertAccount(
         name: String!
