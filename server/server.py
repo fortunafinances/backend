@@ -5,9 +5,7 @@ from ariadne.explorer import ExplorerGraphiQL
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from stockAPI.dataProcessing import handle_metadata
 from flask_cors import CORS, cross_origin
-from stockAPI.apiRequests import get_stock_metadata, get_stock_quote
 from usersApi import api_blueprint
 
 # Database file imports
@@ -23,6 +21,10 @@ import stockConfig
 sys.path.insert(0, './graphQL')
 from mutations import mutation
 from queries import query
+
+sys.path.insert(0, './stockAPI')
+from dataProcessing import handle_metadata
+from apiRequests import get_stock_metadata, get_stock_quote
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector

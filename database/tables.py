@@ -113,7 +113,7 @@ class Trade(db.Model):
     type = db.Column(db.String, nullable = False)
     # Possible sides: "Buy" and "Sell"
     side = db.Column(db.String, nullable = False)
-    # Possible statuses: "Placed" and "Executed"
+    # Possible statuses: "Placed" and "Executed" and "Expired"
     status = db.Column(db.String, nullable = False)
     tradeDate = db.Column(db.String, nullable = False)
     ticker = db.Column(db.String, nullable = False)

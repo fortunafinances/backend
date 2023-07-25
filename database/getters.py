@@ -114,6 +114,12 @@ def getTrades(accID):
     
     return list_of_trades
 
+#helper method that returns a list of all limit orders that have not been executed and have not expired
+def getLimit():
+    openLimitOrders = (Trade.query.filter_by(type = 'Limit', side = 'Placed').all())
+    listOfLimitOrders = [trade.serialize() for trade in openLimitOrders]
+    return listOfLimitOrders
+
 #helper method that returns a list of all the transfers associated with a certain account id
 def getTransfers(accID):
     #transfers = (Transfer.query.filter_by(acc_id = accID).all())
