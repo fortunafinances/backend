@@ -56,6 +56,7 @@ def addAcc(name, userId, cash):
     )
     db.session.add(acc)
     db.session.commit()
+    return acc, "Account Inserted"
 
 # Inserting an accStock into the database
 def addAccStock(accId, ticker, stockQty):

@@ -2,7 +2,7 @@ from ariadne import MutationType
 from uuid import uuid4
 import sys
 
-from resolverClasses import User
+from resolverClasses import User, Account, ReturnAccount
 
 sys.path.insert(1, '../database')
 import inserters
@@ -36,6 +36,12 @@ def resolve_insert_user(_, info,
                     returned_user.onboardingComplete)
     return new_user
 
+@mutation.field("insertAccount")
+def resolve_insert_account(_, info, name, userId):
+    db_acc, message = inserters.addAcc(name, userId, 0)
+    new_account = Account(db_acc.accId, db_acc.name, db_acc.cash) 
+    return_account = ReturnAccount(new_account, message)
+    return return_account
 
 
 # This resolver is for when the frontend executes a BUY

@@ -102,3 +102,9 @@ class User:
         self.apiMessage = apiMessage
         self.userAlreadyExisted = userAlreadyExisted
         self.onboardingComplete = onboardingComplete
+
+################ RETURN CLASSES #########################
+class ReturnAccount:
+    def __init__(self, account, message):
+        self.account = account
+        self.message = message
