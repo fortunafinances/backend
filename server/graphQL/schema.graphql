@@ -122,12 +122,12 @@ type Query {
 type Mutation {
     insertUser(
         userId: ID!
-        onboardingComplete: Boolean!
+        onboardingComplete: Boolean
         username: String
         nickname: String
         email: String
-        dateOfBirth: String
         picture: String
+        dateOfBirth: String
     ): User
 
     insertTrade(
