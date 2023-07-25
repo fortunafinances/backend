@@ -1,4 +1,4 @@
-from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock
+from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData
 from ariadne import QueryType
 
 import sys 
@@ -174,3 +174,11 @@ def resolve_stocks(_, info):
         returned_stocks.append(new_stock)
     
     return returned_stocks
+
+
+@query.field("pieData")
+def resolve_activity(_, info, input):
+    account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
+    db_pie_data, message = getters.getPieStats(account_id)
+    return_pie = PieData(db_pie_data, message)
+    return return_pie
