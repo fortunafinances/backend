@@ -11,6 +11,11 @@ def initUsers():
     addUser("AUTHuser2", "username2", "usr2nickname", "user2@email.com", "picture", "01301995", True)
     addUser("AUTHuser3", "username3", "usr3nickname", "user3@email.com", "picture", "12012001", True)
 
+    # This needs to be done twice because the first time a user is added their onboarding is set to false
+    addUser("AUTHuser1", "username1", "usr1nickname", "user1@email.com", "picture", "03212000", True)
+    addUser("AUTHuser2", "username2", "usr2nickname", "user2@email.com", "picture", "01301995", True)
+    addUser("AUTHuser3", "username3", "usr3nickname", "user3@email.com", "picture", "12012001", True)
+
 def initAccs():
     addAcc("user1's brokerage account", "AUTHuser1", 10000.00)
     addAcc("user1's retirement account", "AUTHuser1", 5000.00)

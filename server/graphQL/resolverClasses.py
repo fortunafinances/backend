@@ -84,13 +84,21 @@ class Account:
         self.cash = cash
 
 class User:
-    def __init__(self, userId, username, nickname, email, dateOfBirth, picture, apiMessage, userAlreadyExisted, onboardingComplete):
+    def __init__(self, userId, 
+                username, 
+                nickname, 
+                email,
+                picture,
+                dateOfBirth,   
+                apiMessage, 
+                userAlreadyExisted, 
+                onboardingComplete):
         self.userId = userId
         self.username = username
         self.nickname = nickname
         self.email = email
-        self.dateOfBirth = dateOfBirth
         self.picture = picture
+        self.dateOfBirth = dateOfBirth
         self.apiMessage = apiMessage
         self.userAlreadyExisted = userAlreadyExisted
         self.onboardingComplete = onboardingComplete
