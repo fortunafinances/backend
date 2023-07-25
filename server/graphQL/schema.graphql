@@ -38,6 +38,17 @@ type AccountReturn {
 
 
 ######################### TYPES ################################
+type User {
+    userId: ID!
+    onboardingComplete: Boolean
+    username: String
+    nickname: String
+    email: String
+    picture: String
+    dateOfBirth: String
+    apiMessage: String
+    userAlreadyExisted: Boolean
+}
 
 type Account {
     accId: ID!
@@ -101,17 +112,13 @@ type DisplayBar {
     cash: Float!
 }
 
-type User {
-    userId: ID!
-    onboardingComplete: Boolean
-    username: String
-    nickname: String
-    email: String
-    picture: String
-    dateOfBirth: String
-    apiMessage: String
-    userAlreadyExisted: Boolean
+type PieData {
+    labels: [String]
+    values: [Float]
+    message: String
 }
+
+
 
 ######################### QUERIES ################################
 
@@ -123,6 +130,7 @@ type Query {
     activity(input: AccIdInput): [Activity]!
     displayBar(input: AccIdInput): DisplayBar!
     accounts(input: UserIdInput): [Account]!
+    pieData(input:AccIdInput): PieData!
 }
 
 ######################### MUTATIONS ################################

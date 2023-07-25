@@ -31,7 +31,7 @@ def getPieStats(accId):
         if (sectorValue != 0.0):
             stats[sector[0]] = sectorValue
 
-    return stats
+    return stats, "Success"
 
 def getHoldingsValue(accId):
     acc = (Acc.query.get(accId))
