@@ -34,7 +34,8 @@ def resolve_orders(_, info, input):
     for trade in db_trades:
 
         new_stock = resolve_one_stock(None, None, trade)
-        new_order = Order( 
+        new_order = Order(
+            trade["tradeId"],
             account_id,
             trade["type"],
             trade["side"],
@@ -72,6 +73,7 @@ def resolve_holdings(_, info, input):
 
         new_stock = resolve_one_stock(None, None, holding)
         new_holding = Holding( 
+            holding["accStockId"],
             account_id,
             holding["stockQty"],
             new_stock
@@ -100,7 +102,8 @@ def resolve_activity(_, info, input):
             new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
                                 str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
         new_activity = Activity(
-            accountId=trade["accId"],
+            id=trade["tradeId"],
+            accId=trade["accId"],
             date=trade["tradeDate"],
             type="Trade",
             description=new_description,
@@ -116,8 +119,10 @@ def resolve_activity(_, info, input):
             transfer_amount *= -1
             new_description = 'Transfer out'
 
+        modified_id = str(transfer["transferId"]) + str(".5")
         new_activity = Activity(
-            accountId=account_id,
+            id=modified_id,
+            accId=account_id,
             date=transfer["date"],
             type="Transfer",
             description=new_description,
