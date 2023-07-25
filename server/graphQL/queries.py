@@ -12,7 +12,7 @@ query = QueryType()
 #####################################################
 @query.field("accounts")
 def resolve_accounts(_, info, input):
-    userId = input.get("userId")  # gets the accId field from the input type AccIdInput
+    userId = input.get("userId")  # gets the userId field from the input type UserIdInput
     accounts = getters.getUserAccs(userId)
     returned_accounts = []
     for account in accounts:
@@ -177,8 +177,20 @@ def resolve_stocks(_, info):
 
 
 @query.field("pieData")
-def resolve_activity(_, info, input):
+def resolve_pieData(_, info, input):
     account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
     db_pie_data, message = getters.getPieStats(account_id)
     return_pie = PieData(db_pie_data, message)
     return return_pie
+
+@query.field("allAccValue")
+def resolve_all_account_value(_, info, input):
+    userId = input.get("userId")  # gets the userId field from the input type UserIdInput
+    accounts = getters.getUserAccs(userId)
+
+    total = 0
+    for account in accounts:
+        account_info = getters.getDisplayBar(account.get('accId'))
+        total += account_info.get('total')
+
+    return total
