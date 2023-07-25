@@ -1,4 +1,4 @@
-from tables import db, User, Acc, AccStock, User, Trade, Transfer, Stock
+from tables import db, User, Acc, AccHistory, AccStock, User, Trade, Transfer, Stock, StockHistory
 from datetime import datetime, date
 import pytz
 from sqlalchemy import exc
@@ -64,6 +64,15 @@ def addAcc(name, userId, cash):
     db.session.commit()
     return acc, "Account Inserted"
 
+def addAccHistory(accId, value, date):
+    accHistory = AccHistory(
+        accId = accId,
+        value = value,
+        date = date
+    )
+    db.session.add(accHistory)
+    db.session.commit()
+
 # Inserting an accStock into the database
 def addAccStock(accId, ticker, stockQty):
     accStock = AccStock(
@@ -98,6 +107,15 @@ def addTransfer(sendAccId, receiveAccId, transferAmt, date):
         date = date,
     )
     db.session.add(transfer)
+    db.session.commit()
+
+def addStockHistory(ticker, price, date):
+    stockHistory = StockHistory(
+        ticker = ticker,
+        price = price,
+        date = date
+    )
+    db.session.add(stockHistory)
     db.session.commit()
 
 # Buys a stock using the market order option
