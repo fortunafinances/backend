@@ -84,6 +84,7 @@ type Holding {
 }
 
 type Activity {
+    id: ID!
     accountId: Int!
     date: String!
     type: String!

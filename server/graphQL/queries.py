@@ -102,6 +102,7 @@ def resolve_activity(_, info, input):
             new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
                                 str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
         new_activity = Activity(
+            id=trade["tradeId"],
             accountId=trade["accId"],
             date=trade["tradeDate"],
             type="Trade",
@@ -118,7 +119,9 @@ def resolve_activity(_, info, input):
             transfer_amount *= -1
             new_description = 'Transfer out'
 
+        modified_id = str(transfer["transferId"]) + str(".5")
         new_activity = Activity(
+            id=modified_id,
             accountId=account_id,
             date=transfer["date"],
             type="Transfer",

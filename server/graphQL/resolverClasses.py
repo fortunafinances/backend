@@ -66,7 +66,8 @@ class Order:
 
         
 class Activity:
-    def __init__(self, accountId, date, type, description, amount):
+    def __init__(self, id, accountId, date, type, description, amount):
+        self.id = id
         self.accountId = accountId
         self.date = date
         self.type = type
