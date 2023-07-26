@@ -141,6 +141,8 @@ class StockHistory(db.Model):
 # Includes data on the trade's type, side, status,
 # trade date, ticker, trade price and qty with a 
 # connection to an account
+
+
 class Trade(db.Model):
     tradeId = db.Column(db.Integer, primary_key = True)
     accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)

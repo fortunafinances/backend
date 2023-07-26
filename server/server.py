@@ -79,7 +79,6 @@ oauth = OAuth(app)
 @app.route('/')
 @cross_origin()
 def hello_world():
-    
     return 'Hello, World!'
 
 # Functionality testing route.
@@ -102,6 +101,7 @@ def createMockDb():
     mockDb.initTransferIn()
     mockDb.initTransferOut()
     mockDb.initTransferBetween()
+    runHistoryUpdates()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
