@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
-import time
+from flask_apscheduler import APScheduler
 
 import yfinance as yf
 from datetime import datetime, date
@@ -15,15 +15,7 @@ from tables import db, Acc, AccHistory, StockHistory
 sys.path.insert(0, '../../mockData')
 from constants import SP_500
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../../database/database.db'
-db.init_app(app)
-
-def testMultiprocessing():
-    while True:
-        time.sleep(2)
-        print("Hello!")
-        print("success")
+scheduler = APScheduler()
 
 def updateSP500():
     sp500 = yf.Ticker(SP_500)
@@ -54,11 +46,15 @@ def updateAccHistory():
             inserters.addAccHistory(acc["accId"], getters.getAccTotalValue(acc["accId"]), date.today())
         
 def runHistoryUpdates():        
-    with app.app_context():
-        db.create_all()
+    with scheduler.app.app_context():
         updateSP500()
         updateAccHistory()
-    
+        # print("this works")
+        # inserters.addAcc("test",1,4.20)
+
+def schedule_jobs():
+    scheduler.add_job(id = "test", func=runHistoryUpdates, trigger="interval", seconds = 10)
+
 
 # sp500Hist = list(sp500Hist["Close"])
 

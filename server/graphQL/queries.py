@@ -1,4 +1,4 @@
-from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory
+from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory, AccountHistory
 from ariadne import QueryType
 import asyncio
 import os
@@ -140,6 +140,28 @@ def resolve_activity(_, info, input):
         returned_activities.append(new_activity)
 
     return returned_activities
+
+@query.field("accountHistorical")
+def resolve_account_historical(_, info, input):
+    account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
+    account_history = getters.getAccHistory(account_id)
+
+    if account_history is None:
+        return AccountHistory(None, None, None, None, "ERROR: Account does not have history in database")
+
+    day_list = []
+    price_list = []
+    for item in account_history:
+        day_list.append(item["date"])
+        price_list.append(item["value"])
+
+    return_history = AccountHistory(account_history[0]["accHistoryId"],
+                                account_history[0]["accId"],
+                                price_list,
+                                day_list,
+                                "Success")
+    
+    return return_history
 
 # returns one stock given that stocks ticker
 @query.field("oneStock")

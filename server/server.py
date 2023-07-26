@@ -2,9 +2,8 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
+# from flask_apscheduler import APScheduler
 import sys
-# import time
-# from multiprocessing import Process
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
 from stockAPI.dataProcessing import handle_metadata
@@ -28,7 +27,7 @@ from mutations import mutation
 from queries import query
 
 sys.path.insert(0, './scheduler')
-from historicalProcessing import runHistoryUpdates
+from schedule import schedule_jobs, scheduler, runHistoryUpdates
 
 
 # Auth0 imports
@@ -73,6 +72,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
+
+scheduler.init_app(app)
+
 # Create an instance of OAuth
 oauth = OAuth(app)
 
@@ -88,8 +90,9 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    
-    return getters.getStockHistory(SP_500)
+    inserters.addAccHistory(1,7458.13, "2023-07-25")
+    print("bruh")
+    return str(getters.getAccHistory(1))
     
 @app.route("/createMockDb")
 def createMockDb():
@@ -213,17 +216,14 @@ Auth
 """
 app.register_blueprint(api_blueprint)
 
+def hello():
+    print("hello")
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    runHistoryUpdates()
-        # appProcess = Process(target=app.run, kwargs={"debug":True})
-        # scheduleProcess = Process(target=testMultiprocessing)
-
-        # scheduleProcess.start()
-        # appProcess.start()
-    
-        # appProcess.join()
-        # scheduleProcess.join()
+    #schedule_jobs()
+    #scheduler.start()
     app.run(debug=True)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer

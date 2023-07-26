@@ -48,6 +48,16 @@ def getAccTotalValue(accId):
     
     return (getHoldingsValue(accId) + acc.cash)
 
+def getUserTotalValue(userId):
+    accs = User.query.get(userId).accs
+    total = 0.0
+
+    for acc in accs:
+        total += getAccTotalValue(acc.accId)
+    
+    return total
+    
+
 # Returns an account's monetary values in terms of total assets,
 # investments and cash
 def getDisplayBar(accId):
@@ -100,6 +110,14 @@ def getUserAcc(accId):
 def getUserAccs(userId):
     accs = User.query.get(userId).accs
     return [acc.serialize() for acc in accs]
+
+def getAccHistory(accId):
+    try:
+        accHistory = Acc.query.get(accId).accHistory
+    except AttributeError:  # if the account ID doesn't exist
+        return None
+
+    return [accLog.serialize() for accLog in accHistory]
 
 # Returns a list of all of the accs
 def getAccs():
