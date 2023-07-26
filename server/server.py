@@ -30,6 +30,7 @@ from queries import query
 sys.path.insert(0, './scheduler')
 from historicalProcessing import runHistoryUpdates
 
+
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.integrations.flask_client import OAuth
