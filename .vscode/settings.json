@@ -5,6 +5,8 @@
         "./mockData",
         "./authentication",
         "./server/graphQL",
+        "./server/stockAPI",
+        "./server/scheduler",
         "./server/scheduler"
     ]
 }

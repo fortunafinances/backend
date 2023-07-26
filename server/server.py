@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify, make_response
+from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
-# from flask_apscheduler import APScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
+import logging
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from stockAPI.dataProcessing import handle_metadata
 from flask_cors import CORS, cross_origin
-from stockAPI.apiRequests import get_stock_metadata, get_stock_quote
 from usersApi import api_blueprint
 
 # Database file imports
@@ -19,16 +20,19 @@ from tables import db
 
 sys.path.insert(0, '../mockData')
 import mockDb
-import stockConfig
+from stockConfig import fillStocks
 from constants import SP_500
 
 sys.path.insert(0, './graphQL')
 from mutations import mutation
 from queries import query
 
+sys.path.insert(0, './stockAPI')
+from dataProcessing import handle_metadata
+from apiRequests import get_stock_metadata, get_stock_quote
+
 sys.path.insert(0, './scheduler')
 from schedule import schedule_jobs, scheduler
-
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -96,7 +100,7 @@ def test():
     
 @app.route("/createMockDb")
 def createMockDb():
-    stockConfig.fillStocks()
+    fillStocks()
     mockDb.initUsers()
     mockDb.initAccs()
     mockDb.initBuyMarket()
@@ -215,9 +219,6 @@ def testStocks():
 Auth
 """
 app.register_blueprint(api_blueprint)
-
-def hello():
-    print("hello")
 
 
 if __name__ == '__main__':
