@@ -114,6 +114,13 @@ class PieData:
         self.values = list(dic_labels_values.values())
         self.message = message
 
+class StockHistory:
+    def __init__(self, id, ticker, price, date, message):
+        self.id = id
+        self.ticker = ticker
+        self.price = price
+        self.date = date
+        self.message = message
 
 
 ################ RETURN CLASSES #########################

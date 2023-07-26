@@ -1,4 +1,4 @@
-from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData
+from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory
 from ariadne import QueryType
 import asyncio
 import os
@@ -164,6 +164,27 @@ def resolve_one_stock(_, info, input):
     )
     return returned_stock
 
+@query.field("stockHistorical")
+def resolve_sp500_historical(_, info, input):
+    ticker_input = input.get("ticker")
+    stock_historical = getters.getStockHistory(ticker_input)
+    if len(stock_historical) == 0:
+        return StockHistory(None, None, None, None, "ERROR: Stock does not exist in database")
+
+    day_list = []
+    price_list = []
+    for item in stock_historical:
+        day_list.append(item["date"])
+        price_list.append(item["price"])
+
+
+    return_history = StockHistory(stock_historical[0]["stockHistoryId"],
+                                stock_historical[0]["ticker"],
+                                price_list,
+                                day_list,
+                                "Success")
+    
+    return return_history
 
 @query.field("stocks")
 def resolve_stocks(_, info):

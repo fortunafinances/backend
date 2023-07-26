@@ -127,6 +127,14 @@ type PieData {
     message: String
 }
 
+type StockHistory {
+    id: ID
+    ticker: String
+    price: [Float]
+    date: [String]
+    message: String
+}
+
 
 
 ######################### QUERIES ################################
@@ -142,6 +150,7 @@ type Query {
     pieData(input: AccIdInput): PieData!
     allAccValue(input: UserIdInput): Float!
     genAIQuery(input: String): String!
+    stockHistorical(input: TickerInput): StockHistory!
 }
 
 ######################### MUTATIONS ################################
