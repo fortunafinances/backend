@@ -7,8 +7,8 @@ database_dir = os.path.abspath('../database')
 
 sys.path.insert(0, stockAPI_path)
 print(sys.path)
-from apiRequests import get_stock_quote
-from dataProcessing import handle_quote_data
+from apiRequests import get_stock_quote, get_stock_metadata
+from dataProcessing import handle_quote_data, handle_metadata
 
 sys.path.insert(0, database_dir)
 from tables import Stock, db
