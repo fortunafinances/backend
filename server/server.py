@@ -27,7 +27,7 @@ from mutations import mutation
 from queries import query
 
 sys.path.insert(0, './scheduler')
-from schedule import schedule_jobs, scheduler
+from schedule import scheduler, updateStockHistory
 
 
 # Auth0 imports
@@ -72,8 +72,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
-
+app.config['SCHEDULER_TIMEZONE'] = 'America/New_York'
 scheduler.init_app(app)
+scheduler.start()
 
 # Create an instance of OAuth
 oauth = OAuth(app)
@@ -90,9 +91,7 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    inserters.addAccHistory(1,7458.13, "2023-07-25")
-    print("bruh")
-    return str(getters.getAccHistory(1))
+    return str(getters.getStockHistory("HD"))
     
 @app.route("/createMockDb")
 def createMockDb():
@@ -104,7 +103,6 @@ def createMockDb():
     mockDb.initTransferIn()
     mockDb.initTransferOut()
     mockDb.initTransferBetween()
-    runHistoryUpdates()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
@@ -223,7 +221,6 @@ def hello():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    #schedule_jobs()
-    #scheduler.start()
-    app.run(debug=True)  # debug=True allows the server to restart itself
+    # schedule_jobs()
+    app.run(use_reloader = False)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
