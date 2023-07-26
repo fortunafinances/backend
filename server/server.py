@@ -1,8 +1,11 @@
 from flask import Flask, request, jsonify, make_response
+from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
 from apscheduler.schedulers.background import BackgroundScheduler
+import time
+import logging
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
@@ -28,7 +31,7 @@ from dataProcessing import handle_metadata
 from apiRequests import get_stock_metadata, get_stock_quote
 
 sys.path.insert(0, './scheduler')
-from limitPriceCheck import checkLimit
+import jobs
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -213,11 +216,15 @@ Auth
 app.register_blueprint(api_blueprint)
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(fillStocks, 'interval', minutes=3)
-scheduler.add_job(checkLimit, 'interval', seconds=10)
+scheduler.add_job(jobs.updateStockPrice, 'interval', seconds = 30)
+scheduler.add_job(jobs.checkLimit, 'interval', seconds=30)
 scheduler.start()
 print("Scheduler State: ", scheduler.state)
 print(scheduler.get_jobs())
+logging.basicConfig()
+logging.getLogger('apscheduler').setLevel(logging.DEBUG)
+while True:
+    time.sleep(10)
 
 @app.teardown_appcontext
 def shutdown_scheduler(exception = None):

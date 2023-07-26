@@ -16,3 +16,4 @@ PyJWT==2.7.0
 python-dotenv==1.0.0
 pytz == 2023.3
 apscheduler == 3.10.1
+Flask-APScheduler==1.12.4
