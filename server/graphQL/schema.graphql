@@ -139,8 +139,9 @@ type Query {
     activity(input: AccIdInput): [Activity]!
     displayBar(input: AccIdInput): DisplayBar!
     accounts(input: UserIdInput): [Account]!
-    pieData(input:AccIdInput): PieData!
+    pieData(input: AccIdInput): PieData!
     allAccValue(input: UserIdInput): Float!
+    genAIQuery(input: String): String!
 }
 
 ######################### MUTATIONS ################################

@@ -15,3 +15,5 @@ STOCK_LIST = {
     'UNH': 'UnitedHealth Group Incorporated', 
     'HD': 'The Home Depot Inc.'
 }
+
+SP_500 = "^GSPC"

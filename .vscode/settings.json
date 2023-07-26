@@ -4,6 +4,7 @@
         "./server",
         "./mockData",
         "./authentication",
-        "./server/graphQL"
+        "./server/graphQL",
+        "./server/scheduler"
     ]
 }
