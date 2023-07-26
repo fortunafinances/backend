@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
 
 import yfinance as yf
-from datetime import datetime, date
+from datetime import datetime, date, time
 
 # Database file imports
 import sys
@@ -19,6 +19,40 @@ scheduler = APScheduler()
 
 while True:
     time.sleep(10)
+
+def checkLimit():
+    with scheduler.app_context():
+        try:
+            #checks database against open limit order price
+            limitOrders = getLimit()
+            print ("checking open limit orders")
+
+            for x in limitOrders:
+                limitPrice = x.tradePrice
+                stock = getStock(x.ticker)
+
+                if (limitPrice <= stock.currPrice):
+                    executeLimit(x.tradeId)
+        except Exception as e:
+            print(f'Eception in checkLimit: {e}')
+
+def limitExpired():
+    with scheduler.app_context():
+        #changes status of expired limit orders from placed to expired
+        today = datetime.now(tz=pytz.timezone("US/Eastern")).date()
+        time_obj = time(9,30, tzinfo=pytz.timezone("US/Eastern"))
+        trade_cutoff = datetime.combine(today, time_obj)
+
+        limitList = getLimit()
+
+        for trade in limitList:
+            if (trade.date < trade_cutoff):
+                trade.status = "Expired"
+                db.session.commit()
+
+def updateStockPrice():
+    with scheduler.app_context():
+        fillStocks()
 
 def updateSP500():
     sp500 = yf.Ticker(SP_500)

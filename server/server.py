@@ -32,7 +32,7 @@ from dataProcessing import handle_metadata
 from apiRequests import get_stock_metadata, get_stock_quote
 
 sys.path.insert(0, './scheduler')
-from schedule import schedule_jobs, scheduler
+from schedule import schedule_jobs, scheduler, runHistoryUpdates
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
