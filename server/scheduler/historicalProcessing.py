@@ -27,9 +27,9 @@ def testMultiprocessing():
 
 def updateSP500():
     sp500 = yf.Ticker(SP_500)
-    sp500Hist = StockHistory.query.filter(StockHistory.ticker == SP_500)
+    sp500Hist = StockHistory.query.filter(StockHistory.ticker == SP_500).all()
 
-    if (sp500Hist == None):
+    if (len(sp500Hist) == 0):
         sp500Logs = sp500.history(period = "2y", interval = "1mo")
         sp500Logs = sp500Logs[["Close"]]
 
