@@ -57,7 +57,7 @@ type User {
 }
 
 type Account {
-    accId: ID!
+    accId: Int!
     name: String!
     cash: Float!
 }
@@ -127,6 +127,14 @@ type PieData {
     message: String
 }
 
+type StockHistory {
+    id: ID
+    ticker: String
+    price: [Float]
+    date: [String]
+    message: String
+}
+
 
 
 ######################### QUERIES ################################
@@ -139,8 +147,10 @@ type Query {
     activity(input: AccIdInput): [Activity]!
     displayBar(input: AccIdInput): DisplayBar!
     accounts(input: UserIdInput): [Account]!
-    pieData(input:AccIdInput): PieData!
+    pieData(input: AccIdInput): PieData!
     allAccValue(input: UserIdInput): Float!
+    genAIQuery(input: String): String!
+    stockHistorical(input: TickerInput): StockHistory!
 }
 
 ######################### MUTATIONS ################################

@@ -1,4 +1,3 @@
-import asyncio
 import requests
 from dotenv import load_dotenv
 import os
@@ -7,7 +6,11 @@ import sys
 load_dotenv()
 pschat_token = os.environ.get('PSCHAT_TOKEN')
 
-async def getGPTData(topic, modelType):
+
+def getGPTData(input):
+    topic = "my_topic"
+    modelType = "gpt35turbo"
+
     # pass in token to headers for authentication 
     headers = {
         "Authorization": f"Bearer " + pschat_token,
@@ -39,13 +42,3 @@ async def getGPTData(topic, modelType):
     except Exception as error:
         print("FAILED PROMPT")
         print(error)
-
-# Usage example:
-async def main():
-    topic = "my_topic"
-    modelType = "gpt35turbo"
-    result = await getGPTData(topic, modelType)
-    print(result, file=sys.stdout)
-
-# Run the event loop
-asyncio.run(main())

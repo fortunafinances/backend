@@ -29,6 +29,7 @@ from queries import query
 sys.path.insert(0, './scheduler')
 from schedule import schedule_jobs, scheduler
 
+
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.integrations.flask_client import OAuth
@@ -80,7 +81,6 @@ oauth = OAuth(app)
 @app.route('/')
 @cross_origin()
 def hello_world():
-    
     return 'Hello, World!'
 
 # Functionality testing route.
@@ -104,6 +104,7 @@ def createMockDb():
     mockDb.initTransferIn()
     mockDb.initTransferOut()
     mockDb.initTransferBetween()
+    runHistoryUpdates()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
