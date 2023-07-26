@@ -57,7 +57,7 @@ type User {
 }
 
 type Account {
-    accId: ID!
+    accId: Int!
     name: String!
     cash: Float!
 }
