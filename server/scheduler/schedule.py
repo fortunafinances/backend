@@ -91,6 +91,7 @@ def runHistoryUpdates():
 
 def schedule_jobs():
     scheduler.add_job(id = "test", func=runHistoryUpdates, trigger="interval", seconds = 10)
+    scheduler.add_job(id = "Stock Price Updates", func=updateStockPrice, trigger="interval", minutes = 1)
 
 
 # sp500Hist = list(sp500Hist["Close"])
