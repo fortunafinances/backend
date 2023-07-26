@@ -1,9 +1,18 @@
 from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData
 from ariadne import QueryType
+import asyncio
+import os
+import sys
 
-import sys 
-sys.path.insert(1, '../../database')
+# not sure why but this import needed this different 
+# strucutre type
+sys.path.append(os.getcwd() + '/..')
+from genAi.queryPSChat import getGPTData
+
+sys.path.insert(0, '../../database')
 import getters
+
+
 
 query = QueryType()
 
@@ -197,5 +206,10 @@ def resolve_all_account_value(_, info, input):
     for account in accounts:
         account_info = getters.getDisplayBar(account.get('accId'))
         total += account_info.get('total')
-
     return total
+
+
+@query.field("genAIQuery")
+def resolve_genAI_Query(_, info, input):
+    result = getGPTData(input)
+    return result
