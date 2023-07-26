@@ -96,8 +96,9 @@ def runHistoryUpdates():
         # print("this works")
         # inserters.addAcc("test",1,4.20)
 
-stockMarketHours = CronTrigger(day_of_week='mon-fri', hour='9-16',minute='*/1', second='30')
-endOfDay = CronTrigger(day_of_week='mon-fri', hour='16')
+eastern = pytz.timezone('US/Eastern')
+stockMarketHours = CronTrigger(day_of_week='mon-fri', hour='9-16',minute='*/1', second='30', timezone=eastern)
+endOfDay = CronTrigger(day_of_week='mon-fri', hour='16', timezone=eastern)
 
 def schedule_jobs():
     # scheduler.add_job(id = "test", func=runHistoryUpdates, trigger="interval", seconds = 10)
