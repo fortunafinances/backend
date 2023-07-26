@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
+from apscheduler.triggers.cron import CronTrigger
 import pytz
 
 import yfinance as yf
@@ -95,10 +96,21 @@ def runHistoryUpdates():
         # print("this works")
         # inserters.addAcc("test",1,4.20)
 
+stockMarketHours = CronTrigger(day_of_week='mon-fri', hour='9-16',minute='*/1', second='30')
+endOfDay = CronTrigger(day_of_week='mon-fri', hour='16')
+
 def schedule_jobs():
     # scheduler.add_job(id = "test", func=runHistoryUpdates, trigger="interval", seconds = 10)
-    scheduler.add_job(id = "Stock Price Updates", func=updateStockPrice, trigger="interval", minutes = 1)
-    scheduler.add_job(id = "Checks Limit Orders", func=checkLimit, trigger="interval", minutes = 1)
+    scheduler.add_job(id = "Stock Price Updates", 
+                      func=updateStockPrice, 
+                      trigger= stockMarketHours)
+    scheduler.add_job(id = "Checks Limit Orders", 
+                      func=checkLimit, 
+                      trigger=stockMarketHours)
+    scheduler.add_job(id = "Delete Expired Limit Orders",
+                      func = limitExpired,
+                      trigger = endOfDay)
+    
 
 
 # sp500Hist = list(sp500Hist["Close"])
