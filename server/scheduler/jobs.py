@@ -1,6 +1,7 @@
 import pytz
 from datetime import datetime, time
-import flask_apscheduler import APScheduler
+import flask_apscheduler 
+import APScheduler
 
 import sys
 sys.path.insert(0, '../database')

@@ -17,6 +17,9 @@ from constants import SP_500
 
 scheduler = APScheduler()
 
+while True:
+    time.sleep(10)
+
 def updateSP500():
     sp500 = yf.Ticker(SP_500)
     sp500Hist = StockHistory.query.filter(StockHistory.ticker == SP_500).all()
