@@ -27,7 +27,7 @@ from mutations import mutation
 from queries import query
 
 sys.path.insert(0, './scheduler')
-from schedule import schedule_jobs, scheduler
+from schedule import schedule_jobs, scheduler, runHistoryUpdates
 
 
 # Auth0 imports

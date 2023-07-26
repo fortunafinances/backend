@@ -112,7 +112,11 @@ def getUserAccs(userId):
     return [acc.serialize() for acc in accs]
 
 def getAccHistory(accId):
-    accHistory = Acc.query.get(accId).accHistory
+    try:
+        accHistory = Acc.query.get(accId).accHistory
+    except AttributeError:  # if the account ID doesn't exist
+        return None
+
     return [accLog.serialize() for accLog in accHistory]
 
 # Returns a list of all of the accs
