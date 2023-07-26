@@ -19,6 +19,7 @@ from constants import STOCK_LIST
 #function that updates the stock table
 #can add a new stock or update the stock prices
 def fillStocks():
+    print ("Fill stocks is being called")
     for ticker, description in STOCK_LIST.items():
         data = get_stock_quote(ticker)
         price = handle_quote_data(data)
@@ -72,7 +73,8 @@ def updateStock(existing_stock, price):
         existing_stock.highPrice = price.high_price
         existing_stock.lowPrice = price.low_price
         existing_stock.openPrice = price.opening_price
-        existing_stock.prevClosePrice = price.previous_closing_price    
+        existing_stock.prevClosePrice = price.previous_closing_price
+        print("Update Successful")    
 
 #makes and API call and returns a list of dictionaries, [ticker, companyName]
 # def stock_list():

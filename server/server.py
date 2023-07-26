@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
+from apscheduler.schedulers.background import BackgroundScheduler
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
@@ -16,7 +17,7 @@ from tables import db
 
 sys.path.insert(0, '../mockData')
 import mockDb
-import stockConfig
+from stockConfig import fillStocks
 
 sys.path.insert(0, './graphQL')
 from mutations import mutation
@@ -25,6 +26,9 @@ from queries import query
 sys.path.insert(0, './stockAPI')
 from dataProcessing import handle_metadata
 from apiRequests import get_stock_metadata, get_stock_quote
+
+sys.path.insert(0, './scheduler')
+from limitPriceCheck import checkLimit
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -89,7 +93,7 @@ def test():
     
 @app.route("/createMockDb")
 def createMockDb():
-    stockConfig.fillStocks()
+    fillStocks()
     mockDb.initUsers()
     mockDb.initAccs()
     mockDb.initBuyMarket()
@@ -207,6 +211,18 @@ def testStocks():
 Auth
 """
 app.register_blueprint(api_blueprint)
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(fillStocks, 'interval', minutes=3)
+scheduler.add_job(checkLimit, 'interval', seconds=10)
+scheduler.start()
+print("Scheduler State: ", scheduler.state)
+print(scheduler.get_jobs())
+
+@app.teardown_appcontext
+def shutdown_scheduler(exception = None):
+    scheduler.shutdown()
+
 
 if __name__ == '__main__':
     with app.app_context():
