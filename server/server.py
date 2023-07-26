@@ -224,7 +224,7 @@ app.register_blueprint(api_blueprint)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    #schedule_jobs()
-    #scheduler.start()
-    app.run(debug=True)  # debug=True allows the server to restart itself
+    schedule_jobs()
+    scheduler.start()
+    app.run(debug=False)  # debug=True allows the server to restart itself
                          # to provide constant updates to the developer
