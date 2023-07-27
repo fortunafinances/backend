@@ -17,10 +17,9 @@ from constants import SP_500, STOCK_LIST
 
 scheduler = APScheduler()
 
-@scheduler.task("cron", id = "SP500", day = 1, hour = "10-16", minute = 30)
+@scheduler.task("cron", id = "SP500", day_of_week = "tue", hour = "10-16", minute = 30)
 def updateSP500():
     with scheduler.app.app_context():
-        print("running scheduled task")
         sp500 = yf.Ticker(SP_500)
         sp500Hist = StockHistory.query.filter(StockHistory.ticker == SP_500).all()
 
@@ -34,14 +33,11 @@ def updateSP500():
             sp500Log = sp500.history(period = "1mo", interval = "1mo")
             date = list(sp500Log.index)[0]
             sp500Log = sp500Log["Close"].values[:1][0]
-            # print(date.strftime('%Y-%m-%d'))
-            # print(StockHistory.query.filter(StockHistory.ticker == SP_500))
-            # print(date, sp500Log)
             if (StockHistory.query.filter(StockHistory.ticker == SP_500,
                                         StockHistory.date == date.strftime('%Y-%m-%d')).first() == None):
                 inserters.addStockHistory(SP_500, sp500Log, date.strftime('%Y-%m-%d'))   
 
-@scheduler.task("cron", id = "updateAccHistory", day = 1, hour = "10-16", minute = 30)
+@scheduler.task("cron", id = "updateAccHistory",  day_of_week = "tue", hour = "10-16", minute = 30)
 def updateAccHistory():
     with scheduler.app.app_context():
         accs = getters.getAccs()
@@ -71,3 +67,8 @@ def updateStockHistory():
                 if (StockHistory.query.filter(StockHistory.ticker == stock,
                                             StockHistory.date == date.strftime('%Y-%m-%d')).first() == None):
                     inserters.addStockHistory(stock, yfData, date.strftime('%Y-%m-%d'))
+
+# new algorithm
+# literally yoink everything and check if it's in the db, if not, add it. 
+# no need to split it into if at least one record exists because what happens if it 
+# doesn't run one day
