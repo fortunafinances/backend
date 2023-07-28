@@ -179,6 +179,72 @@ def sellMarket(accId, ticker, tradeQty):
     
     return "Error: Not enough shares to sell"
 
+#inserts new trade into trade table, specifically an unexecuted limit order
+def placeBuyLimit(accId, ticker, tradeQty, limitPrice):
+    acc = Acc.query.get(accId)
+    tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+
+    if (acc.cash > limitPrice * tradeQty):
+        #insert trade into table 
+        #status = placed
+        addTrade(accId, "Limit", "Sell", "Placed", tradeDate, ticker, limitPrice, tradeQty)
+        return "Success"
+    else:
+        return "Error: Not enough funds in account."
+    
+def placeSellLimit(accId, ticker, tradeQty, limitPrice):
+    accStock = AccStock.query.filter_by(accId = accId, ticker = ticker).first()
+    tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+
+    if (accStock and accStock.stockQty >= tradeQty):
+        addTrade(accId, "Limit", "Sell", "Placed", tradeDate, ticker, limitPrice, tradeQty)
+        return "Success"
+    else:
+        return "Error: Not enough stock owned to sell"
+    
+def executeLimit(tradeId):
+    trade = Trade.query.get(tradeId)
+    acc = Acc.query.get(trade.accId)
+    stockPrice = Stock.query.get(trade.ticker).currPrice
+    totalPrice = trade.tradeQty * stockPrice
+    accStock = AccStock.query.filter_by(accId = trade.accId, ticker = trade.ticker).first()
+
+    if trade.type == "Buy":
+        if (acc.cash > totalPrice):
+            acc.cash -= totalPrice
+        
+            if (accStock):
+                #add trade.tradeQty to stockQty
+                accStock.stockQty += trade.tradeQty
+            else:
+                #add new acc stock
+                addAccStock(trade.accId, trade.ticker, trade.tradeQty)
+            trade.status = "Executed"   
+            db.session.commit()
+            return "Success"
+        else:
+            return "Error: Unable to execute buy limit order"
+    
+
+    if trade.type == "Sell":
+        if (AccStock):
+            acc.cash += totalPrice
+            if (accStock.stockQty >= trade.tradeQty):
+                accStock.stockQty -= trade.tradeQty
+                if (accStock.stockQty == 0):
+                    #remove stock from AccStocks
+                    deleteAccStock(accStock)
+            db.session.commit()
+            return "Success"
+        else:
+            return "Error: Unable to execute sell limit order"
+
+
+def deleteAccStock(accStock):
+    db.session.delete(accStock)
+    db.session.commit()
+
+
 # Transfers funds from one account to another. 
 # Can involve an outside account in either direction or between accounts
 def doTransfer(sendAccId, receiveAccId, transferAmt):

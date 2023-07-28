@@ -1,7 +1,19 @@
+import os
+print(os.getcwd())
+
+import sys
+stockAPI_path = os.path.abspath('../server/stockAPI')
+database_dir = os.path.abspath('../database')
+
+sys.path.insert(0, stockAPI_path)
+from apiRequests import get_stock_quote, get_stock_metadata
+from dataProcessing import handle_quote_data, handle_metadata
+
+sys.path.insert(0, database_dir)
 from tables import Stock, db
+
 from constants import STOCK_LIST
-from stockAPI.apiRequests import get_stock_metadata, get_stock_quote
-from stockAPI.dataProcessing import handle_metadata, handle_quote_data
+
 
 #function that updates the stock table
 #can add a new stock or update the stock prices
@@ -59,7 +71,7 @@ def updateStock(existing_stock, price):
         existing_stock.highPrice = price.high_price
         existing_stock.lowPrice = price.low_price
         existing_stock.openPrice = price.opening_price
-        existing_stock.prevClosePrice = price.previous_closing_price    
+        existing_stock.prevClosePrice = price.previous_closing_price 
 
 #makes and API call and returns a list of dictionaries, [ticker, companyName]
 # def stock_list():

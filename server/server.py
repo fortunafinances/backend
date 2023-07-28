@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify, make_response
+from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
-# from flask_apscheduler import APScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
+import time
+import logging
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
-from stockAPI.dataProcessing import handle_metadata
 from flask_cors import CORS, cross_origin
-from stockAPI.apiRequests import get_stock_metadata, get_stock_quote
 from usersApi import api_blueprint
 
 # Database file imports
@@ -19,7 +20,7 @@ from tables import db
 
 sys.path.insert(0, '../mockData')
 import mockDb
-import stockConfig
+from stockConfig import fillStocks
 from constants import SP_500
 
 sys.path.insert(0, './graphQL')
@@ -27,8 +28,11 @@ from mutations import mutation
 from queries import query
 
 sys.path.insert(0, './scheduler')
-from schedule import schedule_jobs, scheduler, runHistoryUpdates
+from schedule import scheduler, updateStockHistory, updateSP500
 
+sys.path.insert(0, './stockAPI')
+from dataProcessing import handle_metadata
+from apiRequests import get_stock_metadata, get_stock_quote
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -72,8 +76,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
-
+app.config['SCHEDULER_TIMEZONE'] = 'America/New_York'
 scheduler.init_app(app)
+
 
 # Create an instance of OAuth
 oauth = OAuth(app)
@@ -90,13 +95,11 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    inserters.addAccHistory(1,7458.13, "2023-07-25")
-    print("bruh")
-    return str(getters.getAccHistory(1))
+    return str(getters.getStockHistory("HD"))
     
 @app.route("/createMockDb")
 def createMockDb():
-    stockConfig.fillStocks()
+    fillStocks()
     mockDb.initUsers()
     mockDb.initAccs()
     mockDb.initBuyMarket()
@@ -104,7 +107,6 @@ def createMockDb():
     mockDb.initTransferIn()
     mockDb.initTransferOut()
     mockDb.initTransferBetween()
-    runHistoryUpdates()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
@@ -216,14 +218,12 @@ Auth
 """
 app.register_blueprint(api_blueprint)
 
-def hello():
-    print("hello")
 
-
+# main version for deploy
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    #schedule_jobs()
-    #scheduler.start()
-    app.run(debug=True)  # debug=True allows the server to restart itself
-                         # to provide constant updates to the developer
+
+    scheduler.start()
+    app.run(host='0.0.0.0', port=80)
+
