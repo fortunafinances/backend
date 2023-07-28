@@ -64,6 +64,19 @@ class AccHistory(db.Model):
             "date": self.date
         }
 
+class AccWatch(db.Model):
+    accWatchId = db.Column(db.Integer, primary_key = True)
+    accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
+    ticker = db.Column(db.String, nullable = False)
+    acc = db.relationship("Acc", backref = db.backref("accWatch"), lazy = True)
+
+    def serialize(self):
+        return {
+            "accWatchId": self.accWatchId,
+            "accId": self.accId,
+            "ticker": self.ticker
+        }  
+
 # The AccStock table
 # Includes data on the name of the stock,
 # which account it belongs to and 
