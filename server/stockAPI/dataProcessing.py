@@ -49,11 +49,6 @@ def handle_quote_data(data):
 #method that parses the metadata for each stock and returns a metadata object
 def handle_metadata(data):
     try:
-        # businessDescription = data['assetProfile']['longBusinessSummary']
-        # country = data['assetProfile']['country']
-        # sector = data['assetProfile']['sector']
-        # website = data['assetProfile']['website']
-        # officers = data['assetProfile']['officers']
 
         businessDescription = data.get('assetProfile', {}).get('longBusinessSummary')
         country = data.get('assetProfile', {}).get('country')
