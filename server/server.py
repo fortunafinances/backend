@@ -27,12 +27,12 @@ sys.path.insert(0, './graphQL')
 from mutations import mutation
 from queries import query
 
+sys.path.insert(0, './scheduler')
+from schedule import scheduler, updateStockHistory, updateSP500
+
 sys.path.insert(0, './stockAPI')
 from dataProcessing import handle_metadata
 from apiRequests import get_stock_metadata, get_stock_quote
-
-sys.path.insert(0, './scheduler')
-from schedule import schedule_jobs, scheduler, runHistoryUpdates
 
 # Auth0 imports
 from authlib.integrations.flask_oauth2 import ResourceProtector
@@ -76,8 +76,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
-
+app.config['SCHEDULER_TIMEZONE'] = 'America/New_York'
 scheduler.init_app(app)
+
 
 # Create an instance of OAuth
 oauth = OAuth(app)
@@ -94,9 +95,7 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    inserters.addAccHistory(1,7458.13, "2023-07-25")
-    print("bruh")
-    return str(getters.getAccHistory(1))
+    return str(getters.getStockHistory("HD"))
     
 @app.route("/createMockDb")
 def createMockDb():
@@ -108,7 +107,6 @@ def createMockDb():
     mockDb.initTransferIn()
     mockDb.initTransferOut()
     mockDb.initTransferBetween()
-    runHistoryUpdates()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
@@ -225,7 +223,7 @@ app.register_blueprint(api_blueprint)
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    schedule_jobs()
+
     scheduler.start()
     app.run(host='0.0.0.0', port=80)
 
