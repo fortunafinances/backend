@@ -78,7 +78,7 @@ db.init_app(app)
 
 app.config['SCHEDULER_TIMEZONE'] = 'America/New_York'
 scheduler.init_app(app)
-scheduler.start()
+
 
 # Create an instance of OAuth
 oauth = OAuth(app)
@@ -219,9 +219,11 @@ Auth
 app.register_blueprint(api_blueprint)
 
 
+# main version for deploy
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    # schedule_jobs()
-    app.run(use_reloader = False)  # debug=True allows the server to restart itself
-                         # to provide constant updates to the developer
+
+    scheduler.start()
+    app.run(host='0.0.0.0', port=80)
+
