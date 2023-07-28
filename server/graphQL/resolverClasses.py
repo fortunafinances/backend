@@ -122,6 +122,14 @@ class StockHistory:
         self.date = date
         self.message = message
 
+class AccountHistory:
+    def __init__(self, id, accId, value, date, message):
+        self.id = id
+        self.accId = accId
+        self.value = value
+        self.date = date
+        self.message = message
+
 
 ################ RETURN CLASSES #########################
 class ReturnUser:

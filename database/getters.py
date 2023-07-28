@@ -112,7 +112,11 @@ def getUserAccs(userId):
     return [acc.serialize() for acc in accs]
 
 def getAccHistory(accId):
-    accHistory = Acc.query.get(accId).accHistory
+    try:
+        accHistory = Acc.query.get(accId).accHistory
+    except AttributeError:  # if the account ID doesn't exist
+        return None
+
     return [accLog.serialize() for accLog in accHistory]
 
 # Returns a list of all of the accs
@@ -133,6 +137,12 @@ def getTrades(accID):
     list_of_trades = [trade.serialize() for trade in trades]
     
     return list_of_trades
+
+#helper method that returns a list of all limit orders that have not been executed and have not expired
+def getLimit():
+    openLimitOrders = (Trade.query.filter_by(type = 'Limit', side = 'Placed').all())
+    listOfLimitOrders = [trade.serialize() for trade in openLimitOrders]
+    return listOfLimitOrders
 
 #helper method that returns a list of all the transfers associated with a certain account id
 def getTransfers(accID):

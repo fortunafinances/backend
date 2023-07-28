@@ -14,6 +14,7 @@ enum OrderType {
 enum OrderStatus {
     Placed
     Executed
+    Expired
 }
 ######################### INPUTS ################################
 
@@ -135,6 +136,14 @@ type StockHistory {
     message: String
 }
 
+type AccountHistory {
+    id: ID
+    accId: Int
+    value: [Float]
+    date: [String]
+    message: String
+}
+
 
 
 ######################### QUERIES ################################
@@ -151,6 +160,7 @@ type Query {
     allAccValue(input: UserIdInput): Float!
     genAIQuery(input: String): String!
     stockHistorical(input: TickerInput): StockHistory!
+    accountHistorical(input: AccIdInput): AccountHistory!
 }
 
 ######################### MUTATIONS ################################
