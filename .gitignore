@@ -3,6 +3,7 @@
 venv/
 **/*.env
 **/*database.db
+*.db
 
 # Auth0
 auth0-variables.env
