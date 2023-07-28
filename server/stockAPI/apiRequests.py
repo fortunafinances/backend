@@ -18,10 +18,7 @@ def get_stock_quote(symbol):
     
     if response.status_code == 200:
         data = response.json()
-        print(f"Sent GET request to {url}.")
         return data
-        # price = handle_quote_data(data, symbol)
-        # return jsonify(price.to_dict())
     else:
         return f"Error:{response.status_code}"
     
