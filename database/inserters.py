@@ -1,4 +1,4 @@
-from tables import db, User, Acc, AccHistory, AccStock, User, Trade, Transfer, Stock, StockHistory
+from tables import db, User, Acc, AccHistory, AccWatch, AccStock, User, Trade, Transfer, Stock, StockHistory
 from datetime import datetime, date
 import pytz
 from sqlalchemy import exc
@@ -73,6 +73,14 @@ def addAccHistory(accId, value, date):
     db.session.add(accHistory)
     db.session.commit()
 
+def addAccWatch(accId, ticker):
+    accWatch = AccWatch(
+        accId = accId,
+        ticker = ticker
+    ) 
+    db.session.add(accWatch)
+    db.session.commit()
+    
 # Inserting an accStock into the database
 def addAccStock(accId, ticker, stockQty):
     accStock = AccStock(

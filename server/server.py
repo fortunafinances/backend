@@ -95,11 +95,14 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    return "test"
+    mockDb.initAccsHistory()
+    return getters.getAccHistory(1)
     
 @app.route("/createMockDb")
 def createMockDb():
     fillStocks()
+    updateStockHistory()
+    updateSP500()
     mockDb.initUsers()
     mockDb.initAccs()
     mockDb.initAccsHistory()
