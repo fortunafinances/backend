@@ -64,6 +64,7 @@ def addAcc(name, userId, cash):
     db.session.commit()
     return acc, "Account Inserted"
 
+# Inserting an AccHistory into the database.
 def addAccHistory(accId, value, date):
     accHistory = AccHistory(
         accId = accId,
@@ -73,6 +74,7 @@ def addAccHistory(accId, value, date):
     db.session.add(accHistory)
     db.session.commit()
 
+# Inserting an AccWatch into the database.
 def addAccWatch(accId, ticker):
     accWatch = AccWatch(
         accId = accId,
@@ -117,6 +119,7 @@ def addTransfer(sendAccId, receiveAccId, transferAmt, date):
     db.session.add(transfer)
     db.session.commit()
 
+# Inserting an StockHistory into the database.
 def addStockHistory(ticker, price, date):
     stockHistory = StockHistory(
         ticker = ticker,

@@ -6,6 +6,7 @@ from resolverClasses import User, Account, ReturnAccount, ReturnUser
 
 sys.path.insert(1, '../database')
 import inserters
+from tables import db_lock
 
 
 
@@ -26,27 +27,29 @@ def resolve_insert_user(_, info,
         picture = None,
         bankName = None
         ):
-    message, returned_user = inserters.addUser(userId, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete)
-    new_user = User(returned_user.userId, 
-                    returned_user.username, 
-                    returned_user.firstName, 
-                    returned_user.lastName,
-                    returned_user.email,
-                    returned_user.phoneNumber,
-                    returned_user.picture,
-                    returned_user.bankName,
-                    returned_user.registerDate,
-                    returned_user.onboardingComplete)
-    
-    return_user = ReturnUser(new_user, message)
-    return return_user
+    with db_lock:
+        message, returned_user = inserters.addUser(userId, username, firstName, lastName, email, phoneNumber, picture, bankName, onboardingComplete)
+        new_user = User(returned_user.userId, 
+                        returned_user.username, 
+                        returned_user.firstName, 
+                        returned_user.lastName,
+                        returned_user.email,
+                        returned_user.phoneNumber,
+                        returned_user.picture,
+                        returned_user.bankName,
+                        returned_user.registerDate,
+                        returned_user.onboardingComplete)
+        
+        return_user = ReturnUser(new_user, message)
+        return return_user
 
 @mutation.field("insertAccount")
 def resolve_insert_account(_, info, name, userId):
-    db_acc, message = inserters.addAcc(name, userId, 0)
-    new_account = Account(db_acc.accId, db_acc.name, db_acc.cash) 
-    return_account = ReturnAccount(new_account, message)
-    return return_account
+    with db_lock:
+        db_acc, message = inserters.addAcc(name, userId, 0)
+        new_account = Account(db_acc.accId, db_acc.name, db_acc.cash) 
+        return_account = ReturnAccount(new_account, message)
+        return return_account
 
 
 # This resolver is for when the frontend executes a BUY
@@ -59,18 +62,19 @@ def resolve_trade_order(_, info,
         ticker,
         tradeQty,
         tradePrice):
-    message = 'Trade Error in FLask Server resolve_trade_order function'
-    if type == "Market":
-        if side == "Buy":
-            message = inserters.buyMarket(accID, ticker, tradeQty)
-        if side == "Sell":
-            message = inserters.sellMarket(accID, ticker, tradeQty)
-    if type == "Limit":
-        if side == "Buy":
-            message = inserters.placeBuyLimit(accID, ticker, tradeQty, tradePrice)
-        if side == "Sell":
-            message = inserters.placeSellLimit(accID, ticker, tradeQty, tradePrice)
-    return message
+    with db_lock:
+        message = 'Trade Error in FLask Server resolve_trade_order function'
+        if type == "Market":
+            if side == "Buy":
+                message = inserters.buyMarket(accID, ticker, tradeQty)
+            if side == "Sell":
+                message = inserters.sellMarket(accID, ticker, tradeQty)
+        if type == "Limit":
+            if side == "Buy":
+                message = inserters.placeBuyLimit(accID, ticker, tradeQty, tradePrice)
+            if side == "Sell":
+                message = inserters.placeSellLimit(accID, ticker, tradeQty, tradePrice)
+        return message
 
 @mutation.field("insertTransfer")
 def resolve_transfer_order(_, info,
@@ -78,11 +82,11 @@ def resolve_transfer_order(_, info,
         receiveAccId,
         transferAmt
         ):
-    
-    message = inserters.doTransfer(sendAccId, 
-                          receiveAccId, 
-                          transferAmt)
-    
-    return message
+    with db_lock:
+        message = inserters.doTransfer(sendAccId, 
+                            receiveAccId, 
+                            transferAmt)
+        
+        return message
 
 
