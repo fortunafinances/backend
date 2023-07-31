@@ -13,12 +13,14 @@ TIME_PERIOD = 60 # 60 seconds in a minute
 
 start_time = time.time()
 request_count = 0
+time_to_wait = 0
 
 
 #calls finnhub API and gets current price data
 def get_stock_quote(symbol):
     global request_count
     global start_time
+    global time_to_wait
 
     url= "https://finnhub.io/api/v1/quote"
     token = finn_key

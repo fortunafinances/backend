@@ -57,7 +57,8 @@ def resolve_trade_order(_, info,
         type,
         side,
         ticker,
-        tradeQty):
+        tradeQty,
+        tradePrice):
     message = 'Trade Error in FLask Server resolve_trade_order function'
     if type == "Market":
         if side == "Buy":
@@ -65,11 +66,10 @@ def resolve_trade_order(_, info,
         if side == "Sell":
             message = inserters.sellMarket(accID, ticker, tradeQty)
     if type == "Limit":
-        status = "Placed"
-        date = "notrealdateforlimit"
-        tradePrice = "45"
-        inserters.addTrade(accID, type, side, status, date, ticker, tradePrice, tradeQty)
-        message = "Limit functionality has not been fully implemented"
+        if side == "Buy":
+            message = inserters.placeBuyLimit(accID, ticker, tradeQty, tradePrice)
+        if side == "Sell":
+            message = inserters.placeSellLimit(accID, ticker, tradeQty, tradePrice)
     return message
 
 @mutation.field("insertTransfer")

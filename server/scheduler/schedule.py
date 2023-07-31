@@ -25,7 +25,7 @@ logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 
-@scheduler.task("cron",id = "Check Limit Orders", day_of_week="mon-fri", hour = "9-16", minute = "*/2")
+@scheduler.task("cron",id = "Check Limit Orders", day_of_week="mon-fri", hour = "9-16", minute = "*/3")
 def checkLimit():
     with scheduler.app.app_context():
         try:
@@ -57,7 +57,7 @@ def limitExpired():
                 trade.status = "Expired"
                 db.session.commit()
 
-@scheduler.task("cron",id = "Stock Price Updates", day_of_week="mon-fri", hour = "9-16", minute = "*/2")
+@scheduler.task("cron",id = "Stock Price Updates", day_of_week="mon-fri", hour = "9-16", minute = "*/3")
 def updateStockPrice():
     with scheduler.app.app_context():
         fillStocks()
