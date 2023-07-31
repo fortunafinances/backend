@@ -34,15 +34,16 @@ def checkLimit():
             try:
                 #checks database against open limit order price
                 limitOrders = getLimit()
-                print(f"These are the current limit orders: {limitOrders}")
 
                 for x in limitOrders:
                     limitPrice = x['tradePrice']
                     stock = getStock(x['ticker'])
                     currPrice = stock['currPrice']
-                    print(f"This is the limit & current price for {x['ticker']}: {limitPrice}, {currPrice}")
+                    print(f"These are the open limit orders: Stock {x['ticker']}: Limit Price: {limitPrice}, Current Price:{currPrice} Order Side: {x['side']} Stock Quantity: {x['tradeQty']}")
 
-                    if (currPrice <= limitPrice):
+                    if (currPrice <= limitPrice and x['side'] == 'Buy'):
+                        executeLimit(x['tradeId'])
+                    elif (currPrice >= limitPrice and x['side'] == 'Sell'):
                         executeLimit(x['tradeId'])
             except Exception as e:
                 print(f'Exception in checkLimit: {e}')
@@ -68,6 +69,7 @@ def updateStockPrice():
     with scheduler.app.app_context():
         with db_lock:
             fillStocks()
+            print("stock prices updated successfully")
 
 @scheduler.task("cron", id = "SP500", day_of_week = "tue", hour = "10-16", minute = 30)
 def updateSP500():

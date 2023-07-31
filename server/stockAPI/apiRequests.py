@@ -31,7 +31,7 @@ def get_stock_quote(symbol):
             time_waited = time.time() - start_time
             if time_waited < TIME_PERIOD:
                 time_to_wait = TIME_PERIOD - time_waited
-            print(f"Rate limt exceeded. Waiting for {time_to_wait: .2f} seconds")
+            #print(f"Rate limt exceeded. Waiting for {time_to_wait: .2f} seconds")
             time.sleep(time_to_wait)
 
             request_count = 0

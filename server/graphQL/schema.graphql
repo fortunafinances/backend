@@ -189,7 +189,7 @@ type Mutation {
         side: OrderSide!
         ticker: String!
         tradeQty: Int!
-        tradePrice: Float
+        tradePrice: Float!
     ): String
 
     insertTransfer(
