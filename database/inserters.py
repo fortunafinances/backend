@@ -195,7 +195,7 @@ def placeBuyLimit(accId, ticker, tradeQty, limitPrice):
     if (acc.cash > limitPrice * tradeQty):
         #insert trade into table 
         #status = placed
-        addTrade(accId, "Limit", "Sell", "Placed", tradeDate, ticker, limitPrice, tradeQty)
+        addTrade(accId, "Limit", "Buy", "Placed", tradeDate, ticker, limitPrice, tradeQty)
         return "Success"
     else:
         return "Error: Not enough funds in account."
@@ -216,8 +216,9 @@ def executeLimit(tradeId):
     stockPrice = Stock.query.get(trade.ticker).currPrice
     totalPrice = trade.tradeQty * stockPrice
     accStock = AccStock.query.filter_by(accId = trade.accId, ticker = trade.ticker).first()
-
-    if trade.type == "Buy":
+    print ("executeLimit() is being accessed")
+    if trade.side == "Buy":
+        print ("we buying")
         if (acc.cash > totalPrice):
             acc.cash -= totalPrice
         
@@ -234,7 +235,7 @@ def executeLimit(tradeId):
             return "Error: Unable to execute buy limit order"
     
 
-    if trade.type == "Sell":
+    if trade.side == "Sell":
         if (AccStock):
             acc.cash += totalPrice
             if (accStock.stockQty >= trade.tradeQty):
