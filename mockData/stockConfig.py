@@ -23,15 +23,17 @@ def fillStocks():
         price = handle_quote_data(data)
         existing_stock = Stock.query.get(ticker)
         
-        if existing_stock:
+        if existing_stock and price is not None:
             #update stock prices
             updateStock(existing_stock, price)
-        else:
+        elif price is not None:
             #add new stock
             newStock = addNewStock(ticker, description, price)
             if newStock is not None:
                 if newStock.businessDescription and newStock.sector:
                     db.session.add(newStock)
+        else:
+            print (f"Error: Price data for {ticker} is None. Skipping this stock.")
     db.session.commit()
 
 

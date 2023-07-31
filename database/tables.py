@@ -15,7 +15,7 @@ class User(db.Model):
     picture = db.Column(db.String, nullable = True)
     bankName = db.Column(db.String, nullable = True)
     registerDate = db.Column(db.String, nullable = False)
-    onboardingComplete = db.Column(db.Boolean, nullable = False)
+    onboardingComplete = db.Column(db.Integer, nullable = False)
 
     def serialize(self):
         return {
@@ -63,6 +63,19 @@ class AccHistory(db.Model):
             "value": self.value,
             "date": self.date
         }
+
+class AccWatch(db.Model):
+    accWatchId = db.Column(db.Integer, primary_key = True)
+    accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
+    ticker = db.Column(db.String, nullable = False)
+    acc = db.relationship("Acc", backref = db.backref("accWatch"), lazy = True)
+
+    def serialize(self):
+        return {
+            "accWatchId": self.accWatchId,
+            "accId": self.accId,
+            "ticker": self.ticker
+        }  
 
 # The AccStock table
 # Includes data on the name of the stock,

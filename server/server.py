@@ -16,7 +16,7 @@ from usersApi import api_blueprint
 sys.path.insert(0, '../database')
 import inserters
 import getters
-from tables import db
+from tables import db, StockHistory
 
 sys.path.insert(0, '../mockData')
 import mockDb
@@ -95,13 +95,17 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    return str(getters.getStockHistory("HD"))
+    mockDb.initAccsHistory()
+    return getters.getAccHistory(1)
     
 @app.route("/createMockDb")
 def createMockDb():
     fillStocks()
+    updateStockHistory()
+    updateSP500()
     mockDb.initUsers()
     mockDb.initAccs()
+    mockDb.initAccsHistory()
     mockDb.initBuyMarket()
     mockDb.initSellMarket()
     mockDb.initTransferIn()
@@ -210,7 +214,7 @@ def get_meta(symbol):
 #This endpoint can be used to initialize the Stock table and update prices
 @app.route('/testStocks')
 def testStocks():
-    inserters.fillStocks()
+    fillStocks()
     return "The stock list has been updated"
 
 """

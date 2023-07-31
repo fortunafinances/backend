@@ -1,4 +1,4 @@
-from tables import db, User, Acc, AccHistory, AccStock, User, Trade, Transfer, Stock, StockHistory
+from tables import db, User, Acc, AccHistory, AccWatch, AccStock, User, Trade, Transfer, Stock, StockHistory
 from datetime import datetime, date
 import pytz
 from sqlalchemy import exc
@@ -21,7 +21,7 @@ def addUser(userId, username, firstName, lastName, email, phoneNumber, picture, 
         picture = picture,
         bankName = bankName,
         registerDate = date.today(),
-        onboardingComplete = False
+        onboardingComplete = 0
     )
 
     db.session.add(user)
@@ -73,6 +73,14 @@ def addAccHistory(accId, value, date):
     db.session.add(accHistory)
     db.session.commit()
 
+def addAccWatch(accId, ticker):
+    accWatch = AccWatch(
+        accId = accId,
+        ticker = ticker
+    ) 
+    db.session.add(accWatch)
+    db.session.commit()
+    
 # Inserting an accStock into the database
 def addAccStock(accId, ticker, stockQty):
     accStock = AccStock(
@@ -187,7 +195,7 @@ def placeBuyLimit(accId, ticker, tradeQty, limitPrice):
     if (acc.cash > limitPrice * tradeQty):
         #insert trade into table 
         #status = placed
-        addTrade(accId, "Limit", "Sell", "Placed", tradeDate, ticker, limitPrice, tradeQty)
+        addTrade(accId, "Limit", "Buy", "Placed", tradeDate, ticker, limitPrice, tradeQty)
         return "Success"
     else:
         return "Error: Not enough funds in account."
@@ -208,8 +216,9 @@ def executeLimit(tradeId):
     stockPrice = Stock.query.get(trade.ticker).currPrice
     totalPrice = trade.tradeQty * stockPrice
     accStock = AccStock.query.filter_by(accId = trade.accId, ticker = trade.ticker).first()
-
-    if trade.type == "Buy":
+    print ("executeLimit() is being accessed")
+    if trade.side == "Buy":
+        #print ("we buying")
         if (acc.cash > totalPrice):
             acc.cash -= totalPrice
         
@@ -219,25 +228,34 @@ def executeLimit(tradeId):
             else:
                 #add new acc stock
                 addAccStock(trade.accId, trade.ticker, trade.tradeQty)
-            trade.status = "Executed"   
+            trade.status = "Executed"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
             db.session.commit()
             return "Success"
         else:
-            return "Error: Unable to execute buy limit order"
+            trade.status = "Expired"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+            db.session.commit()
+            return "Error: Not enough funds to execute Buy Limit order. Limit order has expired"
     
 
-    if trade.type == "Sell":
-        if (AccStock):
+    if trade.side == "Sell":
+        #print ("we selling")
+        if (AccStock and accStock.stockQty >= trade.tradeQty):
             acc.cash += totalPrice
-            if (accStock.stockQty >= trade.tradeQty):
-                accStock.stockQty -= trade.tradeQty
-                if (accStock.stockQty == 0):
-                    #remove stock from AccStocks
-                    deleteAccStock(accStock)
+            accStock.stockQty -= trade.tradeQty
+            trade.status = "Executed"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+            if (accStock.stockQty == 0):
+                #remove stock from AccStocks
+                deleteAccStock(accStock)
             db.session.commit()
             return "Success"
         else:
-            return "Error: Unable to execute sell limit order"
+            trade.status = "Expired"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+            db.session.commit()
+            return "Error: Not enough stocks owned to execute Sell Limit order. Limit order has expired."
 
 
 def deleteAccStock(accStock):

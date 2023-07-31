@@ -1,4 +1,4 @@
-from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory, AccountHistory
+from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory, AccountHistory, LinePoint
 from ariadne import QueryType
 import asyncio
 import os
@@ -147,18 +147,16 @@ def resolve_account_historical(_, info, input):
     account_history = getters.getAccHistory(account_id)
 
     if account_history is None:
-        return AccountHistory(None, None, None, None, "ERROR: Account does not have history in database")
+        return AccountHistory(None, None, None, "ERROR: Account does not have history in database")
 
-    day_list = []
-    price_list = []
+    date_price_data = []
     for item in account_history:
-        day_list.append(item["date"])
-        price_list.append(item["value"])
+        next_point = LinePoint(item["date"], item["value"])
+        date_price_data.append(next_point)
 
     return_history = AccountHistory(account_history[0]["accHistoryId"],
                                 account_history[0]["accId"],
-                                price_list,
-                                day_list,
+                                date_price_data,
                                 "Success")
     
     return return_history
@@ -191,19 +189,16 @@ def resolve_sp500_historical(_, info, input):
     ticker_input = input.get("ticker")
     stock_historical = getters.getStockHistory(ticker_input)
     if len(stock_historical) == 0:
-        return StockHistory(None, None, None, None, "ERROR: Stock does not exist in database")
+        return StockHistory(None, None, None, "ERROR: Stock does not exist in database")
 
-    day_list = []
-    price_list = []
+    date_price_data = []
     for item in stock_historical:
-        day_list.append(item["date"])
-        price_list.append(item["price"])
-
+        next_point = LinePoint(item["date"], item["price"])
+        date_price_data.append(next_point)
 
     return_history = StockHistory(stock_historical[0]["stockHistoryId"],
                                 stock_historical[0]["ticker"],
-                                price_list,
-                                day_list,
+                                date_price_data,
                                 "Success")
     
     return return_history
