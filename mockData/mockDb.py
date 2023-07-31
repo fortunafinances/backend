@@ -9,13 +9,21 @@ from constants import SP_500
 
 
 def initUsers():
-    addUser("AUTHuser1", "tyj", "Tyler", "Jones", "tyjones@email.com", "4017324554", "picture", "Fortuna", True)
-    addUser("AUTHuser2", "jr1", "JR", "Byers", "jr@email.com", "6174357213", "picture", "Fortuna", True)
-    addUser("AUTHuser3", "claudia27", "Claudia", "Alves", "claudia_alves@email.com", "6177320019", "picture", "Fortuna", True)
-    addUser("auth0|64bff46269ace00bf6a23c03", "lindsay.rl", "Lindsay", "Liu", "rll46@duke.edu", "8646247257", "picture", "Fortuna", True)
-    addUser("auth0|64a5a9b2bb372f7bd87fc5e5", "linhvu", "Linh", "Vu", "linh.vu@publicissapient.com", "0000000000", "picture", "Fortuna", True)
-    addUser("auth0|64b7f9420f43178a8a19c036", "nrgbistro", "Nolan", "Gelinas", "nolangelinas@gmail.com", "1610308884", "picture", "Fortuna", True)
+    addUser("AUTHuser1", "tyj", "Tyler", "Jones", "tyjones@email.com", "4017324554", "picture", "Fortuna", 5)
+    addUser("AUTHuser2", "jr1", "JR", "Byers", "jr@email.com", "6174357213", "picture", "Fortuna", 5)
+    addUser("AUTHuser3", "claudia27", "Claudia", "Alves", "claudia_alves@email.com", "6177320019", "picture", "Fortuna", 5)
+    addUser("auth0|64bff46269ace00bf6a23c03", "lindsay.rl", "Lindsay", "Liu", "rll46@duke.edu", "8646247257", "picture", "Fortuna", 5)
+    addUser("auth0|64a5a9b2bb372f7bd87fc5e5", "linhvu", "Linh", "Vu", "linh.vu@publicissapient.com", "0000000000", "picture", "Fortuna", 5)
+    addUser("auth0|64b7f9420f43178a8a19c036", "nrgbistro", "Nolan", "Gelinas", "nolangelinas@gmail.com", "1610308884", "picture", "Fortuna", 5)
 
+    # Because the users are not being added through graphql,
+    # we have to do a double insertiont to update their onboarding values
+    addUser("AUTHuser1", "tyj", "Tyler", "Jones", "tyjones@email.com", "4017324554", "picture", "Fortuna", 5)
+    addUser("AUTHuser2", "jr1", "JR", "Byers", "jr@email.com", "6174357213", "picture", "Fortuna", 5)
+    addUser("AUTHuser3", "claudia27", "Claudia", "Alves", "claudia_alves@email.com", "6177320019", "picture", "Fortuna", 5)
+    addUser("auth0|64bff46269ace00bf6a23c03", "lindsay.rl", "Lindsay", "Liu", "rll46@duke.edu", "8646247257", "picture", "Fortuna", 5)
+    addUser("auth0|64a5a9b2bb372f7bd87fc5e5", "linhvu", "Linh", "Vu", "linh.vu@publicissapient.com", "0000000000", "picture", "Fortuna", 5)
+    addUser("auth0|64b7f9420f43178a8a19c036", "nrgbistro", "Nolan", "Gelinas", "nolangelinas@gmail.com", "1610308884", "picture", "Fortuna", 5)
 
 def initAccs():
     addAcc("Brokerage account", "AUTHuser1", 10000.00)
