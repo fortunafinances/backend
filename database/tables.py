@@ -15,7 +15,7 @@ class User(db.Model):
     picture = db.Column(db.String, nullable = True)
     bankName = db.Column(db.String, nullable = True)
     registerDate = db.Column(db.String, nullable = False)
-    onboardingComplete = db.Column(db.Boolean, nullable = False)
+    onboardingComplete = db.Column(db.Integer, nullable = False)
 
     def serialize(self):
         return {
