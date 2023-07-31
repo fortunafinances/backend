@@ -145,7 +145,7 @@ def getTrades(accID):
 
 #helper method that returns a list of all limit orders that have not been executed and have not expired
 def getLimit():
-    openLimitOrders = (Trade.query.filter_by(type = 'Limit', side = 'Placed').all())
+    openLimitOrders = (Trade.query.filter_by(type = 'Limit', status = 'Placed').all())
     listOfLimitOrders = [trade.serialize() for trade in openLimitOrders]
     return listOfLimitOrders
 
