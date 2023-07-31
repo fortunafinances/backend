@@ -218,7 +218,7 @@ def executeLimit(tradeId):
     accStock = AccStock.query.filter_by(accId = trade.accId, ticker = trade.ticker).first()
     print ("executeLimit() is being accessed")
     if trade.side == "Buy":
-        print ("we buying")
+        #print ("we buying")
         if (acc.cash > totalPrice):
             acc.cash -= totalPrice
         
@@ -234,16 +234,18 @@ def executeLimit(tradeId):
             return "Success"
         else:
             trade.status = "Expired"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
             db.session.commit()
             return "Error: Not enough funds to execute Buy Limit order. Limit order has expired"
     
 
     if trade.side == "Sell":
-        print ("we selling")
+        #print ("we selling")
         if (AccStock and accStock.stockQty >= trade.tradeQty):
             acc.cash += totalPrice
             accStock.stockQty -= trade.tradeQty
             trade.status = "Executed"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
             if (accStock.stockQty == 0):
                 #remove stock from AccStocks
                 deleteAccStock(accStock)
@@ -251,6 +253,7 @@ def executeLimit(tradeId):
             return "Success"
         else:
             trade.status = "Expired"
+            trade.tradeDate = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
             db.session.commit()
             return "Error: Not enough stocks owned to execute Sell Limit order. Limit order has expired."
 
