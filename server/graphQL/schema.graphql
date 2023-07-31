@@ -46,7 +46,7 @@ type AccountReturn {
 ######################### TYPES ################################
 type User {
     userId: ID!
-    onboardingComplete: Boolean
+    onboardingComplete: Int
     username: String
     firstName: String
     lastName: String
@@ -128,19 +128,22 @@ type PieData {
     message: String
 }
 
+type LinePoint {
+    x: String   # this is the date
+    y: Float    # this is the price
+}
+
 type StockHistory {
     id: ID
     ticker: String
-    price: [Float]
-    date: [String]
+    data: [LinePoint]
     message: String
 }
 
 type AccountHistory {
     id: ID
     accId: Int
-    value: [Float]
-    date: [String]
+    data: [LinePoint]
     message: String
 }
 
@@ -168,7 +171,7 @@ type Query {
 type Mutation {
     insertUser(
         userId: ID!
-        onboardingComplete: Boolean
+        onboardingComplete: Int
         username: String
         firstName: String
         lastName: String

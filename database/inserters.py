@@ -21,7 +21,7 @@ def addUser(userId, username, firstName, lastName, email, phoneNumber, picture, 
         picture = picture,
         bankName = bankName,
         registerDate = date.today(),
-        onboardingComplete = False
+        onboardingComplete = 0
     )
 
     db.session.add(user)

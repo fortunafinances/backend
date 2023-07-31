@@ -115,20 +115,23 @@ class PieData:
         self.message = message
 
 class StockHistory:
-    def __init__(self, id, ticker, price, date, message):
+    def __init__(self, id, ticker, data, message):
         self.id = id
         self.ticker = ticker
-        self.price = price
-        self.date = date
+        self.data = data
         self.message = message
 
 class AccountHistory:
-    def __init__(self, id, accId, value, date, message):
+    def __init__(self, id, accId, data, message):
         self.id = id
         self.accId = accId
-        self.value = value
-        self.date = date
+        self.data = data
         self.message = message
+
+class LinePoint:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
 
 ################ RETURN CLASSES #########################
