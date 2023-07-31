@@ -119,6 +119,11 @@ def getAccHistory(accId):
 
     return [accLog.serialize() for accLog in accHistory]
 
+def getAccWatch(accId):
+    accWatches = Acc.query.get(accId).accWatch
+
+    return [accWatch.serialize() for accWatch in accWatches]
+
 # Returns a list of all of the accs
 def getAccs():
     accs = (Acc.query.all())

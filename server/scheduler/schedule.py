@@ -66,7 +66,7 @@ def updateStockPrice():
 def updateSP500():
     with scheduler.app.app_context():
         sp500 = yf.Ticker(SP_500)
-        sp500Logs = sp500.history(period = "2y", interval = "1wk")
+        sp500Logs = sp500.history(period = "1y", interval = "1wk")
         sp500Logs = sp500Logs[["Close"]]
 
         for date, close in sp500Logs.iterrows():

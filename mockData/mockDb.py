@@ -1,9 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
 
+import random
 import sys
 sys.path.insert(0, '../database')
 from inserters import *
 from getters import *
+from constants import SP_500
 
 
 def initUsers():
@@ -24,8 +26,24 @@ def initAccs():
     addAcc("Brokerage account", "AUTHuser2", 3000.00)
     addAcc("Brokerage account", "AUTHuser3", 7000.00)
 
+def initAccsHistory():
+    accs = getAccs()
+
+    for acc in accs:
+        initAccHistory(acc["accId"])
+
+def initAccHistory(accId):
+    sp500Data = StockHistory.query.filter(StockHistory.ticker == SP_500) \
+                            .order_by(StockHistory.date.desc()).all()[:52]
+    sp500Data = sp500Data[::-1]
+    acc = Acc.query.get(accId)
+    
+    for factor, sp500Log in enumerate(sp500Data, 52):
+        value = acc.cash + (acc.cash * factor * 0.0005) + (sp500Log.price * random.randint(-5, 10) / 100.0) 
+        print(sp500Log.date, acc.cash, value, sp500Log.price, (value / acc.cash))
+        addAccHistory(accId, value, sp500Log.date)
+
 def initBuyMarket():
-    stocks = getStocks()
     buyMarket(1, "V", 5)
     buyMarket(1, "JPM", 13)
     buyMarket(1, "META", 5)
@@ -56,7 +74,3 @@ def initTransferBetween():
     doTransfer(3, 1, 643.87)
 
 
-
-
-
-# def initTrades():

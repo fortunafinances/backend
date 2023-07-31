@@ -28,7 +28,7 @@ STOCK_LIST = {
     "ECL": "Ecolab Inc", 
     "EQR": "Equity Residential", 
     "EVRG": "Evergy Inc", 
-    "EQR": "Equity Residential", 
+    "TGT": "Target Corp.",
     "EXC": "Exelon Corp", 
     "FISV": "Fiserv Inc", 
     "GIS": "General Mills Inc", 
