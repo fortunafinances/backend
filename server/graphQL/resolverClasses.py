@@ -4,19 +4,19 @@
 
 class Stock:
     def __init__(self, 
-                ticker,
-                name,
-                currPrice,
-                highPrice,
-                lowPrice,
-                openPrice,
-                prevClosePrice,
-                description,
-                sector,
-                country,
-                website,
-                officerTitle,
-                officerName):
+                ticker = "",
+                name = "",
+                currPrice = 0.0,
+                highPrice = 0.0,
+                lowPrice = 0.0,
+                openPrice = 0.0,
+                prevClosePrice = 0.0,
+                description = "",
+                sector = "",
+                country = "",
+                website = "",
+                officerTitle = "",
+                officerName = ""):
        self.ticker = ticker
        self.name = name
        self.currPrice = currPrice

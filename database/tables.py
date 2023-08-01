@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
+from threading import Lock
 
 # Database import for model creating
 db = SQLAlchemy()
+db_lock = Lock()
 
 class User(db.Model):
     # This data is fed from auth0 through frontend
@@ -49,6 +51,8 @@ class Acc(db.Model):
             "cash": self.cash
         }
 
+# AccHistory table
+# Includes data on the holdings value of an account on a certain date
 class AccHistory(db.Model):
     accHistoryId = db.Column(db.Integer, primary_key = True)
     accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
@@ -64,6 +68,8 @@ class AccHistory(db.Model):
             "date": self.date
         }
 
+# AccWatch table 
+# Includes data on which account wants to keep track of which stock
 class AccWatch(db.Model):
     accWatchId = db.Column(db.Integer, primary_key = True)
     accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)
@@ -136,6 +142,8 @@ class Stock(db.Model):
             "officerName": self.officerName
         }
 
+# StockHistory table
+# Includes the stock's ticker and the price on a certain date
 class StockHistory(db.Model):
     stockHistoryId = db.Column(db.Integer, primary_key = True)
     ticker = db.Column(db.String, nullable = False)
@@ -154,8 +162,6 @@ class StockHistory(db.Model):
 # Includes data on the trade's type, side, status,
 # trade date, ticker, trade price and qty with a 
 # connection to an account
-
-
 class Trade(db.Model):
     tradeId = db.Column(db.Integer, primary_key = True)
     accId = db.Column(db.Integer, db.ForeignKey("acc.accId"), nullable = False)

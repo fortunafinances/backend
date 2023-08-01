@@ -3,9 +3,6 @@ from flask_apscheduler import APScheduler
 from flask_sqlalchemy import SQLAlchemy
 from ariadne import graphql_sync, make_executable_schema, gql, load_schema_from_path
 from ariadne.explorer import ExplorerGraphiQL
-from apscheduler.schedulers.background import BackgroundScheduler
-import time
-import logging
 import sys
 
 #from fsi-23-bos-back-end.database.inserters import fillStocks
@@ -16,7 +13,7 @@ from usersApi import api_blueprint
 sys.path.insert(0, '../database')
 import inserters
 import getters
-from tables import db, StockHistory
+from tables import db, db_lock
 
 sys.path.insert(0, '../mockData')
 import mockDb
@@ -76,9 +73,9 @@ CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../../database/database.db'
 db.init_app(app)
 
+# Scheduler initialisation
 app.config['SCHEDULER_TIMEZONE'] = 'America/New_York'
 scheduler.init_app(app)
-
 
 # Create an instance of OAuth
 oauth = OAuth(app)
@@ -95,22 +92,26 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    mockDb.initAccsHistory()
     return getters.getAccHistory(1)
-    
+
+# Mock Database creation route
+# Allows for the usage of the backend and will be used for demo
+# PLEASE RUN THIS WHEN YOU RUN THE APP FOR THE FIRST TIME
 @app.route("/createMockDb")
 def createMockDb():
-    fillStocks()
     updateStockHistory()
     updateSP500()
-    mockDb.initUsers()
-    mockDb.initAccs()
-    mockDb.initAccsHistory()
-    mockDb.initBuyMarket()
-    mockDb.initSellMarket()
-    mockDb.initTransferIn()
-    mockDb.initTransferOut()
-    mockDb.initTransferBetween()
+    with db_lock:
+        fillStocks()
+        mockDb.initUsers()
+        mockDb.initAccs()
+        mockDb.initAccsHistory()
+        mockDb.initAccWatch()
+        mockDb.initBuyMarket()
+        mockDb.initSellMarket()
+        mockDb.initTransferIn()
+        mockDb.initTransferOut()
+        mockDb.initTransferBetween()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
