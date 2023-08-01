@@ -170,7 +170,7 @@ type Query {
     accounts(input: UserIdInput): [Account]!
     pieData(input: AccIdInput): PieData!
     allAccValue(input: UserIdInput): Float!
-    genAIQuery(input: String): String!
+    genAIQuery(input: [String]): String!
     stockHistorical(input: TickerInput): StockHistory!
     accountHistorical(input: AccIdInput): AccountHistory!
     watchList(input: AccIdInput): [AccountWatch]!
