@@ -11,6 +11,7 @@ from genAi.queryPSChat import getGPTData
 
 sys.path.insert(0, '../../database')
 import getters
+from tables import db_lock
 
 
 
@@ -20,7 +21,7 @@ query = QueryType()
 #                   QUERIES                         #
 #####################################################
 @query.field("accounts")
-def resolve_accounts(_, info, input):
+def resolve_accounts(_, info, input):    
     userId = input.get("userId")  # gets the userId field from the input type UserIdInput
     accounts = getters.getUserAccs(userId)
     returned_accounts = []
@@ -35,7 +36,7 @@ def resolve_accounts(_, info, input):
 
 
 @query.field("orders")
-def resolve_orders(_, info, input):
+def resolve_orders(_, info, input):    
     account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
     db_trades = getters.getTrades(account_id)
     
@@ -73,7 +74,7 @@ def resolve_holdings(_, info, input):
 # returns a list of holdings for an account ID to display on the
 # holdings table
 @query.field("holdings")
-def resolve_holdings(_, info, input):
+def resolve_holdings(_, info, input):    
     account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
     db_holdings = getters.getHoldings(account_id)
 
@@ -164,9 +165,12 @@ def resolve_account_historical(_, info, input):
 # returns one stock given that stocks ticker
 @query.field("oneStock")
 def resolve_one_stock(_, info, input):
-    ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput
-
+    ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput    
     stock = getters.getStock(ticker_input) # buzz method
+
+    if (stock == None):
+        return Stock()
+    
     returned_stock = Stock(
                 stock["ticker"],
                 stock["companyName"],
@@ -229,7 +233,7 @@ def resolve_stocks(_, info):
 
 
 @query.field("pieData")
-def resolve_pieData(_, info, input):
+def resolve_pieData(_, info, input):    
     account_id = input.get("accId")  # gets the accId field from the input type AccIdInput
     db_pie_data, message = getters.getPieStats(account_id)
     return_pie = PieData(db_pie_data, message)

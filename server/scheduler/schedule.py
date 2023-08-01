@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_apscheduler import APScheduler
-from apscheduler.triggers.cron import CronTrigger
-from threading import Lock
 import pytz
 
 import yfinance as yf
@@ -14,15 +12,14 @@ import logging
 import sys
 sys.path.insert(0, '../../database')
 from inserters import executeLimit, addStockHistory, addAccHistory
-from getters import getLimit, getStock, getAccs, getAccTotalValue
-from tables import db, AccHistory, StockHistory
+from getters import getLimit, getStock, getAccs, getHoldingsValue
+from tables import db, db_lock, AccHistory, StockHistory
 
 sys.path.insert(0, '../../mockData')
 from constants import SP_500, STOCK_LIST
 from stockConfig import fillStocks
 
 scheduler = APScheduler()
-db_lock = Lock()
 # logging.basicConfig()
 # logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
@@ -71,37 +68,53 @@ def updateStockPrice():
             fillStocks()
             #print("stock prices updated successfully")
 
-@scheduler.task("cron", id = "SP500", day_of_week = "tue", hour = "10-16", minute = 30)
+# The S&P 500 updater that runs every hour from 10:30 - 16:30 on
+# Monday for the line graph
+@scheduler.task("cron", id = "SP500", day_of_week = "mon", hour = "10-16", minute = 30)
 def updateSP500():
     with scheduler.app.app_context():
-        sp500 = yf.Ticker(SP_500)
-        sp500Logs = sp500.history(period = "1y", interval = "1wk")
-        sp500Logs = sp500Logs[["Close"]]
+        with db_lock:
+            print("scheduler activated,updating sp500")
+            # Retrieve weekly data from the past year
+            sp500 = yf.Ticker(SP_500)
+            sp500Logs = sp500.history(period = "1y", interval = "1wk")
+            sp500Logs = sp500Logs[["Close"]]
 
-        for date, close in sp500Logs.iterrows():
-            if (StockHistory.query.filter(StockHistory.ticker == SP_500,
-                StockHistory.date == date.strftime('%Y-%m-%d')).first() == None):
-                addStockHistory(SP_500, close["Close"], date.strftime('%Y-%m-%d'))   
+            # Insert each week that isn't in the database
+            for date, close in sp500Logs.iterrows():
+                if (StockHistory.query.filter(StockHistory.ticker == SP_500,
+                    StockHistory.date == date.strftime('%Y-%m-%d')).first() == None):
+                    addStockHistory(SP_500, close["Close"], date.strftime('%Y-%m-%d'))   
 
-@scheduler.task("cron", id = "updateAccHistory",  day_of_week = "tue", hour = "10-16", minute = 30)
+# The account history updater that runs every hour from 10:30 to 16:30 
+# on Monday for the line graph
+@scheduler.task("cron", id = "updateAccHistory",  day_of_week = "mon", hour = "10-16", minute = 30)
 def updateAccHistory():
     with scheduler.app.app_context():
-        accs = getAccs()
+        with db_lock:
+            print("scheduler activated,updating accHistory")
+            accs = getAccs()
 
-        if (len(AccHistory.query.filter(AccHistory.date == date.today()).all()) == 0):
+            # Loop to update the data for each account if it's not in there
             for acc in accs:
-                addAccHistory(acc["accId"], getAccTotalValue(acc["accId"]), date.today())
+                if (AccHistory.query.filter(AccHistory.date == date.today(), AccHistory.accId == acc["accId"]) == None):
+                    addAccHistory(acc["accId"], getHoldingsValue(acc["accId"]), date.today())
 
+# The stock history updater that runs every hour from 10 to 17 and
+# inserts the last 30d of performance for each stock
 @scheduler.task("cron", id = "updateStockHistory", hour = "10-17")
 def updateStockHistory():
     with scheduler.app.app_context():
-        # print("scheduler activated,updating stocks")
-        for stock in STOCK_LIST.keys():
-            yfData = yf.Ticker(stock) 
-            yfData = yfData.history(period = "1mo", interval = "1d")
-            yfData = yfData[["Close"]]
+        with db_lock:
+            print("scheduler activated,updating stocks")
 
-            for date, close in yfData.iterrows():
-                if (StockHistory.query.filter(StockHistory.ticker == stock,
-                        StockHistory.date == date.strftime('%Y-%m-%d')).first() == None):
-                    addStockHistory(stock, close["Close"], date.strftime('%Y-%m-%d'))
+            # Updates every stock history in STOCK_LIST
+            for stock in STOCK_LIST.keys():
+                yfData = yf.Ticker(stock) 
+                yfData = yfData.history(period = "1mo", interval = "1d")
+                yfData = yfData[["Close"]]
+
+                for date, close in yfData.iterrows():
+                    if (StockHistory.query.filter(StockHistory.ticker == stock,
+                            StockHistory.date == date.strftime('%Y-%m-%d')).first() == None):
+                        addStockHistory(stock, close["Close"], date.strftime('%Y-%m-%d'))

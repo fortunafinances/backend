@@ -1,31 +1,27 @@
-import json
 from flask import jsonify
-import sys
 from tables import *
 
-# Tester function to test a query and relations 
-def testRelations():
-    # returns the array of orders of the acc w/ id 1
-    trades = Acc.query.get(1).orders
-    # gets the tradePrice of the 0th trade in the orders array
-    print(trades[0].tradePrice)
-
+# Gets the value of the account's holdings within a sector
 def getSectorValue(accId, sector):
     sectorSum = 0.0
+    # Gets the holdings that are in that sector for that account
     sectorStocks = db.session.query(Acc, AccStock, Stock) \
         .join(AccStock, Acc.accId == AccStock.accId) \
         .join(Stock, AccStock.ticker == Stock.ticker) \
         .filter(Acc.accId == accId, Stock.sector == sector)
     
+    # Sum loop 
     for sectorStock in sectorStocks:
         sectorSum += sectorStock[1].stockQty * sectorStock[2].currPrice
 
     return sectorSum
 
+# Gets the holdings stats of the pie chart in terms of sector
 def getPieStats(accId):
     sectors = db.session.query(Stock.sector).distinct()
     stats = dict()
     
+    # Loop that retrieves all sector values
     for sector in sectors:
         sectorValue = getSectorValue(accId, sector[0])
         if (sectorValue != 0.0):
@@ -33,6 +29,7 @@ def getPieStats(accId):
 
     return stats, "Success"
 
+# Gets the value of all holdings in the account
 def getHoldingsValue(accId):
     acc = (Acc.query.get(accId))
     invest = 0.0
@@ -43,15 +40,18 @@ def getHoldingsValue(accId):
     
     return invest
 
+# Gets the total value of the account
 def getAccTotalValue(accId):
     acc = Acc.query.get(accId)
     
     return (getHoldingsValue(accId) + acc.cash)
 
+# Gets the total value of all accounts of a user
 def getUserTotalValue(userId):
     accs = User.query.get(userId).accs
     total = 0.0
 
+    # Sum loop for the user total
     for acc in accs:
         total += getAccTotalValue(acc.accId)
     
@@ -89,12 +89,18 @@ def getHoldings(accId):
 # Returns the contents of a singular stock
 def getStock(ticker):
     stock = Stock.query.get(ticker)
+
+    if (stock == None):
+        return None
+    
     return stock.serialize()
     
+# Gets the history for a certain stock
 def getStockHistory(ticker):
     stockHistory = StockHistory.query.filter(StockHistory.ticker == ticker)
     return [stockLog.serialize() for stockLog in stockHistory]
 
+# Gets all of the stocks that are in that sector
 def getSectorStocks(sector):
     return Stock.query.filter(Stock.sector == sector) 
 
@@ -104,13 +110,16 @@ def getStocks():
     list_of_stocks = [stock.serialize() for stock in stocks]
     return list_of_stocks
 
+# Gets user account details
 def getUserAcc(accId):
     return (Acc.query.get(accId)).serialize()
 
+# Gets the details of all users
 def getUserAccs(userId):
     accs = User.query.get(userId).accs
     return [acc.serialize() for acc in accs]
 
+# Retrieves the account history for an account
 def getAccHistory(accId):
     try:
         accHistory = Acc.query.get(accId).accHistory
@@ -119,6 +128,7 @@ def getAccHistory(accId):
 
     return [accLog.serialize() for accLog in accHistory]
 
+# Gets the list of stocks that a acc
 def getAccWatch(accId):
     accWatches = Acc.query.get(accId).accWatch
 
