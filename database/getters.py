@@ -89,6 +89,10 @@ def getHoldings(accId):
 # Returns the contents of a singular stock
 def getStock(ticker):
     stock = Stock.query.get(ticker)
+
+    if (stock == None):
+        return None
+    
     return stock.serialize()
     
 # Gets the history for a certain stock

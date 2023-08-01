@@ -165,9 +165,12 @@ def resolve_account_historical(_, info, input):
 # returns one stock given that stocks ticker
 @query.field("oneStock")
 def resolve_one_stock(_, info, input):
-    ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput
-
+    ticker_input = input.get("ticker")  # gets the ticker field from the input type TickerInput    
     stock = getters.getStock(ticker_input) # buzz method
+
+    if (stock == None):
+        return Stock()
+    
     returned_stock = Stock(
                 stock["ticker"],
                 stock["companyName"],
