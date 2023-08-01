@@ -64,7 +64,6 @@ class Order:
         self.date = date
         self.stock = stock
 
-        
 class Activity:
     def __init__(self, id, accId, date, type, description, amount):
         self.id = id
@@ -128,6 +127,12 @@ class AccountHistory:
         self.data = data
         self.message = message
 
+class AccountWatch:
+    def __init__(self, id, accId, ticker):
+        self.id = id
+        self.accId = accId
+        self.ticker = ticker
+
 class LinePoint:
     def __init__(self, x, y):
         self.x = x
@@ -143,4 +148,9 @@ class ReturnUser:
 class ReturnAccount:
     def __init__(self, account, message):
         self.account = account
+        self.message = message
+
+class ReturnAccountWatch:
+    def __init__(self, accountWatch, message):
+        self.accountWatch = accountWatch
         self.message = message

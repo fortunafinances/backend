@@ -32,10 +32,11 @@ def getPieStats(accId):
 # Gets the value of all holdings in the account
 def getHoldingsValue(accId):
     acc = (Acc.query.get(accId))
+    accStocks = acc.accStocks
     invest = 0.0
 
     # For loop to add up all of the investments 
-    for accStock in acc.accStocks:
+    for accStock in accStocks:
         invest += (Stock.query.get(accStock.ticker)).currPrice * accStock.stockQty
     
     return invest

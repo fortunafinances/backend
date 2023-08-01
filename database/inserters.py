@@ -1,5 +1,6 @@
 from tables import db, User, Acc, AccHistory, AccWatch, AccStock, User, Trade, Transfer, Stock, StockHistory
 from datetime import datetime, date
+from getters import getAccTotalValue
 import pytz
 from sqlalchemy import exc
 import sys
@@ -66,22 +67,38 @@ def addAcc(name, userId, cash):
 
 # Inserting an AccHistory into the database.
 def addAccHistory(accId, value, date):
-    accHistory = AccHistory(
-        accId = accId,
-        value = value,
-        date = date
-    )
-    db.session.add(accHistory)
-    db.session.commit()
+    accHistory = AccHistory.query.filter(AccHistory.date == date,
+                                     AccHistory.accId == accId).first()
+    if (accHistory == None):
+        accHistory = AccHistory(
+            accId = accId,
+            value = value,
+            date = date
+        )
+        db.session.add(accHistory)
+        db.session.commit()
+    else:   
+        accHistory.value = value
+        db.session.commit()
 
 # Inserting an AccWatch into the database.
-def addAccWatch(accId, ticker):
+def toggleAccWatch(accId, ticker):
+    accWatch = AccWatch.query.filter(AccWatch.accId == accId, 
+                            AccWatch.ticker == ticker).first()
+    if (accWatch):
+        db.session.delete(accWatch)
+        db.session.commit()
+
+        return (AccWatch(accWatchId = 0, accId = 0, ticker = ""), "Watch Deleted")            
+    
     accWatch = AccWatch(
         accId = accId,
         ticker = ticker
     ) 
     db.session.add(accWatch)
     db.session.commit()
+
+    return accWatch, "Watch Added"
     
 # Inserting an accStock into the database
 def addAccStock(accId, ticker, stockQty):
@@ -272,22 +289,24 @@ def doTransfer(sendAccId, receiveAccId, transferAmt):
     # Initial set up of grabbing accounts and the current time
     sendAcc = Acc.query.get(sendAccId)
     receiveAcc = Acc.query.get(receiveAccId)
-    date = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
+    date1 = datetime.now(tz = pytz.timezone("US/Eastern")).isoformat()
 
     # Allows the transfer if there is an external account
     # or the sender account has enough money
     if (sendAcc == None or sendAcc.cash > transferAmt):
-        addTransfer(sendAccId, receiveAccId, transferAmt, date)
+        addTransfer(sendAccId, receiveAccId, transferAmt, date1)
 
         # Removes cash from sender account if it's internal
         if (sendAcc):
             sendAcc.cash -= transferAmt
             db.session.commit()
+            addAccHistory(sendAccId, getAccTotalValue(sendAccId), date.today())
 
         # Adds cash to the receiver account if it's internal
         if (receiveAcc):
             receiveAcc.cash += transferAmt
             db.session.commit()
+            addAccHistory(receiveAccId, getAccTotalValue(receiveAccId), date.today())
         
         return "Success"
     
