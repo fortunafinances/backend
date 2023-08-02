@@ -107,10 +107,10 @@ def resolve_activity(_, info, input):
         if trade['side'] == 'Buy':
             new_amount *= -1   # buy is a subtraction from account total
             new_description = 'Bought ' + str(trade['tradeQty']) + ' shares of ' + \
-                                str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
+                                str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
         else:
             new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
-                                str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
+                                str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
         new_activity = Activity(
             id=trade["tradeId"],
             accId=trade["accId"],
