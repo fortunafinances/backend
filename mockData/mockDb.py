@@ -26,7 +26,7 @@ def initUsers():
     addUser("auth0|64b7f9420f43178a8a19c036", "nrgbistro", "Nolan", "Gelinas", "nolangelinas@gmail.com", "1610308884", "picture", "Fortuna", 5)
 
 def initAccs():
-    addAcc("Brokerage account", "auth0|64c922d8a9c248f78242a230", 10000.00)
+    addAcc("Brokerage account", "auth0|64c922d8a9c248f78242a230", 25000.00)
     addAcc("Retirement account", "auth0|64c922d8a9c248f78242a230", 5000.00)
     addAcc("College fund account", "auth0|64c922d8a9c248f78242a230", 2600.00)
 
@@ -46,8 +46,7 @@ def initAccsHistory():
 
 def initAccHistory(accId):
     sp500Data = StockHistory.query.filter(StockHistory.ticker == SP_500) \
-                            .order_by(StockHistory.date.desc()).all()[:52]
-    sp500Data = sp500Data[::-1]
+                            .order_by(StockHistory.date.asc()).all()
     acc = Acc.query.get(accId)
     
     for factor, sp500Log in enumerate(sp500Data, 52):
@@ -73,9 +72,14 @@ def initAccWatch():
 def initBuyMarket():
     buyMarket(1, "V", 5)
     buyMarket(1, "JPM", 13)
-    buyMarket(1, "META", 5)
+    buyMarket(1, "JNJ", 8)
+    buyMarket(1, "TGT", 17)
+    buyMarket(1, "AAPL", 3)
+    buyMarket(1, "SOFI", 43)
+    buyMarket(1, "UNH", 4)
 
     buyMarket(2, "MSFT", 2)
+    buyMarket(2, "DNUT", 4)
     buyMarket(3, "BAC", 9)
     
     buyMarket(4, "HD", 3)
