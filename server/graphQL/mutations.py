@@ -7,6 +7,7 @@ from resolverClasses import User, Account, AccountWatch, ReturnAccount, ReturnAc
 sys.path.insert(1, '../database')
 import inserters
 from tables import db_lock
+from queries import resolve_one_stock
 
 
 
@@ -96,7 +97,8 @@ def resolve_toggle_watch(_, info,
         ):
     with db_lock:
         accWatch, message = inserters.toggleAccWatch(accId, ticker)
-        new_acc_watch = AccountWatch(accWatch.accWatchId, accWatch.accId, accWatch.ticker)
+        stock = resolve_one_stock(None, None, {"ticker" : ticker})
+        new_acc_watch = AccountWatch(accWatch.accWatchId, accWatch.accId, stock)
         return_new_acc_watch = ReturnAccountWatch(new_acc_watch, message)
 
         return return_new_acc_watch
