@@ -113,6 +113,7 @@ def createMockDb():
         mockDb.initTransferIn()
         mockDb.initTransferOut()
         mockDb.initTransferBetween()
+        mockDb.initAccsHistory()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
