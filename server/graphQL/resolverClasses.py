@@ -128,10 +128,10 @@ class AccountHistory:
         self.message = message
 
 class AccountWatch:
-    def __init__(self, id, accId, ticker):
+    def __init__(self, id, accId, stock):
         self.id = id
         self.accId = accId
-        self.ticker = ticker
+        self.stock = stock
 
 class LinePoint:
     def __init__(self, x, y):

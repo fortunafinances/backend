@@ -178,10 +178,11 @@ def resolve_watch_list(_, info, input):
 
     return_watches = []
     for acc_watch in acc_watches:
+        stock = resolve_one_stock(None, None, {"ticker" : acc_watch["ticker"]})
         item = AccountWatch(
             acc_watch["accWatchId"],
             acc_watch["accId"],
-            acc_watch["ticker"]
+            stock
             )
         return_watches.append(item)
 

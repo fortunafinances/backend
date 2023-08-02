@@ -154,7 +154,7 @@ type AccountHistory {
 type AccountWatch {
     id: ID
     accId: Int
-    ticker: String
+    stock: Stock!
 }
 
 
