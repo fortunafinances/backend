@@ -1,4 +1,4 @@
-from resolverClasses import Account, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory, AccountHistory, LinePoint
+from resolverClasses import Account, AccountWatch, Order, DisplayBar, Holding, Activity, Stock, PieData, StockHistory, AccountHistory, LinePoint
 from ariadne import QueryType
 import asyncio
 import os
@@ -107,10 +107,10 @@ def resolve_activity(_, info, input):
         if trade['side'] == 'Buy':
             new_amount *= -1   # buy is a subtraction from account total
             new_description = 'Bought ' + str(trade['tradeQty']) + ' shares of ' + \
-                                str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
+                                str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
         else:
             new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
-                                str(trade['ticker']) + ' @ ' + str(trade['tradePrice'])
+                                str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
         new_activity = Activity(
             id=trade["tradeId"],
             accId=trade["accId"],
@@ -125,9 +125,18 @@ def resolve_activity(_, info, input):
     for transfer in transfer_list:
         transfer_amount = transfer['transferAmt']
         new_description = 'Transfer in'
+        if transfer["sendAccId"] != 0:
+            new_description += " from " + getters.getUserAcc(transfer["sendAccId"])["name"]
+        else: 
+            new_description += " from an external account"
+
         if transfer['sendAccId'] == account_id:
             transfer_amount *= -1
             new_description = 'Transfer out'
+            if transfer["receiveAccId"] != 0:
+                new_description += " to " + getters.getUserAcc(transfer["receiveAccId"])["name"]
+            else:
+                new_description += " to an external account"
 
         modified_id = str(transfer["transferId"]) + str(".5")
         new_activity = Activity(
@@ -161,6 +170,23 @@ def resolve_account_historical(_, info, input):
                                 "Success")
     
     return return_history
+
+@query.field("watchList")
+def resolve_watch_list(_, info, input):
+    acc_input = input.get("accId")
+    acc_watches = getters.getAccWatch(acc_input)
+
+    return_watches = []
+    for acc_watch in acc_watches:
+        stock = resolve_one_stock(None, None, {"ticker" : acc_watch["ticker"]})
+        item = AccountWatch(
+            acc_watch["accWatchId"],
+            acc_watch["accId"],
+            stock
+            )
+        return_watches.append(item)
+
+    return return_watches
 
 # returns one stock given that stocks ticker
 @query.field("oneStock")

@@ -41,6 +41,10 @@ type AccountReturn {
     message: String
 }
 
+type WatchReturn {
+    accountWatch: AccountWatch
+    message: String
+}
 
 
 ######################### TYPES ################################
@@ -147,6 +151,11 @@ type AccountHistory {
     message: String
 }
 
+type AccountWatch {
+    id: ID
+    accId: Int
+    stock: Stock!
+}
 
 
 ######################### QUERIES ################################
@@ -161,9 +170,10 @@ type Query {
     accounts(input: UserIdInput): [Account]!
     pieData(input: AccIdInput): PieData!
     allAccValue(input: UserIdInput): Float!
-    genAIQuery(input: String): String!
+    genAIQuery(input: [String]): String!
     stockHistorical(input: TickerInput): StockHistory!
     accountHistorical(input: AccIdInput): AccountHistory!
+    watchList(input: AccIdInput): [AccountWatch]!
 }
 
 ######################### MUTATIONS ################################
@@ -200,4 +210,9 @@ type Mutation {
         receiveAccId: Int!
         transferAmt: Float!
     ): String
+
+    toggleWatch(
+        accId: Int!
+        ticker: String!
+    ): WatchReturn
 }

@@ -2,11 +2,12 @@ from ariadne import MutationType
 from uuid import uuid4
 import sys
 
-from resolverClasses import User, Account, ReturnAccount, ReturnUser
+from resolverClasses import User, Account, AccountWatch, ReturnAccount, ReturnAccountWatch, ReturnUser
 
 sys.path.insert(1, '../database')
 import inserters
 from tables import db_lock
+from queries import resolve_one_stock
 
 
 
@@ -89,4 +90,15 @@ def resolve_transfer_order(_, info,
         
         return message
 
+@mutation.field("toggleWatch")
+def resolve_toggle_watch(_, info, 
+        accId,
+        ticker
+        ):
+    with db_lock:
+        accWatch, message = inserters.toggleAccWatch(accId, ticker)
+        stock = resolve_one_stock(None, None, {"ticker" : ticker})
+        new_acc_watch = AccountWatch(accWatch.accWatchId, accWatch.accId, stock)
+        return_new_acc_watch = ReturnAccountWatch(new_acc_watch, message)
 
+        return return_new_acc_watch

@@ -25,7 +25,7 @@ from mutations import mutation
 from queries import query
 
 sys.path.insert(0, './scheduler')
-from schedule import scheduler, updateStockHistory, updateSP500
+from schedule import scheduler, updateStockHistory, updateSP500, updateAccHistory
 
 sys.path.insert(0, './stockAPI')
 from dataProcessing import handle_metadata
@@ -92,6 +92,8 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
+    inserters.doTransfer(1,0, 500.00)
+    # updateAccHistory()
     return getters.getAccHistory(1)
 
 # Mock Database creation route
@@ -101,8 +103,8 @@ def test():
 def createMockDb():
     updateStockHistory()
     updateSP500()
+    fillStocks()
     with db_lock:
-        fillStocks()
         mockDb.initUsers()
         mockDb.initAccs()
         mockDb.initAccsHistory()

@@ -10,7 +10,7 @@ from apiRequests import get_stock_quote, get_stock_metadata
 from dataProcessing import handle_quote_data, handle_metadata
 
 sys.path.insert(0, database_dir)
-from tables import Stock, db
+from tables import Stock, db, db_lock
 
 from constants import STOCK_LIST
 
@@ -22,19 +22,21 @@ def fillStocks():
         data = get_stock_quote(ticker)
         price = handle_quote_data(data)
         existing_stock = Stock.query.get(ticker)
-        
-        if existing_stock and price is not None:
-            #update stock prices
-            updateStock(existing_stock, price)
-        elif price is not None:
-            #add new stock
-            newStock = addNewStock(ticker, description, price)
-            if newStock is not None:
-                if newStock.businessDescription and newStock.sector:
-                    db.session.add(newStock)
-        else:
-            print (f"Error: Price data for {ticker} is None. Skipping this stock.")
-    db.session.commit()
+        with db_lock:
+            if existing_stock and price is not None:
+                #update stock prices
+                updateStock(existing_stock, price)
+                db.session.commit()
+            elif price is not None:
+                #add new stock
+                newStock = addNewStock(ticker, description, price)
+                if newStock is not None:
+                    if newStock.businessDescription and newStock.sector:
+                        db.session.add(newStock)
+                        db.session.commit()
+            else:
+                print (f"Error: Price data for {ticker} is None. Skipping this stock.")
+    
 
 
 #helper function that adds a new stock to the db
