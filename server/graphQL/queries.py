@@ -102,24 +102,25 @@ def resolve_activity(_, info, input):
 
     trades_list = getters.getTrades(account_id)
     for trade in trades_list:
-        new_amount = trade['tradePrice'] * trade['tradeQty']
-        new_description = ''
-        if trade['side'] == 'Buy':
-            new_amount *= -1   # buy is a subtraction from account total
-            new_description = 'Bought ' + str(trade['tradeQty']) + ' shares of ' + \
-                                str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
-        else:
-            new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
-                                str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
-        new_activity = Activity(
-            id=trade["tradeId"],
-            accId=trade["accId"],
-            date=trade["tradeDate"],
-            type="Trade",
-            description=new_description,
-            amount= new_amount
-        )
-        returned_activities.append(new_activity)
+        if trade['status'] == "Executed":
+            new_amount = trade['tradePrice'] * trade['tradeQty']
+            new_description = ''
+            if trade['side'] == 'Buy':
+                new_amount *= -1   # buy is a subtraction from account total
+                new_description = 'Bought ' + str(trade['tradeQty']) + ' shares of ' + \
+                                    str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
+            else:
+                new_description ='Sold ' + str(trade['tradeQty']) + ' shares of ' + \
+                                    str(trade['ticker']) + ' @ ' + str(round(trade['tradePrice'], 2))
+            new_activity = Activity(
+                id=trade["tradeId"],
+                accId=trade["accId"],
+                date=trade["tradeDate"],
+                type="Trade",
+                description=new_description,
+                amount= new_amount
+            )
+            returned_activities.append(new_activity)
 
     transfer_list = getters.getTransfers(account_id)
     for transfer in transfer_list:
