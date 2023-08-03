@@ -24,7 +24,7 @@ scheduler = APScheduler()
 # logging.getLogger('apscheduler').setLevel(logging.DEBUG)
 
 
-@scheduler.task("cron",id = "Check Limit Orders", day_of_week="mon-fri", hour = "9-16", minute = "*/3", second = "30")
+@scheduler.task("cron",id = "Check Limit Orders", day_of_week="mon-fri", hour = "9-16", minute = "*/3", second = "45")
 def checkLimit():
     with scheduler.app.app_context():
         with db_lock:
