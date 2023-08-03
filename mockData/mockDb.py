@@ -53,7 +53,7 @@ def initAccHistory(accId):
         # value = getAccTotalValue(accId) - (getAccTotalValue(accId) * (length - factor) * 0.0003) + (sp500Log.price * random.randint(-1, 2) / 25.0) 
         # value =  total - ((sp500Log.price * total * 0.0001) * (((length - factor) * 0.001)**0.85))
         # value =  total - ((sp500Log.price * total * 0.0001) * ((length - factor) * 0.00005))**1.6
-        value = total + (sp500Log.price * total * 0.00022) + (sp500Log.price * random.randint(-3, 3) / 75.0)
+        value = total + (sp500Log.price * total * 0.00022)
         # print(factor, length, sp500Log.date, total, value, (sp500Log.price * total * 0.0002), (value / total))
         addAccHistory(accId, value, sp500Log.date)
 

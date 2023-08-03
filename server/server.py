@@ -92,8 +92,7 @@ def hello_world():
 # do not.
 @app.route("/test")
 def test():
-    inserters.doTransfer(1,0, 500.00)
-    # updateAccHistory()
+    mockDb.initAccHistory(1)
     return getters.getAccHistory(1)
 
 # Mock Database creation route
@@ -114,6 +113,7 @@ def createMockDb():
         mockDb.initTransferIn()
         mockDb.initTransferOut()
         mockDb.initTransferBetween()
+        mockDb.initAccsHistory()
     return "MockDb created"
 
 """ ----------------- Auth testing ----------------- """
